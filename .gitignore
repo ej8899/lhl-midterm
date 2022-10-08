@@ -3,3 +3,8 @@ public/styles
 .env
 *.log
 *.sqlite3
+
+
+# macOS files:
+.DS_Store
+
