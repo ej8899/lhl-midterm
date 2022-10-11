@@ -242,3 +242,46 @@ body {
   opacity: 1;
   transition: all 0.3s;
 }
+
+
+
+
+/*
+  Map displays
+*/
+#map {
+  height: 300px;
+  border-radius: 15px;
+  border: 2px solid;
+  max-width: 800px;
+  width: 800px;
+  margin: 0 auto;
+}
+.gm-ui-hover-effect {
+  display: none !important;
+}
+.map-infobox-wrapper {
+  display:flex;
+  flex-direction: row;
+  align-content: baseline;
+  align-items: center;
+  font-size:24px;
+}
+.map-infobox-content, .iw-container {
+  font-family: 'Open Sans Condensed', sans-serif;
+  font-size: 16px;
+  padding: 5px;
+  color: var(--black-olive);
+  margin: 1px;
+  border-radius: 5px 5px 0 0; /* In accordance with the rounding of the default infowindow corners. */
+}
+
+.pagefooter {
+  border-top: 1px solid var(--black-olive);
+  font-size: 1rem;
+  font-family: 'Archivo', sans-serif;
+  padding: 10px;
+  padding-top: 20px;
+  width: 100%;
+  margin-top: 200px;
+}
