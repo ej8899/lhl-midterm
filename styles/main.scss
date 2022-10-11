@@ -1,3 +1,67 @@
+/*
+ * Light & Dark Mode variables
+ * see https://github.com/ej8899/conColors
+ * for details on light and dark mode setup
+ */
+
+ :root {
+  --rich-black: #0a0a0aff;
+  --eerie-black:#1a181aff;
+  --davys-grey: #505050ff;
+  --persian-red:#d1342fff;
+  --black-olive:#434038ff;
+  --dutch-white:rgb(179, 173, 156);
+}
+
+:root.dark {
+  --bodybackgroundcolor: var(--eerie-black);
+  --iconcolor: var(--dutch-white);
+  --cardbackgroundcolor: rgb(50, 50, 50);
+  --cardcontentcolor: var(--dutch-white);
+  --wasteal: var(--davys-grey);
+  --red: var(--persian-red);
+  --submitformcolor: var(--dutch-white);
+  --titleglowcolor: teal;
+  --headerbordercolor: var(--dutch-white);
+  --errorboxcolor: rgba(214, 207, 5, 0.675);
+  --darkiconcolor: var(--eerie-black);
+  color-scheme: dark;
+}
+
+:root.light {
+  --bodybackgroundcolor: rgba(73,143,143,0.536);
+  --iconcolor: #545149;
+  --cardbackgroundcolor: #e7cda2;
+  --cardcontentcolor: #35332d;
+  --wasteal: teal;
+  --red: red;
+  --submitformcolor: #f3b860c9;
+  --titleglowcolor: #FD5901;
+  --headerbordercolor: rgb(3, 84, 84);
+  --errorboxcolor: rgba(255, 0, 0, 0.328);
+  --darkiconcolor: var(--eerie-black);
+  color-scheme: light;
+}
+
+:root {
+  --bodybackgroundcolor: rgba(73,143,143,0.536);
+  --iconcolor: #545149;
+  --cardbackgroundcolor: #e7cda2;
+  --cardcontentcolor: #35332d;
+  --wasteal: teal;
+  --red: red;
+  --submitformcolor: #f3b860c9;
+  --titleglowcolor: #FD5901;
+  --headerbordercolor: rgb(3, 84, 84);
+  --errorboxcolor: rgba(255, 0, 0, 0.328);
+  --darkiconcolor: var(--eerie-black);
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -15,4 +79,166 @@ body {
     rgba(163, 208, 219, 1) 74%,
     rgba(163, 208, 219, 1) 100%
   );
+}
+
+.hoverbutton:hover {
+  text-decoration: underline;
+  text-decoration-color: orange;
+  text-decoration-thickness: 3px;
+  transition: all 300ms;
+}
+
+/*
+  MODAL BOX
+*/
+.modal {
+  font-family: Arial, Helvetica, sans-serif;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(1.1);
+  transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 1rem 1.5rem;
+  width: 28rem;
+  border-radius: 0.5rem;
+  color: var(--cardcontentcolor);
+}
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.modal-body {
+  font-size: 1rem;
+  padding-top: 1.5rem;
+}
+.close-button {
+  float: right;
+  width: 1.5rem;
+  line-height: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  background-color: lightgray;
+}
+.close-button:hover {
+  background-color: darkgray;
+}
+.show-modal {
+  opacity: 1;
+  z-index: 999;
+  visibility: visible;
+  transform: scale(1.0);
+  transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+
+
+.fadeout {
+  opacity: 0;
+  transition: 2s opacity ease;
+}
+
+/*
+  BACK TO TOP button
+*/
+.back-top {
+  bottom: 30px;
+  right: 30px;
+  position: fixed;
+  color: var(--dutch-white);
+  font-size: 3em;
+  border-radius: 25px;
+  box-shadow: 0px 0px 15px #888888;
+  padding: 2px;
+  background-color: var(--black-olive);
+  animation: bounce-in 1s ease;
+  transition: color 500ms, opacity 2s;
+}
+.back-top:hover {
+  color: var(--persian-red);
+  cursor: pointer;
+  transition: color 500ms opacity 2s;
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: translateX(-2000px);
+  }
+  60% {
+    transform: translateX(0px);
+  }
+  80% {
+    transform: translateX(-30px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-5px);
+  }
+}
+
+
+/*
+  Assorted Buttons
+*/
+.button {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10rem;
+  border: 2px solid;
+  border-color: var(--davys-grey);
+  background-color: var(--dutch-white);
+  color: var(--davys-grey);
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.15rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.button:hover {
+  color: #fff;
+}
+
+
+/*
+  SEARCH FILTER button
+*/
+.filtertoggle {
+  display: flex;
+  justify-content: flex-end;
+  width: 800px;
+  position: relative;
+  padding-top: 15px;
+  text-align: right;
+}
+.filtertoggleicon {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border: 1px solid;
+  border-radius: 6px;
+  margin: 8px;
+  padding: 6px;
+  width: auto;
+  opacity: 0.7;
+  transition: all 0.3s;
+}
+.filtertoggleicon:hover {
+  background-color: whitesmoke;
+  opacity: 1;
+  transition: all 0.3s;
 }

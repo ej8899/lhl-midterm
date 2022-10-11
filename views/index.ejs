@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Home Page</title>
+  <title> - a LHL Mid-Term project</title>
 
   <meta charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
@@ -13,12 +13,39 @@
   <link rel="stylesheet" href="/styles/main.css" />
   <link rel="stylesheet" href="/styles/layout.css" />
 
+  <link rel="stylesheet" href="/styles/sliderswitch.css" />
+  <link rel="stylesheet" href="/styles/tooltips.css" />
+
   <script src="/vendor/jquery-3.0.0.js"></script>
   <script defer src="/scripts/app.js"></script>
+  <script defer src="/scripts/app-modals.js"></script>
 </head>
 
 <body>
+  <div class="modal" id="propertySubmit" style="visibility:hidden">
+    <div class="modal-content" >
+        <span class="close-button">&times;</span>
+        <span class="modal-title" id="modal-title"></span>
+        <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+
   <h1>Have fun! 🥔</h1>
+  <main id="main-content">
+    <div id="map"></div>
+    <div id="filtertoggle" class="filtertoggle"><div class="filtertoggleicon" id="filtertoggleicon"><i class="fa-solid fa-sliders fa-lg"></i> Search</div></div>
+  </main>
+
+  <footer class="pagefooter">
+    <i class="fa-solid fa-copyright"></i> 2022 Our Wiki Map - <a onClick="showPrivacyPolicy();" class="hoverbutton">Privacy Policy</a>
+  </footer>
+  <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k&callback=initMap&libraries=places&v=weekly"
+      defer>
+  </script>
+  <i class="fa-solid fa-circle-chevron-up back-top" id="back-top"></i>
+
 </body>
 
 </html>
