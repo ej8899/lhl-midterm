@@ -69,7 +69,14 @@ body {
   align-items: center;
   min-height: 100vh;
 
-  background: rgb(163, 208, 219);
+  background-color: var(--bodybackgroundcolor);
+  box-sizing: border-box;
+  overflow-y: scroll;
+  font-family: 'Archivo', sans-serif;
+}
+
+/* background shade from LHL:
+ background: rgb(163, 208, 219);
   background: linear-gradient(
     227deg,
     rgba(163, 208, 219, 1) 0%,
@@ -79,7 +86,7 @@ body {
     rgba(163, 208, 219, 1) 74%,
     rgba(163, 208, 219, 1) 100%
   );
-}
+*/
 
 .hoverbutton:hover {
   text-decoration: underline;
@@ -250,7 +257,7 @@ body {
   Map displays
 */
 #map {
-  height: 300px;
+  height: 500px;
   border-radius: 15px;
   border: 2px solid;
   max-width: 800px;
@@ -284,4 +291,70 @@ body {
   padding-top: 20px;
   width: 100%;
   margin-top: 200px;
+}
+
+
+/*
+  NAV BAR
+*/
+.navbar-main {
+  display:flex;
+  justify-content: center;
+  width:100%;
+}
+.navbar-userlinks ul {
+  font-family: sans-serif;
+  font-weight: normal;
+  font-size: 1em;
+  list-style: none;
+  display: flex;
+}
+.page-header__user-links ul li {
+    padding: 0;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+
+
+
+
+/*
+  Assorted Buttons
+*/
+.button {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10rem;
+  border: 2px solid;
+  border-color: var(--davys-grey);
+  background-color: var(--dutch-white);
+  color: var(--davys-grey);
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.15rem;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.button:hover {
+  color: #fff;
+}
+
+
+
+/*
+  FORM styles
+*/
+input,textarea,select {
+  border-radius: 3px;
+  border: 1px;
+  padding:13px;
+}
+
+input[type="text"] {
+  width:100%;
 }

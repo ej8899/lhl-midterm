@@ -26,6 +26,7 @@
 </head>
 
 <body>
+  <!-- MODAL WINDOW CODE -->
   <div class="modal" id="propertySubmit" style="visibility:hidden">
     <div class="modal-content" >
         <span class="close-button">&times;</span>
@@ -34,6 +35,18 @@
     </div>
   </div>
 
+  <header id="page-navbar" class="navbar-main">
+    <nav id="navbar-userlinks" class="navbar-userlinks">
+      <ul>
+        <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
+        <li class="login_button hoverbutton">Log In</li>
+        <li class="sign-up_button hoverbutton">Sign Up</li>
+        <li style="padding-left:20px"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+        <li style="padding-left:5px" class="tooltip expand" data-title="latest version on github"><a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new"><i class="fa-brands fa-linkedin fa-lg"></i></a></li>
+        <li class="tooltip expand" data-title="check us out on linkedin"><div class="switchcontainer"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
+      </ul>
+    </nav>
+  </header>
 
   <h1>coffee shop wiki map</h1>
   <main id="main-content">
@@ -42,7 +55,10 @@
   </main>
 
   <footer class="pagefooter">
-    <i class="fa-solid fa-copyright"></i> 2022 Our Wiki Map - <a onClick="showPrivacyPolicy();" class="hoverbutton">Privacy Policy</a>
+    <i class="fa-solid fa-copyright"></i> 2022 Our Wiki Map -
+    <a onClick="showPrivacyPolicy();" class="hoverbutton">Privacy Policy</a> |
+    <a onClick="showAbout();" class="hoverbutton">About Coffee Time</a> |
+    <a onClick="showContact();" class="hoverbutton">Contact Us</a> |
   </footer>
   <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k&callback=initMap&libraries=places&v=weekly"
@@ -52,9 +68,7 @@
 
 
 
-
-  <i class="fa-solid fa-circle-chevron-up back-top" id="back-top"></i>
-
+<i class="fa-solid fa-circle-chevron-up back-top" id="back-top"></i>
 </body>
 
 </html>

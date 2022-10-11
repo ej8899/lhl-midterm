@@ -17,7 +17,7 @@ const initMap = function() {
     }
     markersArray.length = 0;
   };
-alert('init map')
+
   let mapProp = {                                     // setup initial map display
     center:new google.maps.LatLng(53.5, -104.0),      // center of (roughly canada centered)
     zoom:4,
