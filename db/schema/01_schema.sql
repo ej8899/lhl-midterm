@@ -28,8 +28,8 @@ CREATE TABLE points (
   contributor_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   description TEXT,
   image_url VARCHAR(255),
-  latitude DECIMAL NOT NULL
-  longitude DECIMAL NOT NULL,
+  latitude DECIMAL NOT NULL,
+  longitude DECIMAL NOT NULL
 );
 
 CREATE TABLE favourites (
