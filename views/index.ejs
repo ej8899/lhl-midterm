@@ -17,12 +17,19 @@
   <link rel="stylesheet" href="/styles/tooltips.css" />
 
   <script src="/vendor/jquery-3.0.0.js"></script>
-  <link href="https://fonts.googleapis.com/css?family=Archivo+Black&display=swap" rel="stylesheet">
+
+  <!-- FONTS & ICON SETS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo&family=Yanone+Kaffeesatz:wght@400;600&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- APP SUPPORT SCRIPTS -->
   <script defer src="/scripts/app.js"></script>
   <script defer src="/scripts/app-modals.js"></script>
   <script defer src="/scripts/extra-googlemaps.js"></script>
+  <script defer src="/scripts/extra-screenbg.js"></script>
 </head>
 
 <body>
@@ -34,6 +41,8 @@
         <div class="modal-body" id="modal-body"></div>
     </div>
   </div>
+
+
 
   <header id="page-navbar" class="navbar-main">
     <nav id="navbar-userlinks" class="navbar-userlinks">
@@ -48,7 +57,16 @@
     </nav>
   </header>
 
-  <h1>coffee shop wiki map</h1>
+  <div class="hero">
+    <div class="hero-title-container">
+    <span class="hero-title">coffee shop wiki map</span>
+    <p class="hero-title__overlay" aria-hidden="true"></p>
+    </div>
+  </div>
+  <div class="canvas-container">
+    <canvas id="canv" width="32" height="32"></canvas>
+  </div>
+
   <main id="main-content">
     <div id="map"></div>
     <div id="filtertoggle" class="filtertoggle"><div class="filtertoggleicon" id="filtertoggleicon"><i class="fa-solid fa-sliders fa-lg"></i> Search</div></div>
