@@ -14,6 +14,7 @@ CREATE TABLE users (
 
 CREATE TABLE maps (
   id SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
   owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   description TEXT,
   category VARCHAR(32) NOT NULL,
@@ -22,6 +23,7 @@ CREATE TABLE maps (
 
 CREATE TABLE points (
   id SERIAL PRIMARY KEY NOT NULL,
+  title VARCHAR(255) NOT NULL,
   map_id INTEGER REFERENCES maps(id) ON DELETE CASCADE,
   contributor_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   description TEXT,
