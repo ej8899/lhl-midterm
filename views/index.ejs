@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title> - a LHL Mid-Term project</title>
+  <title>Coffee Time - a LHL Mid-Term project</title>
 
   <meta charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
@@ -27,6 +27,7 @@
 
   <!-- APP SUPPORT SCRIPTS -->
   <script defer src="/scripts/app.js"></script>
+  <script defer src="/scripts/network.js"></script>
   <script defer src="/scripts/app-modals.js"></script>
   <script defer src="/scripts/extra-googlemaps.js"></script>
   <script defer src="/scripts/extra-screenbg.js"></script>
@@ -48,11 +49,12 @@
     <nav id="navbar-userlinks" class="navbar-userlinks">
       <ul>
         <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
-        <li class="login_button hoverbutton">Log In</li>
+        <li class="login_button hoverbutton" onClick="showLogin();">Log In</li>
         <li class="sign-up_button hoverbutton">Sign Up</li>
-        <li style="padding-left:20px"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
-        <li style="padding-left:5px" class="tooltip expand" data-title="latest version on github"><a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new"><i class="fa-brands fa-linkedin fa-lg"></i></a></li>
-        <li class="tooltip expand" data-title="check us out on linkedin"><div class="switchcontainer"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
+
+        <li style="padding-left:20px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+
+        <li><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
       </ul>
     </nav>
   </header>

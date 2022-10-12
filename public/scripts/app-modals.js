@@ -6,9 +6,29 @@ const showPrivacyPolicy = () => {
   This privacy policy is to inform you on how the information collected on this website is used. Be sure to read this privacy policy before using our website or submitting any personal information and be aware that by using our website, you are accepting the practices described in this policy. We reserve the right to make changes to this website's policy at any time without prior notice. Be also aware that privacy practices set forth in this here are for this website only and do not apply for any other linking websites.<BR><BR>
   ....etc, etc, etc.
   `;
-  toggleModal('<i class="fa-solid fa-lock"></i> Privacy Policy',privacyPolicy);
+  toggleModal('<i class="fa-solid fa-lock fa-xl"></i> Privacy Policy',privacyPolicy);
 };
 
+
+const showLogin = () => {
+  let data = `
+  <form id="login-form" class="login-form">
+      <div class="login-form__field-wrapper">
+        <input type="email" name="email" placeholder="Email">
+      </div>
+
+      <div class="login-form__field-wrapper">
+          <input type="password" name="password" placeholder="Password">
+        </div>
+
+      <div class="login-form__field-wrapper">
+          <button class="button">Login</button>&nbsp;&nbsp;
+          <a id="login-form__cancel" class="button" href="#">Cancel</a>
+      </div>
+    </form>
+    `;
+    toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Log In',data);
+}
 
 //
 // show "about" modal window
@@ -20,7 +40,7 @@ const showAbout = () => {
   Ernie Johnson - Frontend, including JS, HTML & CSS<BR>
   Atsuyuki Yoshimatsu - Backend, including database.
   `;
-  toggleModal('<i class="fa-solid fa-circle-question"></i> About',privacyPolicy);
+  toggleModal('<i class="fa-solid fa-circle-question fa-xl"></i> About',privacyPolicy);
 };
 
 
@@ -29,9 +49,10 @@ const showAbout = () => {
 //
 const showContact = () => {
   let privacyPolicy = `
-  insert contact us links here - linked in links with icons?
+  insert contact us links here - linked in links with icons?<BR>
+  Ernie Johnson - <a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a>
   `;
-  toggleModal('<i class="fa-solid fa-address-card"></i> Contact Us',privacyPolicy);
+  toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Contact Us',privacyPolicy);
 };
 
 //
