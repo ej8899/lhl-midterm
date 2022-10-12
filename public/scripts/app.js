@@ -4,6 +4,17 @@
 //
 //
 
+//
+// Initial setup/loading items
+//
+
+const main = function() {
+  // load list of all maps available
+  console.log(getListofMaps());
+  // default populate the map with map #1 data
+  console.log(getPointsByMap(1));
+};
+main();
 
 
 //
@@ -35,6 +46,7 @@ $(document).ready(function() {
       }
     }
   });
+
 
 }); // END DOCUMENT READY
 

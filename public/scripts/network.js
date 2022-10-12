@@ -28,6 +28,21 @@ function signUp(data) {
   });
 }
 
+function getPointsByMap(mapID) {
+  return pointsData[1];
+}
+
+function getListofMaps() {
+  let mapNames=[], x;
+
+  for(element in mapsData) {
+    mapNames.push(mapsData[element].name);
+  }
+  return mapNames;
+}
+
+
+
 // extrastretch items
 function getAllTheCities() {
   let url = "/api/allcities";
