@@ -8,7 +8,6 @@
 const express = require('express');
 const router  = express.Router();
 const widgetsQueries  = require('../db/queries/widgets');
-const { route } = require('./users-api');
 
 router.post('/favourites', (req, res) => {
   const userId = req.session.userId;
@@ -25,7 +24,8 @@ router.post('/favourites', (req, res) => {
 });
 
 router.get('/maps', (req, res) => {
-  widgetsQueries.getMaps()
+  const { userId } = req.session;
+  widgetsQueries.getMapsWithOwnerId(userId)
     .then(maps => {
       res.json({ maps });
     })
@@ -37,7 +37,7 @@ router.get('/maps', (req, res) => {
 });
 
 router.post('/maps', (req, res) => {
-  const userId = req.session.userId;
+  const { userId } = req.session;
   widgetsQueries.addMap({ ...req.body, owner_id: userId })
     .then(map => {
       res.send(map);
@@ -50,7 +50,7 @@ router.post('/maps', (req, res) => {
 });
 
 router.post('/points', (req, res) => {
-  const userId = req.session.userId;
+  const { userId } = req.session;
   widgetsQueries.addPoint({ ...req.body, contributor_id: userId })
     .then(point => {
       res.send(point);
