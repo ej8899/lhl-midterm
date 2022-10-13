@@ -1,10 +1,19 @@
 const query = require('../connection');
 
+const addFavourite = (favourite) => {
+  const queryValues = [
+    favourite.map_id,
+    favourite.user_id,
+  ];
+
+  return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows);
+};
+
 const getMaps = () => {
   return query('SELECT * FROM maps;', [], result => result.rows);
 };
+
 const addMap = (map) => {
-  console.log(map);
   const queryValues = [
     map.name,
     map.owner_id,
@@ -23,6 +32,7 @@ const addMap = (map) => {
 };
 
 module.exports = {
+  addFavourite,
   getMaps,
   addMap
 };
