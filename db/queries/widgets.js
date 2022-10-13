@@ -13,6 +13,10 @@ const getMapsWithOwnerId = (id) => {
   return query('SELECT * FROM maps WHERE owner_id = $1;', [id], result => result.rows);
 };
 
+const getAllNoPrivateMaps = () => {
+  return query('SELECT * FROM maps WHERE is_private = false ORDER BY name ASC;', [], result => result.rows);
+};
+
 const addMap = (map) => {
   const queryValues = [
     map.name,
@@ -58,6 +62,7 @@ module.exports = {
   addFavourite,
   getMapsWithOwnerId,
   getPointsWithMapId,
+  getAllNoPrivateMaps,
   addMap,
   addPoint,
 };

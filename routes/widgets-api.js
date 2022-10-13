@@ -38,6 +38,18 @@ router.get('/maps', (req, res) => {
     });
 });
 
+router.get('/no-private-maps', (req, res) => {
+  widgetsQueries.getAllNoPrivateMaps()
+    .then(maps => {
+      res.json({ maps });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 router.post('/maps', (req, res) => {
   const { userId } = req.session;
   widgetsQueries.addMap({ ...req.body, owner_id: userId })
