@@ -31,8 +31,28 @@ const addMap = (map) => {
   `, queryValues, result => result.rows);
 };
 
+const addPoint = (point) => {
+  const queryValues = [
+    point.title,
+    point.map_id,
+    point.contributor_id,
+    point.description,
+    point.image_url,
+    point.latitude,
+    point.longitude,
+  ];
+
+  return query(`
+  INSERT INTO points
+  (title, map_id, contributor_id, description, image_url, latitude, longitude)
+  VALUES ($1, $2, $3, $4, $5, $6, &7)
+  RETURNING *;
+  `, queryValues, result => result.rows);
+};
+
 module.exports = {
   addFavourite,
   getMaps,
-  addMap
+  addMap,
+  addPoint,
 };

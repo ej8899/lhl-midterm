@@ -8,6 +8,7 @@
 const express = require('express');
 const router  = express.Router();
 const widgetsQueries  = require('../db/queries/widgets');
+const { route } = require('./users-api');
 
 router.post('/favourites', (req, res) => {
   const userId = req.session.userId;
@@ -46,6 +47,20 @@ router.post('/maps', (req, res) => {
         .status(500)
         .json({ error: err.message });
     });
+});
+
+router.post('/points', (req, res) => {
+  const userId = req.session.userId;
+  widgetsQueries.addPoint({ ...req.body, contributor_id: userId })
+    .then(point => {
+      res.send(point);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+
 });
 
 
