@@ -18,6 +18,7 @@ CREATE TABLE maps (
   owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
   description TEXT,
   category VARCHAR(32) NOT NULL,
+  map_pins VARCHAR(255),
   is_private BOOLEAN NOT NULL DEFAULT false
 );
 
