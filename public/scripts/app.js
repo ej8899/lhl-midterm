@@ -8,16 +8,21 @@
 // Setup GLOBAL variables
 //
 
+// global vars for GOOGLE MAP API and other cached database info
+let map,mapBounds,mapMarkers,markersArray;
+const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 //
 // Initial setup/loading items
 //
 
 const main = function() {
-
-
   // default populate the map with map #1 data
   console.log(getPointsByMap(1));
+
+  let location = {lat: 50.9247482,lng:-113.9247482}
+  placeMarker(location,"city item","prov item"); // location is object lat: lng:
+  placeMarker({lat:45.75697,lng:-63.461582},"my city","prov");
 };
 main();
 
@@ -67,9 +72,18 @@ $(document).ready(function() {
   // load list of all maps available
   mapsList = getListofMaps();
   for (const map of mapsList) {
-    $("#value-list").append(`<li class="selectmap">${map}</li>`);
+    $("#map-sources").append(`<option value="${map}" class="selectmap">${map}</option>`);
+    //<option value="profile">Profile</option>
   }
   // TODO - now we have to call the map drop down process to refresh handlers on it
+
+
+  //
+  // select a map custom dropdown
+  // try this one: https://codepen.io/yy/pen/vOYqYV
+
+  // TODO drop down list needs a listener so we switch map data
+
 
 
 }); // END DOCUMENT READY
@@ -148,69 +162,3 @@ toggleDarkMode('check');
 
 
 
-//
-// select a map custom dropdown
-//
-const inputField = document.querySelector('.chosen-value');
-const dropdown = document.querySelector('.value-list');
-const dropdownArray = [... document.querySelectorAll('.selectmap')];
-//console.log(typeof dropdownArray)
-//dropdown.classList.add('open');
-let valueArray = [];
-dropdownArray.forEach(item => {
-  valueArray.push(item.textContent);
-});
-
-const closeDropdown = () => {
-  dropdown.classList.remove('open');
-}
-
-inputField.addEventListener('input', () => {
-  dropdown.classList.add('open');
-  let inputValue = inputField.value.toLowerCase();
-  let valueSubstring;
-  if (inputValue.length > 0) {
-    for (let j = 0; j < valueArray.length; j++) {
-      if (!(inputValue.substring(0, inputValue.length) === valueArray[j].substring(0, inputValue.length).toLowerCase())) {
-        dropdownArray[j].classList.add('closed');
-      } else {
-        dropdownArray[j].classList.remove('closed');
-      }
-    }
-  } else {
-    for (let i = 0; i < dropdownArray.length; i++) {
-      dropdownArray[i].classList.remove('closed');
-    }
-  }
-});
-
-dropdownArray.forEach(item => {
-  item.addEventListener('click', (evt) => {
-    inputField.value = item.textContent;
-    //alert(inputField.value)
-    dropdownArray.forEach(dropdown => {
-      dropdown.classList.add('closed');
-    });
-  });
-})
-
-inputField.addEventListener('focus', () => {
-   inputField.placeholder = 'Type to filter';
-   dropdown.classList.add('open');
-   dropdownArray.forEach(dropdown => {
-     dropdown.classList.remove('closed');
-   });
-});
-
-inputField.addEventListener('blur', () => {
-   inputField.placeholder = 'Select a Map...';
-  dropdown.classList.remove('open');
-});
-
-document.addEventListener('click', (evt) => {
-  const isDropdown = dropdown.contains(evt.target);
-  const isInput = inputField.contains(evt.target);
-  if (!isDropdown && !isInput) {
-    dropdown.classList.remove('open');
-  }
-});

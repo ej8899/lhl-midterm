@@ -1,9 +1,7 @@
 //
 //  google mapping of properties
 //
-// global vars for GOOGLE MAP API and other cached database info
-let map,mapBounds,mapMarkers,markersArray;
-const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
+
 
 // https://www.w3schools.com/graphics/google_maps_reference.asp
 // https://developers.google.com/maps/documentation/javascript/examples
@@ -37,6 +35,11 @@ window.initMap = initMap;
 //
 const placeMarker = function(location,city,prov) {
   // custom ICONS for map pins:
+  let iconDefault = {
+    path: "M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z",
+    strokeWeight: 0,
+    scale: 0.05,
+  };
   let iconCoffee = {
     path: "M88 0C74.7 0 64 10.7 64 24c0 38.9 23.4 59.4 39.1 73.1l1.1 1C120.5 112.3 128 119.9 128 136c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C119.5 47.7 112 40.1 112 24c0-13.3-10.7-24-24-24zM32 192c-17.7 0-32 14.3-32 32V416c0 53 43 96 96 96H288c53 0 96-43 96-96h16c61.9 0 112-50.1 112-112s-50.1-112-112-112H352 32zm352 64h16c26.5 0 48 21.5 48 48s-21.5 48-48 48H384V256zM224 24c0-13.3-10.7-24-24-24s-24 10.7-24 24c0 38.9 23.4 59.4 39.1 73.1l1.1 1C232.5 112.3 240 119.9 240 136c0 13.3 10.7 24 24 24s24-10.7 24-24c0-38.9-23.4-59.4-39.1-73.1l-1.1-1C231.5 47.7 224 40.1 224 24z",
     strokeWeight: 0,
@@ -73,6 +76,7 @@ const placeMarker = function(location,city,prov) {
   //
   //  check for existing marker here - if so, just return so we're not doing useless work, or burdening map displays
   //
+  /*
   for (let x = 0; x < markersArray.length; x++) {
     let tempString = JSON.stringify(markersArray[x].getPosition());
     if (tempString !== undefined) {
@@ -84,6 +88,7 @@ const placeMarker = function(location,city,prov) {
       }
     }
   }
+  */
 
   //
   // place marker code --  adds marker to passed in location
