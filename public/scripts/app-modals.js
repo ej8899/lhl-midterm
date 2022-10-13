@@ -22,13 +22,34 @@ const showLogin = () => {
         </div>
 
       <div class="login-form__field-wrapper">
-          <button class="button">Login</button>&nbsp;&nbsp;
-          <a id="login-form__cancel" class="button" href="#">Cancel</a>
+          <button class="button">Login</button>&nbsp;
+          <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
       </div>
     </form>
     `;
     toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Log In',data);
 }
+
+const showSignUp = () => {
+  let data = `SIGN UP FORM - give info WHY (custom maps)
+  <form id="login-form" class="login-form">
+      <div class="login-form__field-wrapper">
+        <input type="email" name="email" placeholder="Email">
+      </div>
+
+      <div class="login-form__field-wrapper">
+          <input type="password" name="password" placeholder="Password">
+        </div>
+
+      <div class="login-form__field-wrapper">
+          <button class="button">Login</button>&nbsp;
+          <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+      </div>
+    </form>
+    `;
+    toggleModal('<i class="fa-solid fa-users fa-xl"></i> Sign Up',data);
+}
+
 
 //
 // show "about" modal window

@@ -56,6 +56,9 @@ MapMyWiki is a joint effort between
 - Google Fonts, Google Maps API
 - Ajax
 - Node.js
+- PostgreSQL
+- SCSS (CSS)
+- ExpressJS
 - JQuery  
 [( back to top 🔺)](#lightbnb)
 ---  

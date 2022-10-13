@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Coffee Time - a LHL Mid-Term project</title>
+  <title>Map My Wiki - a LHL Mid-Term project</title>
 
   <meta charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
@@ -15,6 +15,7 @@
 
   <link rel="stylesheet" href="/styles/sliderswitch.css" />
   <link rel="stylesheet" href="/styles/tooltips.css" />
+  <link rel="stylesheet" href="/styles/mapselect.css" />
 
   <script src="/vendor/jquery-3.0.0.js"></script>
 
@@ -51,7 +52,7 @@
       <ul>
         <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
         <li class="login_button hoverbutton" onClick="showLogin();">Log In</li>
-        <li class="sign-up_button hoverbutton">Sign Up</li>
+        <li class="sign-up_button hoverbutton" onClick="showSignUp();">Sign Up</li>
 
         <li style="padding-left:20px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
 
@@ -62,8 +63,8 @@
 
   <div class="hero">
     <div class="hero-title-container">
-    <span class="hero-title">coffee shop wiki map</span>
-    <p class="hero-title__overlay" aria-hidden="true"></p>
+    <span class="hero-title">Map My Wiki</span>
+    <!-- <p class="hero-title__overlay" aria-hidden="true"></p>-->
     </div>
   </div>
   <div class="canvas-container">
@@ -71,14 +72,19 @@
   </div>
 
   <main id="main-content">
+    <!-- SELECT FORM BEGIN -->
+    <%- include("map-select.ejs") %><br clear="all">
+    <!-- SELECT FORM END -->
+
+
     <div id="map"></div>
     <div id="filtertoggle" class="filtertoggle"><div class="filtertoggleicon" id="filtertoggleicon"><i class="fa-solid fa-sliders fa-lg"></i> Search</div></div>
   </main>
 
   <footer class="pagefooter">
-    <i class="fa-solid fa-copyright"></i> 2022 Our Wiki Map -
+    <i class="fa-solid fa-copyright"></i> 2022 Map My Wiki -
     <a onClick="showPrivacyPolicy();" class="hoverbutton">Privacy Policy</a> |
-    <a onClick="showAbout();" class="hoverbutton">About Coffee Time</a> |
+    <a onClick="showAbout();" class="hoverbutton">About Map My Wiki</a> |
     <a onClick="showContact();" class="hoverbutton">Contact Us</a> |
   </footer>
   <script

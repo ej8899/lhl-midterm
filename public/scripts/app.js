@@ -5,12 +5,17 @@
 //
 
 //
+// Setup GLOBAL variables
+//
+
+
+//
 // Initial setup/loading items
 //
 
 const main = function() {
-  // load list of all maps available
-  console.log(getListofMaps());
+
+
   // default populate the map with map #1 data
   console.log(getPointsByMap(1));
 };
@@ -47,8 +52,28 @@ $(document).ready(function() {
     }
   });
 
+  // handle map select drop down
+  $('.dropdown-el').click(function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $(this).toggleClass('expanded');
+    $('#'+$(e.target).attr('for')).prop('checked',true);
+  });
+  $(document).click(function() {
+    $('.dropdown-el').removeClass('expanded');
+  });
+
+  // populate map drop down list
+  // load list of all maps available
+  mapsList = getListofMaps();
+  for (const map of mapsList) {
+    $("#value-list").append(`<li class="selectmap">${map}</li>`);
+  }
+  // TODO - now we have to call the map drop down process to refresh handlers on it
+
 
 }); // END DOCUMENT READY
+
 
 
 
@@ -118,3 +143,74 @@ const toggleDarkMode = function(option) {
   }
 };
 toggleDarkMode('check');
+
+
+
+
+
+//
+// select a map custom dropdown
+//
+const inputField = document.querySelector('.chosen-value');
+const dropdown = document.querySelector('.value-list');
+const dropdownArray = [... document.querySelectorAll('.selectmap')];
+//console.log(typeof dropdownArray)
+//dropdown.classList.add('open');
+let valueArray = [];
+dropdownArray.forEach(item => {
+  valueArray.push(item.textContent);
+});
+
+const closeDropdown = () => {
+  dropdown.classList.remove('open');
+}
+
+inputField.addEventListener('input', () => {
+  dropdown.classList.add('open');
+  let inputValue = inputField.value.toLowerCase();
+  let valueSubstring;
+  if (inputValue.length > 0) {
+    for (let j = 0; j < valueArray.length; j++) {
+      if (!(inputValue.substring(0, inputValue.length) === valueArray[j].substring(0, inputValue.length).toLowerCase())) {
+        dropdownArray[j].classList.add('closed');
+      } else {
+        dropdownArray[j].classList.remove('closed');
+      }
+    }
+  } else {
+    for (let i = 0; i < dropdownArray.length; i++) {
+      dropdownArray[i].classList.remove('closed');
+    }
+  }
+});
+
+dropdownArray.forEach(item => {
+  item.addEventListener('click', (evt) => {
+    inputField.value = item.textContent;
+    //alert(inputField.value)
+    dropdownArray.forEach(dropdown => {
+      dropdown.classList.add('closed');
+    });
+  });
+})
+
+inputField.addEventListener('focus', () => {
+   inputField.placeholder = 'Type to filter';
+   dropdown.classList.add('open');
+   dropdownArray.forEach(dropdown => {
+     dropdown.classList.remove('closed');
+   });
+});
+
+inputField.addEventListener('blur', () => {
+   inputField.placeholder = 'Select a Map...';
+  dropdown.classList.remove('open');
+});
+
+document.addEventListener('click', (evt) => {
+  const isDropdown = dropdown.contains(evt.target);
+  const isInput = inputField.contains(evt.target);
+  if (!isDropdown && !isInput) {
+    dropdown.classList.remove('open');
+  }
+});
