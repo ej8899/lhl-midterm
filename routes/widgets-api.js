@@ -21,4 +21,17 @@ router.get('/maps', (req, res) => {
     });
 });
 
+router.post('/maps', (req, res) => {
+  const userId = req.session.userId;
+  widgetsQueries.addMap({ ...req.body, owner_id: userId })
+    .then(map => {
+      res.send(map);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 module.exports = router;
