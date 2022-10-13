@@ -31,6 +31,10 @@ const addMap = (map) => {
   `, queryValues, result => result.rows);
 };
 
+const getPointsWithMapId = (id) => {
+  return query('SELECT * FROM points WHERE map_id = $1;', [id], result => result.rows);
+};
+
 const addPoint = (point) => {
   const queryValues = [
     point.title,
@@ -53,6 +57,7 @@ const addPoint = (point) => {
 module.exports = {
   addFavourite,
   getMapsWithOwnerId,
+  getPointsWithMapId,
   addMap,
   addPoint,
 };

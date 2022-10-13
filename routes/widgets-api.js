@@ -9,6 +9,7 @@ const express = require('express');
 const router  = express.Router();
 const widgetsQueries  = require('../db/queries/widgets');
 
+// favourites
 router.post('/favourites', (req, res) => {
   const userId = req.session.userId;
   const { map_id } = req.body;
@@ -23,6 +24,7 @@ router.post('/favourites', (req, res) => {
   });
 });
 
+// maps
 router.get('/maps', (req, res) => {
   const { userId } = req.session;
   widgetsQueries.getMapsWithOwnerId(userId)
@@ -41,6 +43,20 @@ router.post('/maps', (req, res) => {
   widgetsQueries.addMap({ ...req.body, owner_id: userId })
     .then(map => {
       res.send(map);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
+// points
+router.get('/points', (req, res) => {
+  const { mapId } = req.query;
+  widgetsQueries.getPointsWithMapId(mapId)
+    .then(points => {
+      res.json({ points });
     })
     .catch(err => {
       res
