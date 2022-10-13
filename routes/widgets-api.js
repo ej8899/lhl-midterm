@@ -7,15 +7,12 @@
 
 const express = require('express');
 const router  = express.Router();
-const db = require('../db/connection');
+const widgetsQueries  = require('../db/queries/widgets');
 
-router.get('/', (req, res) => {
-  const query = `SELECT * FROM widgets`;
-  console.log(query);
-  db.query(query)
-    .then(data => {
-      const widgets = data.rows;
-      res.json({ widgets });
+router.get('/maps', (req, res) => {
+  widgetsQueries.getMaps()
+    .then(maps => {
+      res.json({ maps });
     })
     .catch(err => {
       res
