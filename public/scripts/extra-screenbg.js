@@ -1,6 +1,6 @@
 const heroTitle = document.querySelector('.hero-title');
-const heroTitleOverlay = document.querySelector('.hero-title__overlay');
-heroTitleOverlay.innerText = heroTitle.textContent;
+//const heroTitleOverlay = document.querySelector('.hero-title__overlay');
+//heroTitleOverlay.innerText = heroTitle.textContent;
 
 
 let c = document.getElementById('canv');
