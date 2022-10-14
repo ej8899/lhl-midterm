@@ -8,6 +8,7 @@
 const express = require('express');
 const router  = express.Router();
 const userQueries = require('../db/queries/users');
+const bcrypt = require('bcrypt');
 
 router.get('/', (req, res) => {
   userQueries.getUsers()
@@ -19,6 +20,24 @@ router.get('/', (req, res) => {
         .status(500)
         .json({ error: err.message });
     });
+});
+
+router.post('/', (req, res) => {
+  const user = req.body;
+  user.password = bcrypt.hashSync(user.password, 12);
+  userQueries.addUser(user)
+  .then(user => {
+    if (!user) {
+      res.send({error: "error"});
+      return;
+    }
+    req.session.userId = user.id;
+  })
+  .catch(err => {
+    res
+      .status(500)
+      .json({ error:err.message});
+  });
 });
 
 module.exports = router;
