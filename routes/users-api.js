@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
  * @param {String} email
  * @param {String} password encrypted
  */
-const login = function(email, password) {
+const login =(email, password) => {
   return userQueries.getUserWithEmail(email)
   .then(user => {
     if (bcrypt.compareSync(password, user.password)) {
@@ -44,7 +44,7 @@ router.post('/login', (req, res) => {
   login(email, password)
     .then(user => {
       if (!user) {
-        res.send({error: "error"});
+        res.send({ error: "error" });
         return;
       }
       req.session.userId = user.id;
@@ -57,6 +57,12 @@ router.post('/login', (req, res) => {
     });
   });
 
+// logout
+router.post('/logout', (req, res) => {
+  req.session.userId = null;
+  res.send({});
+});
+
 // create a new user
 router.post('/', (req, res) => {
   const user = req.body;
@@ -64,7 +70,7 @@ router.post('/', (req, res) => {
   userQueries.addUser(user)
   .then(user => {
     if (!user) {
-      res.send({error: "error"});
+      res.send({ error: "error" });
       return;
     }
     req.session.userId = user.id;
