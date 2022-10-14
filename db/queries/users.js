@@ -1,6 +1,15 @@
 const query = require('../connection');
 
 /**
+ * Get a user from the database give id.
+ * @param {string} id
+ * @return {Promise<{}>} A promise to the user.
+ */
+const getUserWithId = (id) => {
+  return query('SELECT * FROM users WHERE id = $1;', [id], result => result.rows[0]);
+};
+
+/**
  * Get a user from the database give email.
  * @param {string} email
  * @return {Promise<{}>} A promise to the user.
@@ -20,6 +29,7 @@ const getUserWithEmail = (email) => {
 }
 
 module.exports = {
+  getUserWithId,
   getUserWithEmail,
   addUser,
 };

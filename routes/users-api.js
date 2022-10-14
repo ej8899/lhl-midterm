@@ -10,10 +10,11 @@ const router  = express.Router();
 const userQueries = require('../db/queries/users');
 const bcrypt = require('bcrypt');
 
-router.get('/', (req, res) => {
-  userQueries.getUsers()
-    .then(users => {
-      res.json({ users });
+router.get('/me', (req, res) => {
+  const { userId } = req.session;
+  userQueries.getUserWithId(userId)
+    .then(user => {
+      res.json({ user });
     })
     .catch(err => {
       res
@@ -39,8 +40,7 @@ const login =(email, password) => {
 
 // login
 router.post('/login', (req, res) => {
-  // const {email, password} = req.body;
-  const {email, password} = {email:'at@example.com' ,password: 'password'};
+  const {email, password} = req.body;
   login(email, password)
     .then(user => {
       if (!user) {
