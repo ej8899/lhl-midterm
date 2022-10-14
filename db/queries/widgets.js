@@ -1,22 +1,5 @@
 const query = require('../connection');
 
-
-// favourites
-
-/**
- * Add a favourite to the database.
- * @param {{}}} user_id, map_id.
- * @return {Promise<{}>} A promise to the property.
- */
-const addFavourite = (favourite) => {
-  const queryValues = [
-    favourite.map_id,
-    favourite.user_id,
-  ];
-
-  return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows);
-};
-
 // maps
 
 /**
@@ -94,11 +77,27 @@ const addPoint = (point) => {
   `, queryValues, result => result.rows);
 };
 
+// favourites
+
+/**
+ * Add a favourite to the database.
+ * @param {{}}} user_id, map_id.
+ * @return {Promise<{}>} A promise to the property.
+ */
+ const addFavourite = (favourite) => {
+  const queryValues = [
+    favourite.map_id,
+    favourite.user_id,
+  ];
+
+  return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows);
+};
+
 module.exports = {
-  addFavourite,
   getMapsWithOwnerId,
   getPointsWithMapId,
   getAllNoPrivateMaps,
   addMap,
   addPoint,
+  addFavourite,
 };
