@@ -26,6 +26,11 @@ const initMap = function() {
 
   map = new google.maps.Map(document.getElementById("map"), mapProp);
   mapBounds = new google.maps.LatLngBounds();
+
+  // general MAPS click event handler
+  google.maps.event.addListener(map, 'click', function( event ){
+    alert( "Latitude: "+event.latLng.lat()+" "+", longitude: "+event.latLng.lng() );
+  });
 };
 
 window.initMap = initMap;
