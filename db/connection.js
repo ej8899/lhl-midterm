@@ -9,8 +9,17 @@ const dbParams = {
   database: process.env.DB_NAME
 };
 
-const db = new Pool(dbParams);
+const pool = new Pool(dbParams);
 
-db.connect();
+const query = (text, params, callback) => {
+  const start = Date.now();
+  return pool.query(text, params)
+  .then(result => {
+    const duration = Date.now() - start;
+    console.log('executed query', { text, duration, params, rows: result.rowCount });
+    return callback(result);
+  })
+  .catch(err => console.log(err.message));
+};
 
-module.exports = db;
+module.exports = query;

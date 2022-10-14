@@ -14,7 +14,7 @@ INSERT INTO users (name, email, password) VALUES ('Iva Harrison', 'allisonjackso
 INSERT INTO users (name, email, password) VALUES ('Lloyd Jefferson', 'asherpoole@gmx.com', '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.');
 
 INSERT INTO maps (name, owner_id, description, category, map_pins, is_private) VALUES ('Fine cafes', 1, 'Fine cafes near my office', 'Cafe', '', true);
-INSERT INTO maps (name, owner_id, description, category, map_pins, is_private) VALUES ('Best fishing spots', 1, 'Fishing for fun Club', 'Fishing', '', true);
+INSERT INTO maps (name, owner_id, description, category, map_pins, is_private) VALUES ('Best fishing spots', 1, 'Fishing for fun Club', 'Fishing', '', false);
 INSERT INTO maps (name, owner_id, description, category, map_pins, is_private) VALUES ('Instagrammable spots', 2, 'Most nstagrammable places in Vancouver', 'Photos', '', false);
 
 INSERT INTO points (title, map_id, contributor_id, description, image_url, latitude, longitude) VALUES ('Starbucks', 1, 1, 'It is a great place to meet people.', 'https://res.cloudinary.com/dliugwbpa/image/upload/v1665597771/samples/food/dessert.jpg', 51.048418, -114.066993);

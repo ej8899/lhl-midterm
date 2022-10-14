@@ -8,3 +8,5 @@ public/styles
 # macOS files:
 .DS_Store
 
+# nodenv
+.node-version
