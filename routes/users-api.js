@@ -40,7 +40,7 @@ const login =(email, password) => {
 
 // login
 router.post('/login', (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
   login(email, password)
     .then(user => {
       if (!user) {
@@ -55,7 +55,7 @@ router.post('/login', (req, res) => {
         .status(500)
         .json({ error:err.message});
     });
-  });
+});
 
 // logout
 router.post('/logout', (req, res) => {
@@ -74,6 +74,7 @@ router.post('/', (req, res) => {
       return;
     }
     req.session.userId = user.id;
+    res.send({user: {name: user.name, email: user.email, id: user.id}});
   })
   .catch(err => {
     res
