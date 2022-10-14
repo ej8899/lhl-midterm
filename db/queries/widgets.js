@@ -53,7 +53,7 @@ const addPoint = (point) => {
   return query(`
   INSERT INTO points
   (title, map_id, contributor_id, description, image_url, latitude, longitude)
-  VALUES ($1, $2, $3, $4, $5, $6, &7)
+  VALUES ($1, $2, $3, $4, $5, CAST($6 AS DECIMAL), CAST($7 AS DECIMAL))
   RETURNING *;
   `, queryValues, result => result.rows);
 };
