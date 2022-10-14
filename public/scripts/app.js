@@ -7,10 +7,14 @@
 //
 // Setup GLOBAL variables
 //
+let currentMap = 1; // what is the current map ID being viewed?
+let currentUID = 0; // what is the current USER ID (0 not logged in, else db user id)
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
+
+
 
 //
 // Initial setup/loading items
@@ -79,7 +83,7 @@ $(document).ready(function() {
   // or https://codepen.io/udyux/pen/KzJQea
 
   // TODO drop down list needs a listener so we switch map data
-
+  mapSelectHandler();
 
   // default populate the map with map #1 data
   console.log(getPointsByMap(1));
@@ -184,3 +188,41 @@ toggleDarkMode('check');
 
 
 
+const mapSelectHandler = function() {
+  $(".custom-select").each(function() {
+    let classes = $(this).attr("class"),
+        id      = $(this).attr("id"),
+        name    = $(this).attr("name");
+    let template =  '<div class="' + classes + '">';
+        template += '<span class="custom-select-trigger">' + $(this).attr("placeholder") + '</span>';
+        template += '<div class="custom-options">';
+        $(this).find("option").each(function() {
+          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + $(this).html() + '</span>';
+        });
+    template += '</div></div>';
+
+    $(this).wrap('<div class="custom-select-wrapper"></div>');
+    $(this).hide();
+    $(this).after(template);
+  });
+  $(".custom-option:first-of-type").hover(function() {
+    $(this).parents(".custom-options").addClass("option-hover");
+  }, function() {
+    $(this).parents(".custom-options").removeClass("option-hover");
+  });
+  $(".custom-select-trigger").on("click", function() {
+    $('html').one('click',function() {
+      $(".custom-select").removeClass("opened");
+    });
+    $(this).parents(".custom-select").toggleClass("opened");
+    event.stopPropagation();
+  });
+  $(".custom-option").on("click", function() {
+    $(this).parents(".custom-select-wrapper").find("select").val($(this).data("value"));
+    $(this).parents(".custom-options").find(".custom-option").removeClass("selection");
+    $(this).addClass("selection");
+    $(this).parents(".custom-select").removeClass("opened");
+    $(this).parents(".custom-select").find(".custom-select-trigger").text($(this).text());
+    //alert($("#map-sources").val());
+  });
+}

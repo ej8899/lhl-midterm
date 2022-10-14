@@ -9,6 +9,55 @@ const showPrivacyPolicy = () => {
   toggleModal('<i class="fa-solid fa-lock fa-xl"></i> Privacy Policy',privacyPolicy);
 };
 
+//
+//  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
+//
+const newPin = function(lat,lng) {
+  // TODO - need input form for new map point
+  let content = `For your pin at ${lat}, ${lng}
+  <form action="/api/newpin" method="post" id="new-property-form" class="new-property-form">
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__title">Title</label>
+    <input type="text" name="title" placeholder="Title" id="new-property-form__title">
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__description">Description</label>
+    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="10"></textarea>
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__image">Image URL</label>
+    <input type="text" name="imageurl" placeholder="image url" id="new-property-form__imageurl">
+  </div>
+
+  <div class="login-form__field-wrapper">
+    <button class="button">Add Location</button>&nbsp;
+    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+  </div>
+  </form>
+  `;
+  toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> New Pin',content);
+  $newPropertyForm.on('submit', function (event) {
+    event.preventDefault();
+    const data = $(this).serialize();
+    // TODO - add map ID and submitter ID to the data
+    /*
+    submitProperty(data)
+      .then(() => {
+        toggleModal(`Got It!`,`<BR>We'll review your property listing and once approved, make it live on LightBnB!<BR>&nbsp;`);
+        views_manager.show('listings');
+
+      })
+      .catch((error) => {
+        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${error}`);
+        console.error(error);
+        views_manager.show('listings');
+      });
+    */
+  });
+};
+
 
 const showLogin = () => {
   let data = `
@@ -42,7 +91,7 @@ const showSignUp = () => {
         </div>
 
       <div class="login-form__field-wrapper">
-          <button class="button">Login</button>&nbsp;
+          <button class="button">Register</button>&nbsp;
           <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
       </div>
     </form>

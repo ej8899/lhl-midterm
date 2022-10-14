@@ -19,7 +19,8 @@ const initMap = function() {
   let mapProp = {                                     // setup initial map display
     center:new google.maps.LatLng(53.5, -104.0),      // center of (roughly canada centered)
     zoom:13,
-    mapTypeControlOptions: { mapTypeIds: [] },
+    mapTypeControl: true,
+    //mapTypeControlOptions: { mapTypeIds: ['ROADMAP','SATELLITE','HYBRID'] },
     streetViewControl: false,
     fullscreenControl: false,
   };
@@ -29,7 +30,8 @@ const initMap = function() {
 
   // general MAPS click event handler
   google.maps.event.addListener(map, 'click', function( event ){
-    alert( "Latitude: "+event.latLng.lat()+" "+", longitude: "+event.latLng.lng() );
+    //alert( "Latitude: "+event.latLng.lat()+" "+", longitude: "+event.latLng.lng() );
+    newPin(event.latLng.lat(),event.latLng.lng());
   });
 };
 
