@@ -4,10 +4,16 @@ require('dotenv').config();
 // Web server config
 const sassMiddleware = require('./lib/sass-middleware');
 const express = require('express');
+const cookieSession = require('cookie-session');
 const morgan = require('morgan');
 
 const PORT = process.env.PORT || 8080;
 const app = express();
+
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1']
+}));
 
 app.set('view engine', 'ejs');
 
