@@ -18,7 +18,7 @@ const initMap = function() {
 
   let mapProp = {                                     // setup initial map display
     center:new google.maps.LatLng(53.5, -104.0),      // center of (roughly canada centered)
-    zoom:4,
+    zoom:13,
     mapTypeControlOptions: { mapTypeIds: [] },
     streetViewControl: false,
     fullscreenControl: false,
@@ -63,12 +63,12 @@ const placeMarker = function(location,city,prov) {
     scale: 0.05,
   };
   let icon = {
-    ...iconBase,
+    ...iconDefault,
     fillColor: '#CA4246',
-    fillOpacity: 0.8,
+    fillOpacity: 1.0,
   };
   let iconDark = {
-    ...iconBase,
+    ...iconDefault,
     fillColor: '#505050',
     fillOpacity: 1.0,
   };
@@ -76,7 +76,6 @@ const placeMarker = function(location,city,prov) {
   //
   //  check for existing marker here - if so, just return so we're not doing useless work, or burdening map displays
   //
-  /*
   for (let x = 0; x < markersArray.length; x++) {
     let tempString = JSON.stringify(markersArray[x].getPosition());
     if (tempString !== undefined) {
@@ -88,7 +87,7 @@ const placeMarker = function(location,city,prov) {
       }
     }
   }
-  */
+
 
   //
   // place marker code --  adds marker to passed in location
@@ -99,7 +98,7 @@ const placeMarker = function(location,city,prov) {
     animation: google.maps.Animation.DROP,
     icon: icon,
     //title: city, // title is default for maps hover/tooltip tag - don't use it to keep the hover tooltip "off"
-    mytitle: city, // we can use our own defined options like this one
+    itemTitle: city, // we can use our own defined options like this one
     myprov: prov,
   });
   markersArray.push(marker);        //adds new marker to the markers array
@@ -114,56 +113,37 @@ const placeMarker = function(location,city,prov) {
   // add info window for each marker:
   //
 
-  /*
-  // get total count of properties per city
-  let tempCount;
-  getCountbyCity(city)
-    .then(function(json) {
-      tempCount = JSON.parse(JSON.stringify(json.properties.count));
-      //console.log('count for ' + city + ':' + tempCount);
-    })
-    .catch((error) => {
-      console.log('error occured: ' + error.message);
-    })
-    .then(() => { // "always" component of then.catch.promises
-      const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city} - ${tempCount} listings.</B><Br><small> click or tap to search this city</small></div></div>`;
-      // more on infoWindow here: https://developers.google.com/maps/documentation/javascript/infowindows
-      const infoWindow = new google.maps.InfoWindow({
-        content: infoWindowData,
-      });
+  const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city} listings.</B><Br><small> click or tap to search this city</small></div></div>`;
+  // more on infoWindow here: https://developers.google.com/maps/documentation/javascript/infowindows
+  const infoWindow = new google.maps.InfoWindow({
+    content: infoWindowData,
+  });
 
-      //  MOUSE OVER MARKER handler - adds and removes styles as necessary
-      marker.addListener('mouseover', function() {
-        //console.log(tempCount)
-        this.setIcon(iconDark);
-        infoWindow.open(map, this);
-        let iwContainer = $(".gm-style-iw").parent();
-        iwContainer.stop().hide();
-        iwContainer.fadeIn(500);
-      });
+  //  MOUSE OVER MARKER handler - adds and removes styles as necessary
+  marker.addListener('mouseover', function() {
+    //console.log(tempCount)
+    this.setIcon(iconDark);
+    infoWindow.open(map, this);
+    let iwContainer = $(".gm-style-iw").parent();
+    iwContainer.stop().hide();
+    iwContainer.fadeIn(500);
+  });
 
-      // mouse OUT of MARKER handler
-      marker.addListener('mouseout', function() {
-        this.setIcon(icon);
-        infoWindow.close();
-      });
+  // mouse OUT of MARKER handler
+  marker.addListener('mouseout', function() {
+    this.setIcon(icon);
+    infoWindow.close();
+  });
 
-      //
-      // LEFT BUTTON CLICK listener on each MARKER
-      //
-      google.maps.event.addListener(marker, 'click', function() {
-        //let citysearch = this.getTitle(); // this is a built in getter for marker object title element
-        let citysearch = this.get('mytitle'); // we can do this get get our own marker object items
-        let theprov = this.get('myprov');
-        googlePlaceSearch(citysearch,theprov);
-        getAllListings(`city=${citysearch}`)
-          .then(function(json) {
-            propertyListings.addProperties(json.properties);
-            views_manager.show('listings');
-          });
-      });
-    });
-    */
+  //
+  // LEFT BUTTON CLICK listener on each MARKER
+  //
+  google.maps.event.addListener(marker, 'click', function() {
+    //let citysearch = this.getTitle(); // this is a built in getter for marker object title element
+    let itemTitle = this.get('itemTitle');
+    toggleModal('modal window for map item',itemTitle);
+  });
+
 };
 
 
@@ -177,4 +157,10 @@ const clearMapMarkers = function() {
   markersArray.length = 0;
 };
 
-
+//
+// mapMoveToLocation = function(lat,long)
+//
+const mapMoveToLocation = function(lat,lng) {
+  const center = new google.maps.LatLng(lat, lng);
+  map.panTo(center);
+}

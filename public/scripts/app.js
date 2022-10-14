@@ -17,12 +17,7 @@ const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 //
 
 const main = function() {
-  // default populate the map with map #1 data
-  console.log(getPointsByMap(1));
 
-  let location = {lat: 50.9247482,lng:-113.9247482}
-  placeMarker(location,"city item","prov item"); // location is object lat: lng:
-  placeMarker({lat:45.75697,lng:-63.461582},"my city","prov");
 };
 main();
 
@@ -81,11 +76,38 @@ $(document).ready(function() {
   //
   // select a map custom dropdown
   // try this one: https://codepen.io/yy/pen/vOYqYV
+  // or https://codepen.io/udyux/pen/KzJQea
 
   // TODO drop down list needs a listener so we switch map data
 
 
+  // default populate the map with map #1 data
+  console.log(getPointsByMap(1));
 
+
+  placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
+  placeMarker({lat:50.923823,lng:-113.932970},"tims","prov item"); // location is object lat: lng:
+
+
+  // get user position so we can center the  map
+  let getPosition = {
+    enableHighAccuracy: false,
+    timeout: 9000,
+    maximumAge: 0
+  };
+
+  function success(gotPosition) {
+    let uLat = gotPosition.coords.latitude;
+    let uLon = gotPosition.coords.longitude;
+    console.log(`${uLat}`, `${uLon}`);
+    mapMoveToLocation(uLat,uLon);
+  };
+
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+
+  navigator.geolocation.getCurrentPosition(success, error, getPosition);
 }); // END DOCUMENT READY
 
 

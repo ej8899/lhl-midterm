@@ -72,6 +72,7 @@ const showContact = () => {
   let privacyPolicy = `
   insert contact us links here - linked in links with icons?<BR>
   Ernie Johnson - <a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a>
+  Atsuyuki - https://www.linkedin.com/in/atsuyuki/
   `;
   toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Contact Us',privacyPolicy);
 };
