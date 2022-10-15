@@ -40,7 +40,7 @@ window.initMap = initMap;
 //
 // placeMarker(location,city,province) where location is object of lat/lng for maps API
 //
-const placeMarker = function(location,city,prov) {
+const placeMarker = function(location,city,prov,itemObjectNumber) {
   // custom ICONS for map pins:
   let iconDefault = {
     path: "M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z",
@@ -107,6 +107,7 @@ const placeMarker = function(location,city,prov) {
     //title: city, // title is default for maps hover/tooltip tag - don't use it to keep the hover tooltip "off"
     itemTitle: city, // we can use our own defined options like this one
     myprov: prov,
+    myitemnumber: itemObjectNumber,
   });
   markersArray.push(marker);        //adds new marker to the markers array
   mapBounds.extend(marker.position);
@@ -120,7 +121,7 @@ const placeMarker = function(location,city,prov) {
   // add info window for each marker:
   //
 
-  const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city} listings.</B><Br><small> click or tap to search this city</small></div></div>`;
+  const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city}.</B><Br><small> click or tap to view details</small></div></div>`;
   // more on infoWindow here: https://developers.google.com/maps/documentation/javascript/infowindows
   const infoWindow = new google.maps.InfoWindow({
     content: infoWindowData,
@@ -146,9 +147,17 @@ const placeMarker = function(location,city,prov) {
   // LEFT BUTTON CLICK listener on each MARKER
   //
   google.maps.event.addListener(marker, 'click', function() {
-    //let citysearch = this.getTitle(); // this is a built in getter for marker object title element
+    let pointNumber = this.get('myitemnumber');
     let itemTitle = this.get('itemTitle');
-    toggleModal('modal window for map item',itemTitle);
+
+    let itemDescription = `
+      ${mapsPointsObject[pointNumber].description}<BR><BR clear=all>
+      <section class="property-listing__preview-image">
+      <img src="${mapsPointsObject[pointNumber].image_url}" alt="${itemTitle}" class="imgthumb">
+      </section>
+    `;
+
+    toggleModal(itemTitle,itemDescription);
   });
 
 };
@@ -168,6 +177,23 @@ const clearMapMarkers = function() {
 // mapMoveToLocation = function(lat,long)
 //
 const mapMoveToLocation = function(lat,lng) {
+  console.log("MOVING MAP: ",lat,lng)
   const center = new google.maps.LatLng(lat, lng);
   map.panTo(center);
+}
+
+
+
+//
+// resetMapData(mapID)
+//
+const resetMapData = function(mapID) {
+  clearMapMarkers();
+  getPointsByMap(mapID);
+  // plot points
+  //placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
+  for (const key in mapsPointsObject) {
+    placeMarker({lat:key.latitude,lng:key.longitude},key.title,key.description);
+  }
+  // reset zoom level
 }

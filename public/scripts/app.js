@@ -8,36 +8,51 @@
 // Setup GLOBAL variables
 //
 let currentMap = 1; // what is the current map ID being viewed?
-let currentUID = 1; // what is the current USER ID (0 not logged in, else db user id)
+let currentUID = 0; // what is the current USER ID (0 not logged in, else db user id)
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 // GLOBAL cached DB query data
-let mapsList, mapsListObject;
+let mapsList, mapsListObject, mapsPointsObject;
 
 
 
 //
 // Initial setup/loading items
 //
-
 const main = function() {
-  getListofMaps();
+  // get user position so we can center the  map
+  let getPosition = {
+    enableHighAccuracy: false,
+    timeout: 9000,
+    maximumAge: 0
+  };
+  function success(gotPosition) {
+    let uLat = gotPosition.coords.latitude;
+    let uLon = gotPosition.coords.longitude;
+    console.log(`${uLat}`, `${uLon}`);
+    mapMoveToLocation(uLat,uLon);
+  };
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+  navigator.geolocation.getCurrentPosition(success, error, getPosition);
+
+
+
 };
 main();
 
 
 //
-// Any actions for Document Ready processing
+// actions for Document Ready loading
 //
 $(document).ready(function() {
+  updateNav();
+  getListofMaps();
 
-  // setup for SEARCH modal button
-  $('#filtertoggleicon').click(function() {
-    // main search & filter button
-  });
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
@@ -73,55 +88,35 @@ $(document).ready(function() {
   // populate map drop down list
   // load list of all maps available
   // TODO need this as separate function to REFRESH on map list change
-  console.log("MAPSLIST: ",mapsList)
-  let x = 0;
-  for (const map of mapsList) {
-    $("#map-sources").append(`<option value="${x}" class="selectmap">${map}</option>`);
-    x ++;
-    //<option value="profile">Profile</option>
-  }
   // TODO - now we have to call the map drop down process to refresh handlers on it
-
-
-  //
-  // select a map custom dropdown
-  // try this one: https://codepen.io/yy/pen/vOYqYV
-  // or https://codepen.io/udyux/pen/KzJQea
-
   // TODO drop down list needs a listener so we switch map data
-  mapSelectHandler();
-
-  // default populate the map with map #1 data
-  console.log(getPointsByMap(1));
 
 
-  placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
-  placeMarker({lat:50.923823,lng:-113.932970},"tims","prov item"); // location is object lat: lng:
 
 
-  // get user position so we can center the  map
-  let getPosition = {
-    enableHighAccuracy: false,
-    timeout: 9000,
-    maximumAge: 0
-  };
-  function success(gotPosition) {
-    let uLat = gotPosition.coords.latitude;
-    let uLon = gotPosition.coords.longitude;
-    console.log(`${uLat}`, `${uLon}`);
-    mapMoveToLocation(uLat,uLon);
-  };
-  function error(err) {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  };
-  navigator.geolocation.getCurrentPosition(success, error, getPosition);
 
 
 }); // END DOCUMENT READY
 
 
+//
+// checkImage()
+// check if image is valid at detination URL - if not, use a built in "missing image" to prevent broken image link
+//
+const checkImage = (url,id) => {
+  let image = new Image();
 
-
+  image.onload = () => { // image DOES exist
+    if (this.width > 0) {
+      // unhide each id if we setup for lazy load of images
+    }
+  };
+  image.onerror = () => { // image does NOT exist
+    //let listid = "#listingid" + id;
+    //$(listid).attr("src","./images/missingimage.png");
+  };
+  image.src = url; // NOTE: set SRC after the onload event: https://stackoverflow.com/questions/7434371/image-onload-function-with-return
+};
 
 
 //
@@ -234,7 +229,44 @@ const mapSelectHandler = function() {
       newMapModal();
       return;
     }
-    $("#aboutmap").text(mapsListObject[mapChangeID].description);
+    //getPointsByMap(mapChangeID);
+    getPointsByMap(mapChangeID);
+    //$("#aboutmap").text(mapsListObject[mapChangeID].description);
     // DEBUG console.log(mapsListObject[mapChangeID].description);
   });
+}
+
+
+const updateNav = function(user) {
+  // update the nav bar if logged in or not
+  const $pageHeader = $('#page-navbar');
+  $pageHeader.find("#navbar-userlinks").remove();
+    let userLinks;
+
+    if (!user) {
+      userLinks = `
+      <nav id="navbar-userlinks" class="page-header__user-links">
+        <ul>
+          <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
+          <li class="login_button hoverbutton" onClick="showLogin();">Log In</li>
+          <li class="sign-up_button hoverbutton" onClick="showSignUp();">Sign Up</li>
+          <li style="padding-left:20px"><a href="https://github.com/ej8899/midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+
+          <li class="tooltip expand" data-title="check us out on linkedin"><div class="switchcontainer"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
+        </ul>
+      </nav>
+      `
+    } else {
+      userLinks = `
+      <nav id="navbar-userlinks" class="page-header__user-links">
+        <ul>
+          <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
+          <li class="logout_button hoverbutton" onClick="logOut();updateNav();">Log Out ( ${user.name} )</li>
+          <li style="padding-left:20px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+          <li><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
+        </ul>
+      </nav>
+      `
+    }
+    $pageHeader.append(userLinks);
 }
