@@ -8,11 +8,14 @@
 // Setup GLOBAL variables
 //
 let currentMap = 1; // what is the current map ID being viewed?
-let currentUID = 0; // what is the current USER ID (0 not logged in, else db user id)
+let currentUID = 1; // what is the current USER ID (0 not logged in, else db user id)
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
+
+// GLOBAL cached DB query data
+let mapsList, mapsListObject;
 
 
 
@@ -21,7 +24,7 @@ const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 //
 
 const main = function() {
-
+  getListofMaps();
 };
 main();
 
@@ -69,9 +72,12 @@ $(document).ready(function() {
 
   // populate map drop down list
   // load list of all maps available
-  mapsList = getListofMaps();
+  // TODO need this as separate function to REFRESH on map list change
+  console.log("MAPSLIST: ",mapsList)
+  let x = 0;
   for (const map of mapsList) {
-    $("#map-sources").append(`<option value="${map}" class="selectmap">${map}</option>`);
+    $("#map-sources").append(`<option value="${x}" class="selectmap">${map}</option>`);
+    x ++;
     //<option value="profile">Profile</option>
   }
   // TODO - now we have to call the map drop down process to refresh handlers on it
@@ -99,19 +105,18 @@ $(document).ready(function() {
     timeout: 9000,
     maximumAge: 0
   };
-
   function success(gotPosition) {
     let uLat = gotPosition.coords.latitude;
     let uLon = gotPosition.coords.longitude;
     console.log(`${uLat}`, `${uLon}`);
     mapMoveToLocation(uLat,uLon);
   };
-
   function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
-
   navigator.geolocation.getCurrentPosition(success, error, getPosition);
+
+
 }); // END DOCUMENT READY
 
 
@@ -223,6 +228,13 @@ const mapSelectHandler = function() {
     $(this).addClass("selection");
     $(this).parents(".custom-select").removeClass("opened");
     $(this).parents(".custom-select").find(".custom-select-trigger").text($(this).text());
-    //alert($("#map-sources").val());
+    let mapChangeID = $("#map-sources").val();
+    console.log("MAP CHANGE:",mapChangeID);
+    if(mapChangeID === "newmap") {
+      newMapModal();
+      return;
+    }
+    $("#aboutmap").text(mapsListObject[mapChangeID].description);
+    // DEBUG console.log(mapsListObject[mapChangeID].description);
   });
 }

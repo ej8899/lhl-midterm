@@ -59,6 +59,53 @@ const newPin = function(lat,lng) {
 };
 
 
+//
+//  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
+//
+const newMapModal = function() {
+  let content = `Create a new map
+  <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__title">Map Name</label>
+    <input type="text" name="name" placeholder="Map Title" id="new-property-form__title">
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__description">Description</label>
+    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="10"></textarea>
+  </div>
+
+  <div class="login-form__field-wrapper">
+    <button class="button">Add Map</button>&nbsp;
+    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+  </div>
+  </form>
+  `;
+  toggleModal('<i class="fa-solid fa-map fa-xl"></i> New Map',content);
+  $('#new-map-form').on('submit', function (event) {
+    event.preventDefault();
+    let data = $(this).serialize();
+    data += '&owner_id=';
+    data += currentUID;
+    console.log(data)
+    toggleModal();
+
+    submitNewMap(data)
+      .then(() => {
+        toggleModal(`Got It!`,`<BR>We'll review your property listing and once approved, make it live on LightBnB!<BR>&nbsp;`);
+        // refresh maps list and set to this new map
+
+      })
+      .catch((error) => {
+        // TODO - need to JSON stringify the error object for readability
+        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${error}`);
+        console.error(error);
+        // refresh to default map
+      });
+  });
+};
+
+
 const showLogin = () => {
   let data = `
   <form id="login-form" class="login-form">
@@ -77,6 +124,23 @@ const showLogin = () => {
     </form>
     `;
     toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Log In',data);
+    $('#login-form').on('submit', function (event) {
+      event.preventDefault();
+      let data = $(this).serialize();
+      console.log(data)
+      toggleModal();
+      logIn(data)
+      .then(json => {
+        console.log(json);
+        if (!json.user) {
+          //views_manager.show('error', 'Failed to login');
+          return;
+        }
+        console.log(json.user);
+        header.update(json.user);
+        //views_manager.show('listings');
+      });
+    });
 }
 
 const showSignUp = () => {

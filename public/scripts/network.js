@@ -8,14 +8,14 @@ function getMyDetails() {
 function logOut() {
   return $.ajax({
     method: "POST",
-    url: "/users/logout",
+    url: "/api/users/logout",
   })
 }
 
 function logIn(data) {
   return $.ajax({
     method: "POST",
-    url: "/users/login",
+    url: "/api/users/login",
     data
   });
 }
@@ -32,24 +32,32 @@ function getPointsByMap(mapID) {
   return pointsData[1];
 }
 
+//
+// get all our public maps and cache the data
+//
 function getListofMaps() {
-  let mapNames=[], x;
-
-  for(element in mapsData) {
-    mapNames.push(mapsData[element].name);
-  }
-  return mapNames;
+  let mapNames=[];
+  getListofMapsAPI().then(function(json) {
+    console.log(json.maps)
+    for(element in json.maps) {
+      mapNames.push(json.maps[element].name);
+      console.log(json.maps[element].name)
+    }
+    console.log(mapNames)
+    mapsList = mapNames;
+    mapsListObject = json.maps;
+  });
+}
+function getListofMapsAPI() {
+  let url = "/api/widgets/no-private-maps";
+  return $.ajax({
+    url,
+  });
 }
 
 
 
 // extrastretch items
-function getAllTheCities() {
-  let url = "/api/allcities";
-  return $.ajax({
-    url,
-  });
-}
 function getCountbyCity(params) {
   let url = "/api/getcountbycity";
   if (params) {
@@ -68,20 +76,6 @@ function getCountbyProv(params) {
     url,
   });
 }
-function getAverageCostPerNight() {
-  let url = "/api/getaveragecostpernight";
-  return $.ajax({
-    url,
-  });
-}
-function getCostPerRange() {
-  let url = "/api/getcostperrange";
-  return $.ajax({
-    url,
-  });
-}
-
-
 function getAllListings(params) {
   let url = "/api/properties";
   if (params) {
@@ -92,17 +86,11 @@ function getAllListings(params) {
   });
 }
 
-function getAllReservations() {
-  let url = "/api/reservations";
-  return $.ajax({
-    url,
-  });
-}
 
-const submitProperty = function(data) {
+const submitNewMap= function(data) {
   return $.ajax({
     method: "POST",
-    url: "/api/properties",
+    url: "/api/widgets/maps",
     data,
   });
 };
