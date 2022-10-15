@@ -15,7 +15,7 @@ let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 // GLOBAL cached DB query data
-let mapsList, mapsListObject;
+let mapsList, mapsListObject, mapsPointsObject;
 
 
 
@@ -75,7 +75,7 @@ $(document).ready(function() {
   // load list of all maps available
   // TODO need this as separate function to REFRESH on map list change
   console.log("MAPSLIST: ",mapsList)
-  let x = 0;
+  let x = 2;
   for (const map of mapsList) {
     $("#map-sources").append(`<option value="${x}" class="selectmap">${map}</option>`);
     x ++;
@@ -93,11 +93,11 @@ $(document).ready(function() {
   mapSelectHandler();
 
   // default populate the map with map #1 data
-  console.log(getPointsByMap(1));
+  //console.log(getPointsByMap(1));
 
 
-  placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
-  placeMarker({lat:50.923823,lng:-113.932970},"tims","prov item"); // location is object lat: lng:
+  //placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
+  //placeMarker({lat:50.923823,lng:-113.932970},"tims","prov item"); // location is object lat: lng:
 
 
   // get user position so we can center the  map
@@ -235,6 +235,8 @@ const mapSelectHandler = function() {
       newMapModal();
       return;
     }
+    //getPointsByMap(mapChangeID);
+    getPointsByMap(mapChangeID);
     $("#aboutmap").text(mapsListObject[mapChangeID].description);
     // DEBUG console.log(mapsListObject[mapChangeID].description);
   });

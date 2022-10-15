@@ -29,7 +29,27 @@ function signUp(data) {
 }
 
 function getPointsByMap(mapID) {
-  return pointsData[1];
+  //return pointsData[1];
+  getPointsByMapAPI(mapID)
+    .then(function(json) {
+      clearMapMarkers();
+      console.log("POINTS LIST:",json.points);
+      mapsPointsObject = json.points;
+      for (const key of mapsPointsObject) {
+        console.log(key.title)
+        placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description);
+      }
+      mapMoveToLocation(+json.points[0].latitude,+json.points[0].longitude);
+    });
+}
+function getPointsByMapAPI(params) {
+  let url = "/api/widgets/points";
+  if (params) {
+    url += "?mapId=" + params;
+  }
+  return $.ajax({
+    url,
+  });
 }
 
 //

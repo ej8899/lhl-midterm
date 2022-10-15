@@ -120,7 +120,7 @@ const placeMarker = function(location,city,prov) {
   // add info window for each marker:
   //
 
-  const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city} listings.</B><Br><small> click or tap to search this city</small></div></div>`;
+  const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city}.</B><Br><small> click or tap to view details</small></div></div>`;
   // more on infoWindow here: https://developers.google.com/maps/documentation/javascript/infowindows
   const infoWindow = new google.maps.InfoWindow({
     content: infoWindowData,
@@ -168,6 +168,23 @@ const clearMapMarkers = function() {
 // mapMoveToLocation = function(lat,long)
 //
 const mapMoveToLocation = function(lat,lng) {
+  console.log("MOVING MAP: ",lat,lng)
   const center = new google.maps.LatLng(lat, lng);
   map.panTo(center);
+}
+
+
+
+//
+// resetMapData(mapID)
+//
+const resetMapData = function(mapID) {
+  clearMapMarkers();
+  getPointsByMap(mapID);
+  // plot points
+  //placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
+  for (const key in mapsPointsObject) {
+    placeMarker({lat:key.latitude,lng:key.longitude},key.title,key.description);
+  }
+  // reset zoom level
 }

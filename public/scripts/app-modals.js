@@ -87,14 +87,13 @@ const newMapModal = function() {
     let data = $(this).serialize();
     data += '&owner_id=';
     data += currentUID;
-    console.log("SUBMIT NEW MAP:",data)
+    console.log("SUBMIT FOR MAP:",data)
     toggleModal();
 
     submitNewMap(data)
       .then(() => {
         toggleModal(`Got It!`,`Your map is now ready to go!`);
         // refresh maps list and set to this new map
-
       })
       .catch((error) => {
         // TODO - need to JSON stringify the error object for readability
