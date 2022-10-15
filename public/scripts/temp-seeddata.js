@@ -10,6 +10,7 @@ let favouritesData = {
 
 };
 
+/*
 const mapsData = {
   1: {
     name: 'coffee shops',
@@ -26,6 +27,7 @@ const mapsData = {
     is_private: false,
     }
 };
+*/
 
 const pointsData = {
   1: {
