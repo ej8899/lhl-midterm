@@ -8,7 +8,7 @@
 // Setup GLOBAL variables
 //
 let currentMap = 1; // what is the current map ID being viewed?
-let currentUID = 1; // what is the current USER ID (0 not logged in, else db user id)
+let currentUID = 0; // what is the current USER ID (0 not logged in, else db user id)
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
@@ -33,6 +33,7 @@ main();
 // Any actions for Document Ready processing
 //
 $(document).ready(function() {
+  updateNav();
 
   // setup for SEARCH modal button
   $('#filtertoggleicon').click(function() {
@@ -237,4 +238,39 @@ const mapSelectHandler = function() {
     $("#aboutmap").text(mapsListObject[mapChangeID].description);
     // DEBUG console.log(mapsListObject[mapChangeID].description);
   });
+}
+
+
+const updateNav = function(user) {
+  // update the nav bar if logged in or not
+  const $pageHeader = $('#page-navbar');
+  $pageHeader.find("#navbar-userlinks").remove();
+    let userLinks;
+
+    if (!user) {
+      userLinks = `
+      <nav id="navbar-userlinks" class="page-header__user-links">
+        <ul>
+          <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
+          <li class="login_button hoverbutton" onClick="showLogin();">Log In</li>
+          <li class="sign-up_button hoverbutton" onClick="showSignUp();">Sign Up</li>
+          <li style="padding-left:20px"><a href="https://github.com/ej8899/midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+
+          <li class="tooltip expand" data-title="check us out on linkedin"><div class="switchcontainer"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
+        </ul>
+      </nav>
+      `
+    } else {
+      userLinks = `
+      <nav id="navbar-userlinks" class="page-header__user-links">
+        <ul>
+          <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
+          <li class="logout_button hoverbutton" onClick="logOut();updateNav();">Log Out ( ${user.name} )</li>
+          <li style="padding-left:20px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+          <li><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
+        </ul>
+      </nav>
+      `
+    }
+    $pageHeader.append(userLinks);
 }

@@ -87,12 +87,12 @@ const newMapModal = function() {
     let data = $(this).serialize();
     data += '&owner_id=';
     data += currentUID;
-    console.log(data)
+    console.log("SUBMIT NEW MAP:",data)
     toggleModal();
 
     submitNewMap(data)
       .then(() => {
-        toggleModal(`Got It!`,`<BR>We'll review your property listing and once approved, make it live on LightBnB!<BR>&nbsp;`);
+        toggleModal(`Got It!`,`Your map is now ready to go!`);
         // refresh maps list and set to this new map
 
       })
@@ -133,11 +133,12 @@ const showLogin = () => {
       .then(json => {
         console.log(json);
         if (!json.user) {
-          //views_manager.show('error', 'Failed to login');
+          toggleModal('','failed to log in');
           return;
         }
         console.log(json.user);
-        header.update(json.user);
+        currentUID = json.user.id;
+        updateNav(json.user);
         //views_manager.show('listings');
       });
     });
