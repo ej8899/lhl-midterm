@@ -84,7 +84,7 @@ const addPoint = (point) => {
  * @param {{}}} user_id, map_id.
  * @return {Promise<{}>} A promise to the property.
  */
- const addFavourite = (favourite) => {
+const addFavourite = (favourite) => {
   const queryValues = [
     favourite.map_id,
     favourite.user_id,

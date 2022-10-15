@@ -4,6 +4,7 @@
  *   these routes are mounted onto /api/widgets
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
+/* eslint-disable camelcase*/
 
 const express = require('express');
 const router  = express.Router();
@@ -14,14 +15,14 @@ router.post('/favourites', (req, res) => {
   const userId = req.session.userId;
   const { map_id } = req.body;
   widgetsQueries.addFavourite({ map_id, user_id: userId })
-  .then(favourite => {
-    res.send(favourite);
-  })
-  .catch(err => {
-    res
-      .status(500)
-      .json({ error: err.message });
-  });
+    .then(favourite => {
+      res.send(favourite);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
 });
 
 // maps

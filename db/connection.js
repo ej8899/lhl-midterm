@@ -14,12 +14,12 @@ const pool = new Pool(dbParams);
 const query = (text, params, callback) => {
   const start = Date.now();
   return pool.query(text, params)
-  .then(result => {
-    const duration = Date.now() - start;
-    console.log('executed query', { text, duration, params, rows: result.rowCount });
-    return callback(result);
-  })
-  .catch(err => console.log(err.message));
+    .then(result => {
+      const duration = Date.now() - start;
+      console.log('executed query', { text, duration, params, rows: result.rowCount });
+      return callback(result);
+    })
+    .catch(err => console.log(err.message));
 };
 
 module.exports = query;
