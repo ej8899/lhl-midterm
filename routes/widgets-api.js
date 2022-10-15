@@ -10,21 +10,6 @@ const express = require('express');
 const router  = express.Router();
 const widgetsQueries  = require('../db/queries/widgets');
 
-// favourites
-router.post('/favourites', (req, res) => {
-  const userId = req.session.userId;
-  const { map_id } = req.body;
-  widgetsQueries.addFavourite({ map_id, user_id: userId })
-    .then(favourite => {
-      res.send(favourite);
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ error: err.message });
-    });
-});
-
 // maps
 router.get('/maps', (req, res) => {
   const { userId } = req.session;
@@ -83,6 +68,21 @@ router.post('/points', (req, res) => {
   widgetsQueries.addPoint({ ...req.body, contributor_id: userId })
     .then(point => {
       res.send(point);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
+// favourites
+router.post('/favourites', (req, res) => {
+  const userId = req.session.userId;
+  const { map_id } = req.body;
+  widgetsQueries.addFavourite({ map_id, user_id: userId })
+    .then(favourite => {
+      res.send(favourite);
     })
     .catch(err => {
       res
