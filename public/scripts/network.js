@@ -34,10 +34,13 @@ function getPointsByMap(mapID) {
     .then(function(json) {
       clearMapMarkers();
       console.log("POINTS LIST:",json.points);
+
       mapsPointsObject = json.points;
+      let x = 0;
       for (const key of mapsPointsObject) {
         console.log(key.title)
-        placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description);
+        placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description,x);
+        x ++;
       }
       mapMoveToLocation(+json.points[0].latitude,+json.points[0].longitude);
     });
@@ -61,11 +64,20 @@ function getListofMaps() {
     console.log(json.maps)
     for(element in json.maps) {
       mapNames.push(json.maps[element].name);
-      console.log(json.maps[element].name)
+      //console.log(json.maps[element].name)
     }
-    console.log(mapNames)
+    //console.log(mapNames)
     mapsList = mapNames;
     mapsListObject = json.maps;
+    // refresh the maps list here
+
+    //console.log("MAPSLIST: ",mapsList)
+    for (const map in mapsListObject) {
+      console.log("MAP:",map)
+      console.log("MAP NAME:",mapsListObject[map].name)
+      $("#map-sources").append(`<option value="${mapsListObject[map].id}" class="selectmap">${mapsListObject[map].name}</option>`);
+    }
+    mapSelectHandler();
   });
 }
 function getListofMapsAPI() {

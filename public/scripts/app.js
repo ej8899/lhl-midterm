@@ -22,23 +22,37 @@ let mapsList, mapsListObject, mapsPointsObject;
 //
 // Initial setup/loading items
 //
-
 const main = function() {
-  getListofMaps();
+  // get user position so we can center the  map
+  let getPosition = {
+    enableHighAccuracy: false,
+    timeout: 9000,
+    maximumAge: 0
+  };
+  function success(gotPosition) {
+    let uLat = gotPosition.coords.latitude;
+    let uLon = gotPosition.coords.longitude;
+    console.log(`${uLat}`, `${uLon}`);
+    mapMoveToLocation(uLat,uLon);
+  };
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  };
+  navigator.geolocation.getCurrentPosition(success, error, getPosition);
+
+
+
 };
 main();
 
 
 //
-// Any actions for Document Ready processing
+// actions for Document Ready loading
 //
 $(document).ready(function() {
   updateNav();
+  getListofMaps();
 
-  // setup for SEARCH modal button
-  $('#filtertoggleicon').click(function() {
-    // main search & filter button
-  });
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
@@ -74,55 +88,35 @@ $(document).ready(function() {
   // populate map drop down list
   // load list of all maps available
   // TODO need this as separate function to REFRESH on map list change
-  console.log("MAPSLIST: ",mapsList)
-  let x = 2;
-  for (const map of mapsList) {
-    $("#map-sources").append(`<option value="${x}" class="selectmap">${map}</option>`);
-    x ++;
-    //<option value="profile">Profile</option>
-  }
   // TODO - now we have to call the map drop down process to refresh handlers on it
-
-
-  //
-  // select a map custom dropdown
-  // try this one: https://codepen.io/yy/pen/vOYqYV
-  // or https://codepen.io/udyux/pen/KzJQea
-
   // TODO drop down list needs a listener so we switch map data
-  mapSelectHandler();
-
-  // default populate the map with map #1 data
-  //console.log(getPointsByMap(1));
 
 
-  //placeMarker({lat:50.9223039,lng:-113.9328659},"home","prov item"); // location is object lat: lng:
-  //placeMarker({lat:50.923823,lng:-113.932970},"tims","prov item"); // location is object lat: lng:
 
 
-  // get user position so we can center the  map
-  let getPosition = {
-    enableHighAccuracy: false,
-    timeout: 9000,
-    maximumAge: 0
-  };
-  function success(gotPosition) {
-    let uLat = gotPosition.coords.latitude;
-    let uLon = gotPosition.coords.longitude;
-    console.log(`${uLat}`, `${uLon}`);
-    mapMoveToLocation(uLat,uLon);
-  };
-  function error(err) {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  };
-  navigator.geolocation.getCurrentPosition(success, error, getPosition);
 
 
 }); // END DOCUMENT READY
 
 
+//
+// checkImage()
+// check if image is valid at detination URL - if not, use a built in "missing image" to prevent broken image link
+//
+const checkImage = (url,id) => {
+  let image = new Image();
 
-
+  image.onload = () => { // image DOES exist
+    if (this.width > 0) {
+      // unhide each id if we setup for lazy load of images
+    }
+  };
+  image.onerror = () => { // image does NOT exist
+    //let listid = "#listingid" + id;
+    //$(listid).attr("src","./images/missingimage.png");
+  };
+  image.src = url; // NOTE: set SRC after the onload event: https://stackoverflow.com/questions/7434371/image-onload-function-with-return
+};
 
 
 //
@@ -237,7 +231,7 @@ const mapSelectHandler = function() {
     }
     //getPointsByMap(mapChangeID);
     getPointsByMap(mapChangeID);
-    $("#aboutmap").text(mapsListObject[mapChangeID].description);
+    //$("#aboutmap").text(mapsListObject[mapChangeID].description);
     // DEBUG console.log(mapsListObject[mapChangeID].description);
   });
 }
