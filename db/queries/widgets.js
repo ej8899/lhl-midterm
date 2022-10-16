@@ -79,6 +79,14 @@ const addPoint = (point) => {
   `, queryValues, result => result.rows);
 };
 
+/**
+ * Delete a point.
+ * @param {{}}} point id.
+ * @return {Promise<{}>} A promise to the point.
+ */
+const deletePoint = (id) => {
+  return query(`DELETE FROM points WHERE id = $1 RETURNING *;`, [id], result => result.rows[0]);
+};
 // favourites
 
 /**
@@ -98,7 +106,7 @@ const getFavouritesWithUserId = (id) => {
 /**
  * Add a favourite to the database.
  * @param {{}}} user_id, map_id.
- * @return {Promise<{}>} A promise to the property.
+ * @return {Promise<{}>} A promise to the favourite.
  */
 const addFavourite = (favourite) => {
   const queryValues = [
@@ -112,7 +120,7 @@ const addFavourite = (favourite) => {
 /**
  * Delete a favourite.
  * @param {{}}} user_id, map_id.
- * @return {Promise<{}>} A promise to the property.
+ * @return {Promise<{}>} A promise to the favourite.
  */
 const deleteFavourite = (favourite) => {
   const queryValues = [
@@ -129,6 +137,7 @@ module.exports = {
   getAllNoPrivateMaps,
   addMap,
   addPoint,
+  deletePoint,
   getFavouritesWithUserId,
   addFavourite,
   deleteFavourite,
