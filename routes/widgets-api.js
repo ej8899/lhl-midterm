@@ -76,6 +76,19 @@ router.post('/points', (req, res) => {
     });
 });
 
+router.delete('/points', (req, res) => {
+  const { pointId } = req.query;
+  widgetsQueries.deletePoint(pointId)
+    .then(point => {
+      res.send(point);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 // favourites
 router.get('/favourites', (req, res) => {
   const { userId } = req.session;
