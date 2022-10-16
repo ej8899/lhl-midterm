@@ -107,6 +107,20 @@ const addFavourite = (favourite) => {
   return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows);
 };
 
+/**
+ * Delete a favourite.
+ * @param {{}}} user_id, map_id.
+ * @return {Promise<{}>} A promise to the property.
+ */
+const deleteFavourite = (favourite) => {
+  const queryValues = [
+    favourite.map_id,
+    favourite.user_id,
+  ];
+
+  return query(`DELETE FROM favourites WHERE map_id = $1 AND user_id = $2 RETURNING *;`, queryValues, result => result.rows);
+};
+
 module.exports = {
   getMapsWithOwnerId,
   getPointsWithMapId,
@@ -115,4 +129,5 @@ module.exports = {
   addPoint,
   getFavouritesWithUserId,
   addFavourite,
+  deleteFavourite,
 };
