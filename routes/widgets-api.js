@@ -77,8 +77,21 @@ router.post('/points', (req, res) => {
 });
 
 // favourites
+router.get('/favourites', (req, res) => {
+  const { userId } = req.session;
+  widgetsQueries.getFavouritesWithUserId(userId)
+    .then(favourites => {
+      res.send(favourites);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 router.post('/favourites', (req, res) => {
-  const userId = req.session.userId;
+  const { userId } = req.session;
   const { map_id } = req.body;
   widgetsQueries.addFavourite({ map_id, user_id: userId })
     .then(favourite => {
