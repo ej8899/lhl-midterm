@@ -50,7 +50,9 @@ const addMap = (map) => {
  * @return {Promise<{}>} A promise to the point.
  */
 const getPointsWithMapId = (id) => {
-  return query('SELECT * FROM points WHERE map_id = $1;', [id], result => result.rows);
+  return query(`SELECT p.*, u.name AS contributor_name FROM points AS p
+  JOIN users AS u ON p.contributor_id = u.id
+  WHERE map_id = $1;`, [id], result => result.rows);
 };
 
 /**
