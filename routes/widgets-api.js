@@ -92,8 +92,22 @@ router.get('/favourites', (req, res) => {
 
 router.post('/favourites', (req, res) => {
   const { userId } = req.session;
-  const { map_id } = req.body;
-  widgetsQueries.addFavourite({ map_id, user_id: userId })
+  const { mapId } = req.body;
+  widgetsQueries.addFavourite({ map_id: mapId, user_id: userId })
+    .then(favourite => {
+      res.send(favourite);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
+router.delete('/favourites', (req, res) => {
+  const { userId } = req.session;
+  const { mapId } = req.query;
+  widgetsQueries.deleteFavourite({ map_id: mapId, user_id: userId })
     .then(favourite => {
       res.send(favourite);
     })
