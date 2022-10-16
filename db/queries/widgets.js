@@ -82,6 +82,20 @@ const addPoint = (point) => {
 // favourites
 
 /**
+ * Get favourite maps from database given user_id.
+ * @param {string}} user_id.
+ * @return {Promise<{}>} A promise to the point.
+ */
+const getFavouritesWithUserId = (id) => {
+  return query(`SELECT f.*, u1.name AS user_name, m.name AS map_name, m.owner_id, u2.name AS owenr_name, m.description, m.category, m.map_pins, m.is_private
+  FROM favourites AS f
+  JOIN users AS u1 ON f.user_id = u1.id
+  JOIN maps AS m ON f.map_id = m.id
+  JOIN users AS u2 ON m.owner_id = u2.id
+  WHERE user_id = $1;`, [id], result => result.rows);
+};
+
+/**
  * Add a favourite to the database.
  * @param {{}}} user_id, map_id.
  * @return {Promise<{}>} A promise to the property.
@@ -95,11 +109,27 @@ const addFavourite = (favourite) => {
   return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows);
 };
 
+/**
+ * Delete a favourite.
+ * @param {{}}} user_id, map_id.
+ * @return {Promise<{}>} A promise to the property.
+ */
+const deleteFavourite = (favourite) => {
+  const queryValues = [
+    favourite.map_id,
+    favourite.user_id,
+  ];
+
+  return query(`DELETE FROM favourites WHERE map_id = $1 AND user_id = $2 RETURNING *;`, queryValues, result => result.rows);
+};
+
 module.exports = {
   getMapsWithOwnerId,
   getPointsWithMapId,
   getAllNoPrivateMaps,
   addMap,
   addPoint,
+  getFavouritesWithUserId,
   addFavourite,
+  deleteFavourite,
 };
