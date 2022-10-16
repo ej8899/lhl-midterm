@@ -157,7 +157,12 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     console.log("currentUID:",currentUID);
     if (currentUID === mapsPointsObject[pointNumber].contributor_id) {
       // show trash icon
-      adminOptions += `<br clear=all><hr><a href="" class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a href="" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square"></i></a>`;
+      adminOptions += `<br clear=all><hr><a href="" class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a href="" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
+    }
+
+    let contributorname ='';
+    if(mapsPointsObject[pointNumber].contributor_name) {
+      contributorname = "Added by: " + mapsPointsObject[pointNumber].contributor_name;
     }
 
     if (!imageURL) {
@@ -170,6 +175,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
       <section class="property-listing__preview-image">
       <img src="${imageURL}" alt="${itemTitle}" class="imgthumb" id="#modalimage">
       </section>
+      ${contributorname}
       ${adminOptions}
     `;
 
