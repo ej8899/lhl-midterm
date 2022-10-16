@@ -38,7 +38,7 @@ function getPointsByMap(mapID) {
       mapsPointsObject = json.points;
       let x = 0;
       for (const key of mapsPointsObject) {
-        console.log(key.title)
+        //console.log(key.title)
         placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description,x);
         x ++;
       }
@@ -62,10 +62,12 @@ function getListofMaps() {
   let mapNames=[];
   getListofMapsAPI().then(function(json) {
     console.log(json.maps)
+    /*
     for(element in json.maps) {
       mapNames.push(json.maps[element].name);
       //console.log(json.maps[element].name)
     }
+    */
     //console.log(mapNames)
     mapsList = mapNames;
     mapsListObject = json.maps;
@@ -88,38 +90,16 @@ function getListofMapsAPI() {
 }
 
 
-
-// extrastretch items
-function getCountbyCity(params) {
-  let url = "/api/getcountbycity";
-  if (params) {
-    url += "?city=" + params;
-  }
+const submitNewPin = function(data) {
   return $.ajax({
-    url,
-  });
-}
-function getCountbyProv(params) {
-  let url = "/api/getcountbyprov";
-  if (params) {
-    url += "?province=" + params;
-  }
-  return $.ajax({
-    url,
-  });
-}
-function getAllListings(params) {
-  let url = "/api/properties";
-  if (params) {
-    url += "?" + params;
-  }
-  return $.ajax({
-    url,
+    method: "POST",
+    url: "/api/widgets/points",
+    data,
   });
 }
 
 
-const submitNewMap= function(data) {
+const submitNewMap = function(data) {
   return $.ajax({
     method: "POST",
     url: "/api/widgets/maps",

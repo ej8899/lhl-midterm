@@ -120,7 +120,6 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
   //
   // add info window for each marker:
   //
-
   const infoWindowData = `<div class="map-infobox-wrapper"><div><i class="fa-solid fa-magnifying-glass fa-xlg" style="color: #FF4433 "></i></div><div class="map-infobox-content"><B>${city}.</B><Br><small> click or tap to view details</small></div></div>`;
   // more on infoWindow here: https://developers.google.com/maps/documentation/javascript/infowindows
   const infoWindow = new google.maps.InfoWindow({
@@ -143,23 +142,64 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     infoWindow.close();
   });
 
+
   //
-  // LEFT BUTTON CLICK listener on each MARKER
+  // LEFT BUTTON CLICK listener on each MARKER for detailed item view
   //
   google.maps.event.addListener(marker, 'click', function() {
     let pointNumber = this.get('myitemnumber');
     let itemTitle = this.get('itemTitle');
+    let imageURL = mapsPointsObject[pointNumber].image_url;
+    let adminOptions = '';
 
+    // TODO - deal with map owner and pin owners
+    // if current user is same as this point contributor - OR map owner, allow for DELETE button/icon
+    console.log("currentUID:",currentUID);
+    if (currentUID === mapsPointsObject[pointNumber].contributor_id) {
+      // show trash icon
+      adminOptions += `<br clear=all><hr><a href="" class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a href="" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
+    }
+
+    let contributorname ='';
+    if(mapsPointsObject[pointNumber].contributor_name) {
+      contributorname = "Added by: " + mapsPointsObject[pointNumber].contributor_name;
+    }
+
+    if (!imageURL) {
+      imageURL = './images/missingimage.png';
+    } else {
+      checkImage(imageURL,'#modalimage');
+    }
     let itemDescription = `
       ${mapsPointsObject[pointNumber].description}<BR><BR clear=all>
       <section class="property-listing__preview-image">
-      <img src="${mapsPointsObject[pointNumber].image_url}" alt="${itemTitle}" class="imgthumb">
+      <img src="${imageURL}" alt="${itemTitle}" class="imgthumb" id="#modalimage">
       </section>
+      ${contributorname}
+      ${adminOptions}
     `;
 
     toggleModal(itemTitle,itemDescription);
   });
 
+};
+
+//
+// checkImage()
+// check if image is valid at detination URL - if not, use a built in "missing image" to prevent broken image link
+//
+const checkImage = (url,id) => {
+  let image = new Image();
+  image.onload = () => { // image DOES exist
+    if (this.width > 0) {
+      // unhide each id if we setup for lazy load of images
+      $(id).attr("src",url);
+    }
+  };
+  image.onerror = () => { // image does NOT exist
+    $(id).attr("src","./images/missingimage.png");
+  };
+  image.src = url; // NOTE: set SRC after the onload event: https://stackoverflow.com/questions/7434371/image-onload-function-with-return
 };
 
 

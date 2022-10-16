@@ -85,38 +85,9 @@ $(document).ready(function() {
     $('.dropdown-el').removeClass('expanded');
   });
 
-  // populate map drop down list
-  // load list of all maps available
-  // TODO need this as separate function to REFRESH on map list change
-  // TODO - now we have to call the map drop down process to refresh handlers on it
-  // TODO drop down list needs a listener so we switch map data
-
-
-
-
-
-
 }); // END DOCUMENT READY
 
 
-//
-// checkImage()
-// check if image is valid at detination URL - if not, use a built in "missing image" to prevent broken image link
-//
-const checkImage = (url,id) => {
-  let image = new Image();
-
-  image.onload = () => { // image DOES exist
-    if (this.width > 0) {
-      // unhide each id if we setup for lazy load of images
-    }
-  };
-  image.onerror = () => { // image does NOT exist
-    //let listid = "#listingid" + id;
-    //$(listid).attr("src","./images/missingimage.png");
-  };
-  image.src = url; // NOTE: set SRC after the onload event: https://stackoverflow.com/questions/7434371/image-onload-function-with-return
-};
 
 
 //
@@ -229,44 +200,52 @@ const mapSelectHandler = function() {
       newMapModal();
       return;
     }
-    //getPointsByMap(mapChangeID);
     getPointsByMap(mapChangeID);
-    //$("#aboutmap").text(mapsListObject[mapChangeID].description);
-    // DEBUG console.log(mapsListObject[mapChangeID].description);
+    $("#titlemap").text($(this).text());
+    $("#aboutmap").text(findMapDescription(mapChangeID));
   });
 }
 
+// find map descriptions in our map list object
+const findMapDescription = function(mapID) {
+  let mapDescription = 'Map My Wiki';
+  // mapsListObject[x].description
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.description;
+    }
+  }
+  return mapDescription;
+}
 
 const updateNav = function(user) {
   // update the nav bar if logged in or not
   const $pageHeader = $('#page-navbar');
-  $pageHeader.find("#navbar-userlinks").remove();
-    let userLinks;
+  $pageHeader.find("#navbar-userlinksend").remove();
+  let userLinks;
 
-    if (!user) {
-      userLinks = `
-      <nav id="navbar-userlinks" class="page-header__user-links">
-        <ul>
-          <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
-          <li class="login_button hoverbutton" onClick="showLogin();">Log In</li>
-          <li class="sign-up_button hoverbutton" onClick="showSignUp();">Sign Up</li>
-          <li style="padding-left:20px"><a href="https://github.com/ej8899/midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+  if (!user) {
+    userLinks = `
+    <nav id="navbar-userlinksend" class="navbar-userlinksend">
+    <button class="login_button " onClick="showLogin();">Log In</button>
+    <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
+    <button class="login_button " onClick="logOut();">Log Out</button>
 
-          <li class="tooltip expand" data-title="check us out on linkedin"><div class="switchcontainer"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
-        </ul>
-      </nav>
-      `
-    } else {
-      userLinks = `
-      <nav id="navbar-userlinks" class="page-header__user-links">
-        <ul>
-          <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
-          <li class="logout_button hoverbutton" onClick="logOut();updateNav();">Log Out ( ${user.name} )</li>
-          <li style="padding-left:20px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
-          <li><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
-        </ul>
-      </nav>
-      `
-    }
-    $pageHeader.append(userLinks);
+    <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
+
+    <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
+    </nav>
+    `
+  } else {
+    userLinks = `
+    <nav id="navbar-userlinksend" class="navbar-userlinksend">
+    <button class="login_button " onClick="logOut();updateNav();">Log Out ( ${user.name} )</button>
+
+    <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
+
+    <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
+    </nav>
+    `
+  }
+  $pageHeader.append(userLinks);
 }
