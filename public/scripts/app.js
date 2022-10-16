@@ -85,38 +85,9 @@ $(document).ready(function() {
     $('.dropdown-el').removeClass('expanded');
   });
 
-  // populate map drop down list
-  // load list of all maps available
-  // TODO need this as separate function to REFRESH on map list change
-  // TODO - now we have to call the map drop down process to refresh handlers on it
-  // TODO drop down list needs a listener so we switch map data
-
-
-
-
-
-
 }); // END DOCUMENT READY
 
 
-//
-// checkImage()
-// check if image is valid at detination URL - if not, use a built in "missing image" to prevent broken image link
-//
-const checkImage = (url,id) => {
-  let image = new Image();
-
-  image.onload = () => { // image DOES exist
-    if (this.width > 0) {
-      // unhide each id if we setup for lazy load of images
-    }
-  };
-  image.onerror = () => { // image does NOT exist
-    //let listid = "#listingid" + id;
-    //$(listid).attr("src","./images/missingimage.png");
-  };
-  image.src = url; // NOTE: set SRC after the onload event: https://stackoverflow.com/questions/7434371/image-onload-function-with-return
-};
 
 
 //
@@ -229,13 +200,23 @@ const mapSelectHandler = function() {
       newMapModal();
       return;
     }
-    //getPointsByMap(mapChangeID);
     getPointsByMap(mapChangeID);
-    //$("#aboutmap").text(mapsListObject[mapChangeID].description);
-    // DEBUG console.log(mapsListObject[mapChangeID].description);
+    $("#titlemap").text($(this).text());
+    $("#aboutmap").text(findMapDescription(mapChangeID));
   });
 }
 
+// find map descriptions in our map list object
+const findMapDescription = function(mapID) {
+  let mapDescription = 'Map My Wiki';
+  // mapsListObject[x].description
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.description;
+    }
+  }
+  return mapDescription;
+}
 
 const updateNav = function(user) {
   // update the nav bar if logged in or not

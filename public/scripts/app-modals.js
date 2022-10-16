@@ -13,9 +13,20 @@ const showPrivacyPolicy = () => {
 //  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
 //
 const newPin = function(lat,lng) {
+  // TODO - if not logged in, advise user they need to login or sign up (and show links to do either)
+  if (currentUID === 0) {
+    let content = `You need to be a registered user (or signed in) to add pins to maps to existing maps.
+    <BR><BR>
+    Sign up<BR>
+    Sign in
+    `;
+    toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Not Logged In',content);
+    return;
+  }
+
   // TODO - need input form for new map point
-  let content = `For your pin at ${lat}, ${lng}
-  <form action="/api/newpin" method="post" id="new-property-form" class="new-property-form">
+  let content = `For your pin at<BR>${lat},<BR>${lng}
+  <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__title">Title</label>
     <input type="text" name="title" placeholder="Title" id="new-property-form__title">
@@ -28,7 +39,7 @@ const newPin = function(lat,lng) {
 
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__image">Image URL</label>
-    <input type="text" name="imageurl" placeholder="image url" id="new-property-form__imageurl">
+    <input type="text" name="image_url" placeholder="image url" id="new-property-form__imageurl">
   </div>
 
   <div class="login-form__field-wrapper">
@@ -38,23 +49,24 @@ const newPin = function(lat,lng) {
   </form>
   `;
   toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> New Pin',content);
-  $newPropertyForm.on('submit', function (event) {
+  $('#newpinform').on('submit', function (event) {
     event.preventDefault();
-    const data = $(this).serialize();
-    // TODO - add map ID and submitter ID to the data
-    /*
-    submitProperty(data)
-      .then(() => {
-        toggleModal(`Got It!`,`<BR>We'll review your property listing and once approved, make it live on LightBnB!<BR>&nbsp;`);
-        views_manager.show('listings');
+    let data = $(this).serialize();
+    data += `&contributor_id=${currentUID}&latitude=${lat}&longitude=${lng}&map_id=2`;
 
-      })
-      .catch((error) => {
-        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${error}`);
-        console.error(error);
-        views_manager.show('listings');
-      });
-    */
+    // TODO - add map ID and submitter ID to the data
+    console.log("NEW PIN: ",data)
+    submitNewPin(data)
+    .then(() => {
+      toggleModal(`Got It!`,`Your pin is now ready to go!`);
+      // refresh maps list and set to this new map
+    })
+    .catch((error) => {
+      // TODO - need to JSON stringify the error object for readability
+      toggleModal(`Woah!`,`There was an error saving your map pin to this map.<BR>${error}`);
+      console.error(error);
+      // refresh to default map
+    });
   });
 };
 
@@ -63,6 +75,15 @@ const newPin = function(lat,lng) {
 //  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
 //
 const newMapModal = function() {
+  if (currentUID === 0) {
+    let content = `You need to be a registered user (or signed in) to create a new map.
+    <BR><BR>
+    Sign up<BR>
+    Sign in
+    `;
+    toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Not Logged In',content);
+    return;
+  }
   let content = `Create a new map
   <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
   <div class="new-property-form__field-wrapper">
@@ -85,7 +106,7 @@ const newMapModal = function() {
   $('#new-map-form').on('submit', function (event) {
     event.preventDefault();
     let data = $(this).serialize();
-    data += '&owner_id=';
+    data += '&category=general&is_private=false&owner_id=';
     data += currentUID;
     console.log("SUBMIT FOR MAP:",data)
     toggleModal();
@@ -94,6 +115,7 @@ const newMapModal = function() {
       .then(() => {
         toggleModal(`Got It!`,`Your map is now ready to go!`);
         // refresh maps list and set to this new map
+        getListofMaps();
       })
       .catch((error) => {
         // TODO - need to JSON stringify the error object for readability
@@ -169,12 +191,16 @@ const showSignUp = () => {
 //
 const showAbout = () => {
   let privacyPolicy = `
-  The Wiki Maps project is a <a href="http://www.lighthouselabs.ca" target=_new>LightHouseLabs.ca</a> mid-term project.<BR><BR>
-  Completed by<BR>
-  Ernie Johnson - Frontend, including JS, HTML & CSS<BR>
-  Atsuyuki Yoshimatsu - Backend, including database.
+  Map My Wiki is a mid-term project for <a href="http://www.lighthouselabs.ca" title="https://www.lighthouselabs.ca" target=_new>Light House Labs</a>.<BR><BR>
+  Produced by Full-Stack Developers:<br>
+  <span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></a></i> Ernie Johnson (Frontend)  <i class="fa-brands fa-sass" ></i> <i class="fa-brands fa-node-js"></i> <i class="fa-brands fa-html5" ></i>  <i class="fa-brands fa-css3-alt "></i></span><BR>
+  <span class="modal-info"><a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></a></i> Atsuyuki Yoshimatsu (Backend) <i class="fa-brands fa-node-js"></i> <i class="fa-solid fa-database" ></i></span>
+  <div class="modal-info">
+  <p>&copy; Copyright 2022, All Rights Reserved<BR><a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm">Get the latest version on <i class="fa-brands fa-github"></i></a></p>
+  </div>
   `;
-  toggleModal('<i class="fa-solid fa-circle-question fa-xl"></i> About',privacyPolicy);
+
+  toggleModal('<i class="fa-solid fa-circle-question fa-xl"></i> About', privacyPolicy);
 };
 
 
@@ -183,12 +209,18 @@ const showAbout = () => {
 //
 const showContact = () => {
   let privacyPolicy = `
-  insert contact us links here - linked in links with icons?<BR>
-  Ernie Johnson - <a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a>
-  Atsuyuki - https://www.linkedin.com/in/atsuyuki/
+  Reach out to the Developers:<BR>
+  <div class="modal-contact">
+  <li>
+  Ernie Johnson <a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></i></a><br></li>
+  <li>Atsuyuki Yoshimatsu <a href="https://www.linkedin.com/in/atsuyuki/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></i></a></li>
+  </div>
   `;
+
   toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Contact Us',privacyPolicy);
 };
+
+
 
 //
 // toggleModal(title,body)
