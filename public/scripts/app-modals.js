@@ -164,6 +164,8 @@ const showLogin = () => {
         currentUID = json.user.id;
         updateNav(json.user);
         // show admin section
+        fetchFavorites();
+        fetchAdmin();
         $('#useronlysection').css('visibility','visible');
       });
     });

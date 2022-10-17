@@ -15,7 +15,7 @@ let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 // GLOBAL cached DB query data
-let mapsList, mapsListObject, mapsPointsObject;
+let mapsList, mapsListObject, mapsPointsObject, favoritesObject;
 
 
 
