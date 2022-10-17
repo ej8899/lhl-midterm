@@ -80,6 +80,32 @@ const addPoint = (point) => {
 };
 
 /**
+ * Update a point to the database.
+ * @param {{}}} point. An object containing all of the point details.
+ * @return {Promise<{}>} A promise to the point.
+ */
+const updatePoint = (point) => {
+  const queryValues = [
+    point.title,
+    point.map_id,
+    point.contributor_id,
+    point.description,
+    point.image_url,
+    point.latitude,
+    point.longitude,
+    point.id,
+  ];
+
+  return query(`
+  UPDATE points SET
+  (title, map_id, contributor_id, description, image_url, latitude, longitude) =
+  ($1, $2, $3, $4, $5, CAST($6 AS DECIMAL), CAST($7 AS DECIMAL))
+  WHERE id = $8
+  RETURNING *;
+  `, queryValues, result => result.rows);
+};
+
+/**
  * Delete a point.
  * @param {{}}} point id.
  * @return {Promise<{}>} A promise to the point.
@@ -137,6 +163,7 @@ module.exports = {
   getAllNoPrivateMaps,
   addMap,
   addPoint,
+  updatePoint,
   deletePoint,
   getFavouritesWithUserId,
   addFavourite,
