@@ -39,7 +39,7 @@ const addMap = (map) => {
   (name, owner_id, description, category, map_pins, is_private)
   VALUES ($1, $2, $3, $4, $5, $6)
   RETURNING *;
-  `, queryValues, result => result.rows);
+  `, queryValues, result => result.rows[0]);
 };
 
 // points
@@ -76,7 +76,7 @@ const addPoint = (point) => {
   (title, map_id, contributor_id, description, image_url, latitude, longitude)
   VALUES ($1, $2, $3, $4, $5, CAST($6 AS DECIMAL), CAST($7 AS DECIMAL))
   RETURNING *;
-  `, queryValues, result => result.rows);
+  `, queryValues, result => result.rows[0]);
 };
 
 /**
@@ -102,7 +102,7 @@ const updatePoint = (point) => {
   ($1, $2, $3, $4, $5, CAST($6 AS DECIMAL), CAST($7 AS DECIMAL))
   WHERE id = $8
   RETURNING *;
-  `, queryValues, result => result.rows);
+  `, queryValues, result => result.rows[0]);
 };
 
 /**
@@ -140,7 +140,7 @@ const addFavourite = (favourite) => {
     favourite.user_id,
   ];
 
-  return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows);
+  return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows[0]);
 };
 
 /**
@@ -154,7 +154,7 @@ const deleteFavourite = (favourite) => {
     favourite.user_id,
   ];
 
-  return query(`DELETE FROM favourites WHERE map_id = $1 AND user_id = $2 RETURNING *;`, queryValues, result => result.rows);
+  return query(`DELETE FROM favourites WHERE map_id = $1 AND user_id = $2 RETURNING *;`, queryValues, result => result.rows[0]);
 };
 
 module.exports = {
