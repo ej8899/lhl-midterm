@@ -15,7 +15,7 @@ let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 // GLOBAL cached DB query data
-let mapsList, mapsListObject, mapsPointsObject;
+let mapsList, mapsListObject, mapsPointsObject, favoritesObject;
 
 
 
@@ -50,9 +50,11 @@ main();
 // actions for Document Ready loading
 //
 $(document).ready(function() {
+  reqLocationModal();
   updateNav();
   getListofMaps();
 
+  sliderToggle();
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
@@ -88,7 +90,18 @@ $(document).ready(function() {
 }); // END DOCUMENT READY
 
 
-
+//
+// sliderToggle() - this toggles info sliders open & closed
+//
+const sliderToggle = function() {
+  // uncomment next two lines to start with first block open
+  // $('.toggle-block:first-child').addClass('active');
+  // $('.toggle-block:first-child').find('.toggle-able').slideToggle();
+  $('.toggle-trigger').click(function() {
+    $(this).closest('.toggle-block').toggleClass('active');
+    $(this).closest('.toggle-block').find('.toggle-able').stop().slideToggle();
+  })
+}
 
 //
 //  toggleDarkMode(option);
@@ -200,6 +213,7 @@ const mapSelectHandler = function() {
       newMapModal();
       return;
     }
+    currentMap = mapChangeID;
     getPointsByMap(mapChangeID);
     $("#titlemap").text($(this).text());
     $("#aboutmap").text(findMapDescription(mapChangeID));
@@ -224,26 +238,22 @@ const updateNav = function(user) {
   $pageHeader.find("#navbar-userlinksend").remove();
   let userLinks;
 
+  let fixedItems = `<span style="padding-right:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
+
+  <div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked style="min-height: 22px; height:22px !important;" onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left:6px"></i></div>`;
   if (!user) {
     userLinks = `
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
-    <button class="login_button " onClick="showLogin();">Log In</button>
-    <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
-    <button class="login_button " onClick="logOut();">Log Out</button>
-
-    <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
-
-    <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
+      <button class="login_button " onClick="showLogin();">Log In</button>
+      <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
+      ${fixedItems}
     </nav>
     `
   } else {
     userLinks = `
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
     <button class="login_button " onClick="logOut();updateNav();">Log Out ( ${user.name} )</button>
-
-    <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
-
-    <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
+    ${fixedItems}
     </nav>
     `
   }
