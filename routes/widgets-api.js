@@ -51,8 +51,8 @@ router.post('/maps', (req, res) => {
 
 // points
 router.get('/points', (req, res) => {
-  const { mapId } = req.query;
-  widgetsQueries.getPointsWithMapId(mapId)
+  const { mapId, contributorId } = req.query;
+  widgetsQueries.getPointsWithMapIdAndContributorId({ map_id: mapId, contirbutor_id: contributorId })
     .then(points => {
       res.json({ points });
     })
