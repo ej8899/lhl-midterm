@@ -46,13 +46,32 @@ const addMap = (map) => {
 
 /**
  * Get points from database given map_id.
- * @param {string}} map_id.
- * @return {Promise<{}>} A promise to the point.
+ * @param {{ mapId: string, contirbutorId: string }} map_id, contributor_id.
+ * @return {Promise<{}>} A promise to the points.
  */
-const getPointsWithMapId = (id) => {
-  return query(`SELECT p.*, u.name AS contributor_name FROM points AS p
+const getPointsWithMapIdAndContributorId = (point) => {
+  let whereClause = '';
+  let queryValues = [];
+  if (!!point.map_id && !!point.contirbutor_id) {
+    whereClause += 'WHERE map_id = $1 AND contributor_id = $2';
+    queryValues = [point.map_id, point.contirbutor_id];
+  }
+
+  if (!!point.map_id && !point.contirbutor_id) {
+    whereClause += 'WHERE map_id = $1';
+    queryValues = [point.map_id];
+  }
+
+  if (!point.map_id && !!point.contirbutor_id) {
+    whereClause += 'WHERE contributor_id = $1';
+    queryValues = [point.contirbutor_id];
+  }
+
+  return query(`SELECT m.name AS map_name, u.name AS contributor_name, p.* FROM points AS p
   JOIN users AS u ON p.contributor_id = u.id
-  WHERE map_id = $1;`, [id], result => result.rows);
+  JOIN maps AS m ON p.map_id = m.id
+  ${whereClause}
+  ORDER BY map_name ASC;`, queryValues, result => result.rows);
 };
 
 /**
@@ -159,8 +178,8 @@ const deleteFavourite = (favourite) => {
 
 module.exports = {
   getMapsWithOwnerId,
-  getPointsWithMapId,
   getAllNoPrivateMaps,
+  getPointsWithMapIdAndContributorId,
   addMap,
   addPoint,
   updatePoint,
