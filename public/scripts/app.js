@@ -238,25 +238,22 @@ const updateNav = function(user) {
   $pageHeader.find("#navbar-userlinksend").remove();
   let userLinks;
 
+  let fixedItems = `<span style="padding-right:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
+
+  <div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked style="min-height: 22px; height:22px !important;" onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left:6px"></i></div>`;
   if (!user) {
     userLinks = `
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
-    <button class="login_button " onClick="showLogin();">Log In</button>
-    <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
-
-    <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
-
-    <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
+      <button class="login_button " onClick="showLogin();">Log In</button>
+      <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
+      ${fixedItems}
     </nav>
     `
   } else {
     userLinks = `
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
     <button class="login_button " onClick="logOut();updateNav();">Log Out ( ${user.name} )</button>
-
-    <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
-
-    <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
+    ${fixedItems}
     </nav>
     `
   }

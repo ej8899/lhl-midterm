@@ -377,13 +377,10 @@ body {
   cursor: pointer;
 }
 
-.login_button {
-  border: none;
-  background-color: transparent;
-}
 
-.sign-up_button {
-  border: none;
+.sign-up_button, .login_button {
+  border: transparent;
+  border-radius: 1em;
   background-color: transparent;
 }
 
@@ -687,4 +684,12 @@ TOGGLES
       }
     }
   }
+}
+
+
+/*
+
+*/
+.navbar-userlinksend {
+  align-items: center;
 }

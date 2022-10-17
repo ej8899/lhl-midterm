@@ -6,6 +6,7 @@ function getMyDetails() {
 }
 
 function logOut() {
+  $('#useronlysection').css('visibility','hidden');
   return $.ajax({
     method: "POST",
     url: "/api/users/logout",

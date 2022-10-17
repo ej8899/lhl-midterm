@@ -53,16 +53,17 @@
 
   <header id="page-navbar" class="navbar-main">
     <nav id="navbar-userlinks" class="navbar-userlinks">
-      <span class="home">map my wiki</span>
+      <span class="home hoverbutton">Map My Wiki</span>
     </nav>
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
       <button class="login_button " onClick="showLogin();">Log In</button>
       <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
+      <button class="login_button " onClick="logOut();">Log Out</button>
 
       <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
 
       <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
-    </nav>
+      </nav>
   </header>
 
 
