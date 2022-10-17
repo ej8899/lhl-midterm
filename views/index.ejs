@@ -7,7 +7,8 @@
   <meta charset="UTF-8" >
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <meta name="viewport" content="width=device-width, initial-scale=1.0" >
-
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.2/js/bootstrap.min.js" integrity="sha512-5BqtYqlWfJemW5+v+TZUs22uigI8tXeVah5S/1Z6qBLVO7gakAOtkOzUtgq6dsIo5c0NJdmGPs0H9I+2OHUHVQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" />
   <link rel="stylesheet" href="/vendor/border-box.css" />
   <link rel="stylesheet" href="/styles/main.css" />
@@ -52,21 +53,23 @@
 
   <header id="page-navbar" class="navbar-main">
     <nav id="navbar-userlinks" class="navbar-userlinks">
-      <ul>
-        <li class="home hoverbutton"><i class="fa-solid fa-house"></i></li>
-        <li class="login_button hoverbutton" onClick="showLogin();">Log In</li>
-        <li class="sign-up_button hoverbutton" onClick="showSignUp();">Sign Up</li>
+      <span class="home">map my wiki</span>
+    </nav>
+    <nav id="navbar-userlinksend" class="navbar-userlinksend">
+      <button class="login_button " onClick="showLogin();">Log In</button>
+      <button class="sign-up_button " onClick="showSignUp();">Sign Up</button>
 
-        <li style="padding-left:20px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></li>
+      <span style="padding-left:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
 
-        <li><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></li>
-      </ul>
+      <span><div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left: 4px;"></i></div></span>
     </nav>
   </header>
 
+
   <div class="hero">
     <div class="hero-title-container">
-    <span class="hero-title">Map My Wiki</span>
+    <span class="hero-title" id="titlemap">Map My Wiki</span>
+    <span class="hero-subtitle" id="aboutmap">Select a map, then click the map to place a pin!</span>
     <!-- <p class="hero-title__overlay" aria-hidden="true"></p>-->
     </div>
   </div>
@@ -74,16 +77,28 @@
     <canvas id="canv" width="32" height="32"></canvas>
   </div>
 
+
   <main id="main-content">
     <!-- SELECT FORM BEGIN -->
     <%- include("map-select.ejs") %>
     <!-- SELECT FORM END -->
 
-
     <div id="map"></div>
-    <div id="aboutmap">this is an about this map section</div>
-    <div id="filtertoggle" class="filtertoggle"><div class="filtertoggleicon" id="filtertoggleicon"><i class="fa-solid fa-sliders fa-lg"></i> Search</div></div>
+
   </main>
+  <div id="useronlysection" class="toggle-wrap" style="visibility:hidden;">
+    <div class="toggle-block">
+    <h4 class="toggle-trigger">Favorites (show count of favorites if there are any)</h4>
+    <div class="toggle-able">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, harum at! Illo nemo sapiente officia harum aliquid architecto sint expedita labore deserunt vel commodi recusandae, nesciunt doloremque cumque blanditiis fugiat.</div>
+    </div>
+
+    <div class="toggle-block">
+      <h4 class="toggle-trigger">Admin (Created Maps:  Created Points: ) show count of maps and points added if there are any)</h4>
+      <div class="toggle-able">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, harum at! Illo nemo sapiente officia harum aliquid architecto sint expedita labore deserunt vel commodi recusandae, nesciunt doloremque cumque blanditiis fugiat.</div>
+    </div>
+
+  </div>
+
 
   <footer class="pagefooter">
     <i class="fa-solid fa-copyright"></i> 2022 Map My Wiki -
