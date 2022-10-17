@@ -163,7 +163,8 @@ const showLogin = () => {
         console.log(json.user);
         currentUID = json.user.id;
         updateNav(json.user);
-        //views_manager.show('listings');
+        // show admin section
+        $('#useronlysection').css('visibility','visible');
       });
     });
 }
