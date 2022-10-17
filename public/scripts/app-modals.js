@@ -6,7 +6,7 @@ const showPrivacyPolicy = () => {
   This privacy policy is to inform you on how the information collected on this website is used. Be sure to read this privacy policy before using our website or submitting any personal information and be aware that by using our website, you are accepting the practices described in this policy. We reserve the right to make changes to this website's policy at any time without prior notice. Be also aware that privacy practices set forth in this here are for this website only and do not apply for any other linking websites.<BR><BR>
   ....etc, etc, etc.
   `;
-  toggleModal('<i class="fa-solid fa-lock fa-xl"></i> Privacy Policy',privacyPolicy);
+  toggleModal('<i class="fa-solid fa-lock fa-xl"></i> Privacy Policy',privacyPolicy,"modalblur");
 };
 
 //
@@ -52,14 +52,17 @@ const newPin = function(lat,lng) {
   $('#newpinform').on('submit', function (event) {
     event.preventDefault();
     let data = $(this).serialize();
-    data += `&contributor_id=${currentUID}&latitude=${lat}&longitude=${lng}&map_id=2`;
+
+    data += `&contributor_id=${currentUID}&latitude=${lat}&longitude=${lng}&map_id=${currentMap}`;
 
     // TODO - add map ID and submitter ID to the data
     console.log("NEW PIN: ",data)
     submitNewPin(data)
     .then(() => {
       toggleModal(`Got It!`,`Your pin is now ready to go!`);
-      // refresh maps list and set to this new map
+      getPointsByMap(currentMap);
+      // push the details into our object mapsPointsObject
+      // call placeMarker to drop pin
     })
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
@@ -220,7 +223,26 @@ const showContact = () => {
   toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Contact Us',privacyPolicy);
 };
 
+//
+// show "request location access" modal window
+//
+const reqLocationModal = () => {
+  let reqLocation = `
+  <table border=0 width=100%><tr>
+  <td style="padding-right:20px;"><i class="fashadow fa-solid fa-map-location-dot" style="font-size:6rem;"></i></td><td><b>Map My Wiki</b> uses your geographic location to work correctly and to enhance the user experience on our maps.</td></tr></table>
+  <div class="modal-info">
+  <br>The information is not used to identify or contact the user.<BR><BR>
+  </div>
+  <div class="modal-info">
+  <span>&copy; Copyright 2022, All Rights Reserved<BR><a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm"> Get the latest version on <i class="fa-brands fa-github"></i></a></span><BR><BR>
+  </div>
+  <div class="modal-button">
+  <button class="accept" onClick="toggleModal();">Click to Continue  <i class="fa-solid fa-thumbs-up"></i></button>
+  </div>
+  `;
 
+  toggleModal('', reqLocation, 'modalblur');
+};
 
 //
 // toggleModal(title,body)
@@ -229,8 +251,9 @@ const showContact = () => {
 const modal = document.querySelector(".modal");
 const closeButton = document.querySelector(".close-button");
 $("#propertySubmit").removeAttr("style"); // helps eliminate any initial page draw showing the modal window
-const toggleModal = function(title,body) {
+const toggleModal = function(title,body,effect) {
   // modal-title, modal-body
+  /*
   $("#modal-title").html(title);
   $("#modal-body").html(body);
   modal.classList.toggle("show-modal");
@@ -240,7 +263,27 @@ const toggleModal = function(title,body) {
     document.addEventListener('keyup',modalKeys);
   } else {
     document.removeEventListener('keyup',modalKeys);
-  }
+  }*/
+  // TODO remove above when below is tested
+    // modal-title, modal-body
+    $("#modal-title").html(title);
+    $("#modal-body").html(body);
+    modal.classList.toggle("show-modal");
+
+    if(!effect) {
+      effect = 'modaldim';
+    };
+
+    if (modal.classList.contains("show-modal")) {
+      // add listener (for escape close of modal)
+      document.addEventListener('keyup',modalKeys);
+      $("#propertySubmit").addClass(effect);
+
+    } else {
+      document.removeEventListener('keyup',modalKeys);
+      $("#propertySubmit").removeClass("modalblur");
+      $("#propertySubmit").removeClass("modaldim");
+    }
 };
 const modalKeys = function(theKey) {
   if (theKey.key === "Escape") {
