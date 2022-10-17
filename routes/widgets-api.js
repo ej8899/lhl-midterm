@@ -76,6 +76,20 @@ router.post('/points', (req, res) => {
     });
 });
 
+router.put('/points', (req, res) => {
+  const { userId } = req.session;
+  const { pointId } = req.query;
+  widgetsQueries.updatePoint({ ...req.body, contributor_id: userId, id: pointId })
+    .then(point => {
+      res.send(point);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 router.delete('/points', (req, res) => {
   const { pointId } = req.query;
   widgetsQueries.deletePoint(pointId)
