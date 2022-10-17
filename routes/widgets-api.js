@@ -108,7 +108,7 @@ router.get('/favourites', (req, res) => {
   const { userId } = req.session;
   widgetsQueries.getFavouritesWithUserId(userId)
     .then(favourites => {
-      res.send(favourites);
+      res.json({ favourites });
     })
     .catch(err => {
       res
