@@ -119,7 +119,7 @@ router.get('/favourites', (req, res) => {
 
 router.post('/favourites', (req, res) => {
   const { userId } = req.session;
-  const { mapId } = req.body;
+  const { mapId } = req.query;
   widgetsQueries.addFavourite({ map_id: mapId, user_id: userId })
     .then(favourite => {
       res.send(favourite);
