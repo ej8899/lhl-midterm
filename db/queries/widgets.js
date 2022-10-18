@@ -42,6 +42,15 @@ const addMap = (map) => {
   `, queryValues, result => result.rows[0]);
 };
 
+/**
+ * Delete a map.
+ * @param {string}} map id.
+ * @return {Promise<{}>} A promise to the point.
+ */
+const deleteMap = (id) => {
+  return query(`DELETE FROM maps WHERE id = $1 RETURNING *;`, [id], result => result.rows[0]);
+};
+
 // points
 
 /**
@@ -126,12 +135,13 @@ const updatePoint = (point) => {
 
 /**
  * Delete a point.
- * @param {{}}} point id.
+ * @param {string}} point id.
  * @return {Promise<{}>} A promise to the point.
  */
 const deletePoint = (id) => {
   return query(`DELETE FROM points WHERE id = $1 RETURNING *;`, [id], result => result.rows[0]);
 };
+
 // favourites
 
 /**
@@ -181,6 +191,7 @@ module.exports = {
   getAllNoPrivateMaps,
   getPointsWithMapIdAndContributorId,
   addMap,
+  deleteMap,
   addPoint,
   updatePoint,
   deletePoint,
