@@ -25,7 +25,7 @@ const newPin = function(lat,lng) {
   }
 
   // TODO - need input form for new map point
-  let content = `For your pin at<BR>${lat},<BR>${lng}
+  let content = `For your pin at ${lat.toFixed(4)}, ${lng.toFixed(4)}
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__title">Title</label>
@@ -34,7 +34,7 @@ const newPin = function(lat,lng) {
 
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__description">Description</label>
-    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="10"></textarea>
+    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="5"></textarea>
   </div>
 
   <div class="new-property-form__field-wrapper">
@@ -96,7 +96,12 @@ const newMapModal = function() {
 
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__description">Description</label>
-    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="10"></textarea>
+    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="5"></textarea>
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__image">Pin Icon (SVG)</label>
+    <input type="text" name="map_pins" placeholder="svg path" id="new-property-form__mappin">
   </div>
 
   <div class="login-form__field-wrapper">
@@ -157,7 +162,7 @@ const showLogin = () => {
       .then(json => {
         console.log(json);
         if (!json.user) {
-          toggleModal('','failed to log in');
+          toggleModal('','<i class="fa-regular fa-circle-xmark"></i> failed to log in - check your user name and or password');
           return;
         }
         console.log(json.user);
