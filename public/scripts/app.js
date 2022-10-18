@@ -15,7 +15,7 @@ let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 // GLOBAL cached DB query data
-let mapsList, mapsListObject, mapsPointsObject, favoritesObject;
+let mapsList, mapsListObject, mapsPointsObject, favoritesObject, gCurrentMapId;
 
 
 
@@ -53,8 +53,8 @@ $(document).ready(function() {
   reqLocationModal();
   updateNav();
   getListofMaps();
-
   sliderToggle();
+  favoriteHandler();
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
@@ -89,6 +89,23 @@ $(document).ready(function() {
 
 }); // END DOCUMENT READY
 
+
+//
+// add click handler to favorite/heart icon on map
+//
+const favoriteHandler = function() {
+  $("#favoritestatus").on("click", function() {
+    alert("fav")
+    // toggle ON if heart is OFF
+    // add to favs table
+    setFav(currentMap);
+
+    // toggle OFF if heart is ON
+    // delete from favs table
+
+    // TODO need read all favorites store in cache memory -
+  });
+};
 
 //
 // sliderToggle() - this toggles info sliders open & closed
@@ -208,7 +225,7 @@ const mapSelectHandler = function() {
     $(this).parents(".custom-select").removeClass("opened");
     $(this).parents(".custom-select").find(".custom-select-trigger").text($(this).text());
     let mapChangeID = $("#map-sources").val();
-    console.log("MAP CHANGE:",mapChangeID);
+    console.log("MAP CHANGE - the map ID:",mapChangeID);
     if(mapChangeID === "newmap") {
       newMapModal();
       return;
@@ -218,7 +235,7 @@ const mapSelectHandler = function() {
     $("#titlemap").text($(this).text());
     $("#aboutmap").text(findMapDescription(mapChangeID));
   });
-}
+};
 
 // find map descriptions in our map list object
 const findMapDescription = function(mapID) {
@@ -231,6 +248,17 @@ const findMapDescription = function(mapID) {
   }
   return mapDescription;
 }
+// find map PIN data in our map list object
+const findMapPinData = function(mapID) {
+  let pinData ='';
+  // mapsListObject[x].description
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.map_pins;
+    }
+  }
+  return pinData;
+};
 
 const updateNav = function(user) {
   // update the nav bar if logged in or not
@@ -258,4 +286,8 @@ const updateNav = function(user) {
     `
   }
   $pageHeader.append(userLinks);
-}
+};
+
+const editPin = function(pin) {
+  alert("PID:"+pin);
+};
