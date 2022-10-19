@@ -1,4 +1,43 @@
 //
+//  app-modals.js
+//  modal window handler, supporting code and various app specific modal windows (& content)
+//
+
+// create generic error modal, but with custom message
+const modalError = function(message) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">Continue</a>
+  </center>`;
+  toggleModal(null,messageOutput,'modalblur');
+};
+
+// create generic success modal, but with custom message
+const modalSuccess = function(message) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-check" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">Continue</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+};
+
+// create confirmation modal - get yes/no type input for buttons
+const modalConfirmation = function (yesButtonText,noButtonText) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  <h3>Are you sure?</h3>
+  ${message}<br clear=all><BR>
+  // todo dim the no button color
+  // todo toggle g-variable state to show user has confirmed
+  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();">${yesButtonText}</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+};
+
+
+//
 // show Privacy Policy modal window
 //
 const showPrivacyPolicy = () => {
@@ -258,6 +297,7 @@ const showLogin = () => {
         currentUID = json.user.id;
         updateNav(json.user);
         // show admin section
+        $('#favoritestatus').css('visibility','visible');
         fetchFavorites();
         fetchAdmin();
         $('#useronlysection').css('visibility','visible');

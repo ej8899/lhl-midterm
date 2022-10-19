@@ -43,7 +43,7 @@ const fetchFavorites = function() {
       for (let x =0; x< favscount; x++) {
         userfavSection += '<tr><td width=100% valign=top>';
         userfavSection += json.favourites[x].map_name;
-        userfavSection += `</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
+        userfavSection += `</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
       }
 
       // TODO - make the heart toggle fav mode off and when off, refetch favorites

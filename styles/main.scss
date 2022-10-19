@@ -379,7 +379,8 @@ body {
 
 
 .sign-up_button, .login_button {
-  border: transparent;
+  border: solid;
+  border-color: transparent;
   border-radius: 1em;
   background-color: transparent;
 }
@@ -702,3 +703,29 @@ TOGGLES
 .hoverpointer:hover {
   cursor: pointer;
 }
+
+
+
+/*
+  MAP NAV BAR
+*/
+.mapnav-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  align-content: flex-end;
+  align-items: flex-start;
+  }
+
+.mapnav-item:nth-child(1) {
+  order: 0;
+  flex: 0 1 auto;
+  align-self: auto;
+  }
+
+.mapnav-item:nth-child(2) {
+  order: 0;
+  flex: 0 1 auto;
+  align-self: auto;
+  }

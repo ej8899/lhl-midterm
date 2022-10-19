@@ -95,7 +95,6 @@ $(document).ready(function() {
 //
 const favoriteHandler = function() {
   $("#favoritestatus").on("click", function() {
-    alert("fav")
     // toggle ON if heart is OFF
     // add to favs table
     setFav(currentMap);

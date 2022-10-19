@@ -31,11 +31,13 @@ const initMap = function() {
   // general MAPS click event handler
   google.maps.event.addListener(map, 'click', function( event ){
     //alert( "Latitude: "+event.latLng.lat()+" "+", longitude: "+event.latLng.lng() );
-    if(currentUID > 0 && currentMap > 1) {
+    if (currentUID > 0 && currentMap > 1) {
       console.log("CURRENT MAP:",currentMap)
       newPin(event.latLng.lat(),event.latLng.lng());
-    } else {
+    } else if (currentUID === 0) {
       showLogin();
+    } else {
+      modalError('Please select a map before trying to add points!');
     }
   });
 };
