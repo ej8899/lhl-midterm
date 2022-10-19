@@ -48,6 +48,19 @@ router.post('/maps', (req, res) => {
     });
 });
 
+router.put('/maps', (req, res) => {
+  widgetsQueries.updateMap({ ...req.body})
+    .then(map => {
+      res.send(map);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+
+});
+
 router.delete('/maps', (req, res) => {
   const { userId } = req.session;
   const { mapId } = req.query;
