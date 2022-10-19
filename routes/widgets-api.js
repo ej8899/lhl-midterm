@@ -77,8 +77,7 @@ router.post('/points', (req, res) => {
 
 router.put('/points', (req, res) => {
   const { userId } = req.session;
-  const { pointId } = req.query;
-  widgetsQueries.updatePoint({ ...req.body, contributorId: userId, id: pointId })
+  widgetsQueries.updatePoint({ ...req.body, contributorId: userId })
     .then(point => {
       res.send(point);
     })
