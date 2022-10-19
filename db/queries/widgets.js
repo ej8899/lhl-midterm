@@ -52,19 +52,19 @@ const addMap = (map) => {
 const getPointsWithMapIdAndContributorId = (point) => {
   let whereClause = '';
   let queryValues = [];
-  if (!!point.mapId && !!point.contirbutorId) {
+  if (!!point.mapId && !!point.contributorId) {
     whereClause += 'WHERE map_id = $1 AND contributor_id = $2';
-    queryValues = [point.mapId, point.contirbutorId];
+    queryValues = [point.mapId, point.contributorId];
   }
 
-  if (!!point.mapId && !point.contirbutorId) {
+  if (!!point.mapId && !point.contributorId) {
     whereClause += 'WHERE map_id = $1';
     queryValues = [point.mapId];
   }
 
-  if (!point.mapId && !!point.contirbutorId) {
+  if (!point.mapId && !!point.contributorId) {
     whereClause += 'WHERE contributor_id = $1';
-    queryValues = [point.contirbutorId];
+    queryValues = [point.contributorId];
   }
 
   return query(`SELECT m.name AS map_name, u.name AS contributor_name, p.* FROM points AS p
