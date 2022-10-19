@@ -29,7 +29,8 @@ const newPin = function(lat,lng) {
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__title">Title</label>
-    <input type="text" name="title" placeholder="Title" id="new-property-form__title">
+    <input type="text" name="title" placeholder="Title" id="new-property-form__title"><br clear="all">
+    <small></small>
   </div>
 
   <div class="new-property-form__field-wrapper">
@@ -51,6 +52,14 @@ const newPin = function(lat,lng) {
   toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> New Pin',content);
   $('#newpinform').on('submit', function (event) {
     event.preventDefault();
+
+    // run validations
+    const titleEl = document.querySelector('#new-property-form__title');
+    let isTitleValid = formCheckIfEmpty(titleEl,"Map point title can't be left empty!");
+    if (!isTitleValid) {
+      return;
+    }
+
     let data = $(this).serialize();
 
     data += `&contributor_id=${currentUID}&latitude=${lat}&longitude=${lng}&map_id=${currentMap}`;
@@ -59,13 +68,21 @@ const newPin = function(lat,lng) {
     console.log("NEW PIN: ",data)
     submitNewPin(data)
     .then(() => {
-      toggleModal(`Got It!`,`Your pin is now ready to go!`);
-      getPointsByMap(currentMap);
+      toggleModal(); // turn off existing modal
+      let modalText = `<center>
+        <i class="fashadow fa-solid fa-location-dot" style="font-size:6rem;"></i><br clear=all><BR>
+        Your point has been added!<br clear=all><BR>
+        <a class="button accept" onClick="toggleModal();">Continue</a>
+        </center>
+      `;
+      toggleModal(``,modalText);
+      getPointsByMap(currentMap,false);
       // push the details into our object mapsPointsObject
       // call placeMarker to drop pin
     })
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
+      toggleModal();
       toggleModal(`Woah!`,`There was an error saving your map pin to this map.<BR>${error}`);
       console.error(error);
       // refresh to default map
@@ -113,6 +130,7 @@ const editPinModal = function(existingPinObject) {
     console.log("UPDATE PIN URL: ",data)
     updatePin(data)
     .then(() => {
+      toggleModal();
       toggleModal(`Got It!`,`Your pin is now changed!`);
       getPointsByMap(currentMap);
       // push the details into our object mapsPointsObject
@@ -120,6 +138,7 @@ const editPinModal = function(existingPinObject) {
     })
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
+      toggleModal();
       toggleModal(`Woah!`,`There was an error updating your map pin details.<BR>${error}`);
       console.error(error);
       // refresh to default map
@@ -146,7 +165,9 @@ const newMapModal = function() {
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__title">Map Name</label>
     <input type="text" name="name" placeholder="Map Title" id="new-property-form__title">
+    <small><small>
   </div>
+
 
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__description">Description</label>
@@ -167,6 +188,14 @@ const newMapModal = function() {
   toggleModal('<i class="fa-solid fa-map fa-xl"></i> New Map',content);
   $('#new-map-form').on('submit', function (event) {
     event.preventDefault();
+
+    // run validations
+    const titleEl = document.querySelector('#new-property-form__title');
+    let isTitleValid = formCheckIfEmpty(titleEl,"Map title can not be empty!");
+    if (!isTitleValid) {
+      return;
+    }
+
     let data = $(this).serialize();
     data += '&category=general&is_private=false&owner_id=';
     data += currentUID;
@@ -175,7 +204,13 @@ const newMapModal = function() {
 
     submitNewMap(data)
       .then(() => {
-        toggleModal(`Got It!`,`Your map is now ready to go!`);
+        let modalText = `<center>
+        <i class="fashadow fa-solid fa-map" style="font-size:6rem;"></i><br clear=all><BR>
+        Your new map has been added!<br clear=all><BR>
+        <a class="button accept" onClick="toggleModal();">Continue</a>
+        </center>
+      `;
+        toggleModal(``,modalText);
         // refresh maps list and set to this new map
         getListofMaps();
       })
@@ -319,45 +354,31 @@ const modal = document.querySelector(".modal");
 const closeButton = document.querySelector(".close-button");
 $("#propertySubmit").removeAttr("style"); // helps eliminate any initial page draw showing the modal window
 const toggleModal = function(title,body,effect,extracss) {
-  // modal-title, modal-body
-  /*
+  if(extracss) {
+    console.log("EXTRACSS:",extracss);
+    // REFERENCE: css gradient builder
+    $("#modal-content").css(extracss);
+    // todo - we need to remove and reset the modal css  when we close it.
+    // https://stackoverflow.com/questions/754607/can-jquery-get-all-css-styles-associated-with-an-element
+  }
   $("#modal-title").html(title);
   $("#modal-body").html(body);
   modal.classList.toggle("show-modal");
 
+  if(!effect) {
+    effect = 'modaldim';
+  };
+
   if (modal.classList.contains("show-modal")) {
     // add listener (for escape close of modal)
     document.addEventListener('keyup',modalKeys);
+    $("#propertySubmit").addClass(effect);
+
   } else {
     document.removeEventListener('keyup',modalKeys);
-  }*/
-  // TODO remove above when below is tested
-    // modal-title, modal-body
-    if(extracss) {
-      console.log("EXTRACSS:",extracss);
-      // REFERENCE: css gradient builder
-      $("#modal-content").css(extracss);
-      // todo - we need to remove and reset the modal css  when we close it.
-      // https://stackoverflow.com/questions/754607/can-jquery-get-all-css-styles-associated-with-an-element
-    }
-    $("#modal-title").html(title);
-    $("#modal-body").html(body);
-    modal.classList.toggle("show-modal");
-
-    if(!effect) {
-      effect = 'modaldim';
-    };
-
-    if (modal.classList.contains("show-modal")) {
-      // add listener (for escape close of modal)
-      document.addEventListener('keyup',modalKeys);
-      $("#propertySubmit").addClass(effect);
-
-    } else {
-      document.removeEventListener('keyup',modalKeys);
-      $("#propertySubmit").removeClass("modalblur");
-      $("#propertySubmit").removeClass("modaldim");
-    }
+    $("#propertySubmit").removeClass("modalblur");
+    $("#propertySubmit").removeClass("modaldim");
+  }
 };
 const modalKeys = function(theKey) {
   if (theKey.key === "Escape") {
@@ -373,3 +394,40 @@ const windowOnClick = function(event) {
 // modal listeners for general window click and close button
 closeButton.addEventListener("click", toggleModal);
 window.addEventListener("click", windowOnClick);
+
+
+//
+// form validation functions:
+//
+// TODO fully implement this concept for future use
+// https://www.javascripttutorial.net/javascript-dom/javascript-form-validation/#:~:text=What%20is%20form%20validation,is%20called%20client%2Dside%20validation.
+const isRequired = value => value === '' ? false : true;
+
+const showFormError = (input, message) => {
+  const formField = input.parentElement;
+  formField.classList.remove('formsuccess');
+  formField.classList.add('formerror');
+  const error = formField.querySelector('small');
+  error.textContent = message;
+};
+
+const showFormSuccess = (input) => {
+  const formField = input.parentElement;
+  formField.classList.remove('formerror');
+  formField.classList.add('formsuccess');
+  const error = formField.querySelector('small');
+  error.textContent = '';
+};
+
+const formCheckIfEmpty = (elementId,errorMessage) => {
+  let valid = false;
+  const username = elementId.value.trim();
+
+  if (!isRequired(username)) {
+    showFormError(elementId, errorMessage);
+  } else {
+    showFormSuccess(elementId);
+    valid = true;
+  }
+  return valid;
+}
