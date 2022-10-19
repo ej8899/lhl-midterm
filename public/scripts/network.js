@@ -8,6 +8,7 @@ function getMyDetails() {
 
 function logOut() {
   $('#useronlysection').css('visibility','hidden');
+  currentUID = 0;
   return $.ajax({
     method: "POST",
     url: "/api/users/logout",
@@ -35,14 +36,18 @@ const fetchFavorites = function() {
   getFavoritesAPI(currentUID)
   .then(function(json) {
     console.log("FAVORITES OBJ:",json.favourites);
-    console.log("FAV COUNT:",json.favourites.length);
-    if(json.favourites.length > 0) {
+    let favscount = json.favourites.length;
+    console.log("FAV COUNT:",favscount);
+    if(favscount > 0) {
       let userfavSection = `<table border="0" width="100%">`;
-      userfavSection += '<tr><td width=100%>';
-      userfavSection += json.favourites[0].description;
+      for (let x =0; x< favscount; x++) {
+        userfavSection += '<tr><td width=100% valign=top>';
+        userfavSection += json.favourites[x].map_name;
+        userfavSection += `</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
+      }
+
       // TODO - make the heart toggle fav mode off and when off, refetch favorites
-      // TODO - implement LOOP for all favorites not just 1 of them
-      userfavSection += '</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(json.favourites[0].id)"><i class="fa-solid fa-heart-circle-xmark"></i></a></td></tr>'
+
       userfavSection += `</table>`;
       $('#user-favorites-title').text('Favorites (' + json.favourites.length + '):');
       $('#user-favorites').html(userfavSection);
@@ -69,12 +74,12 @@ const fetchAdmin = function() {
     console.log("ALL MAP COUNT:",usermapscount)
     if (usermapscount > 0) {
       let usermaplist = `<table border="0" width="100%">`;
-      // TODO sort this output list by alpha
+      // TODO sort this output list by alpha - sent to BACKEND DEV 2022-10-18
       for(let x = 0; x < usermapscount; x ++) {
-        usermaplist += '<tr ><td width=100% style="padding-bottom:20px;">';
+        usermaplist += '<tr ><td width=100% style="padding-bottom:20px;"><Big>';
         usermaplist += json.maps[x].name;
-        usermaplist += '<BR>' + json.maps[x].description;
-        usermaplist += '</td><td style="padding-left:10px;" valign="top"><a href="" class="tooltip expand" data-title="edit this map"><i class="fa-solid fa-pen-to-square"></i></a></td><td style="padding-left:10px;" valign="top"><a href="" class="tooltip expand" data-title="delete this map"><i class="fa-solid fa-trash"></i></a></td></tr>';
+        usermaplist += '</big><BR><b>' + json.maps[x].description;
+        usermaplist += '</b></td><td style="padding-left:10px;" valign="top"><a href="" class="tooltip expand" data-title="edit this map"><i class="fa-solid fa-pen-to-square"></i></a></td><td style="padding-left:10px;" valign="top"><a href="" class="tooltip expand" data-title="delete this map"><i class="fa-solid fa-trash"></i></a></td></tr>';
       }
       usermaplist += '</table>';
       $('#user-mapslist-title').text('Your Maps (' + usermapscount + '):');
@@ -86,6 +91,7 @@ const fetchAdmin = function() {
   .then(function(json) {
     console.log("ALL POINTS for user:",json)
     let usermapscount = json.points.length;
+    userPointCache = json.points;
     console.log("ALL POINTS COUNT:",usermapscount)
     if (usermapscount > 0) {
       let usermaplist = `<table border="0" width="100%">`;
@@ -99,7 +105,7 @@ const fetchAdmin = function() {
         usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><i class="fa-solid fa-map-pin"></i>&nbsp;`;
         usermaplist += json.points[x].title;
         usermaplist += '<BR>' + json.points[x].description;
-        usermaplist += `</td><td style="padding-left:10px;" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash"></i></a></td></tr>`;
+        usermaplist += `</td><td style="padding-left:10px;" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square hoverpointer"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash hoverpointer"></i></a></td></tr>`;
       }
       usermaplist += '</table>';
       $('#user-pointslist-title').text('Your Points (' + usermapscount + '):');
@@ -190,6 +196,14 @@ function getListofMapsAPI() {
 }
 
 
+const updatePin = function(data) {
+  return $.ajax({
+    method: "PUT",
+    url: "/api/widgets/points",
+    data,
+  });
+}
+
 const submitNewPin = function(data) {
   return $.ajax({
     method: "POST",
@@ -227,8 +241,9 @@ const deleteFav = function(mapid) {
 const deleteFavAPI = function(data) {
   let url = "/api/widgets/favourites";
   if (data) {
-    url += "?id=" + data;
+    url += "?mapId=" + data;
   }
+  console.log("DELFAVURL:",url)
   return $.ajax({
     method: "DELETE",
     url: url,

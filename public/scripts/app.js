@@ -15,7 +15,7 @@ let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
 // GLOBAL cached DB query data
-let mapsList, mapsListObject, mapsPointsObject, favoritesObject, gCurrentMapId;
+let mapsList, mapsListObject, mapsPointsObject, favoritesObject, gCurrentMapId, userPointCache;
 
 
 
@@ -289,5 +289,15 @@ const updateNav = function(user) {
 };
 
 const editPin = function(pin) {
-  alert("PID:"+pin);
+  editPinModal(findPointinCache(pin));
+};
+
+const findPointinCache = function(pin) {
+  // points cache for this user is at userPointCache
+  for (const key of userPointCache) {
+    if(key.id === +pin) {
+      console.log ("POINT OBJECT:",key)
+      return key;
+    }
+  }
 };

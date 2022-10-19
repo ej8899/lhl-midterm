@@ -75,6 +75,60 @@ const newPin = function(lat,lng) {
 
 
 //
+//  editPin(existingPinObject) - get info to save a new pin to this map (pin is via map click)
+//
+const editPinModal = function(existingPinObject) {
+  // TODO - need input form for new map point
+  let content = `For your pin at ${Number(existingPinObject.latitude).toFixed(4)}, ${Number(existingPinObject.longitude).toFixed(4)}
+  <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__title">Title</label>
+    <input type="text" name="title" placeholder="Title" id="new-property-form__title" value="${existingPinObject.title}">
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__description">Description</label>
+    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="5">${existingPinObject.description}</textarea>
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <label for="new-property-form__image">Image URL</label>
+    <input type="text" name="image_url" placeholder="image url" id="new-property-form__imageurl" value="${existingPinObject.image_url}">
+  </div>
+
+  <div class="login-form__field-wrapper">
+    <button class="button">Update Point</button>&nbsp;
+    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+  </div>
+  </form>
+  `;
+  toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Edit Existing Pin',content);
+  $('#newpinform').on('submit', function (event) {
+    event.preventDefault();
+    let data = $(this).serialize();
+
+    data += `&contributor_id=${currentUID}&latitude=${Number(existingPinObject.latitude)}&longitude=${Number(existingPinObject.longitude)}&map_id=${existingPinObject.map_id}&pointId=${existingPinObject.id}`;
+
+    // TODO - add map ID and submitter ID to the data
+    console.log("UPDATE PIN URL: ",data)
+    updatePin(data)
+    .then(() => {
+      toggleModal(`Got It!`,`Your pin is now changed!`);
+      getPointsByMap(currentMap);
+      // push the details into our object mapsPointsObject
+      // call placeMarker to drop pin
+    })
+    .catch((error) => {
+      // TODO - need to JSON stringify the error object for readability
+      toggleModal(`Woah!`,`There was an error updating your map pin details.<BR>${error}`);
+      console.error(error);
+      // refresh to default map
+    });
+  });
+};
+
+
+//
 //  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
 //
 const newMapModal = function() {
@@ -152,7 +206,7 @@ const showLogin = () => {
       </div>
     </form>
     `;
-    toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Log In',data);
+    toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Log In',data,null,{"background":"white"});
     $('#login-form').on('submit', function (event) {
       event.preventDefault();
       let data = $(this).serialize();
@@ -236,20 +290,25 @@ const showContact = () => {
 //
 const reqLocationModal = () => {
   let reqLocation = `
-  <table border=0 width=100%><tr>
-  <td style="padding-right:20px;"><i class="fashadow fa-solid fa-map-location-dot" style="font-size:6rem;"></i></td><td><b>Map My Wiki</b> uses your geographic location to work correctly and to enhance the user experience on our maps.</td></tr></table>
+  <center>
+  <div class="home" style="font-size:34pt;">Map My Wiki</div>
+  <i class="fashadow fa-solid fa-map-location-dot" style="font-size:6rem;"></i><br clear=all><BR>
+  This app uses your geographic location to work correctly and to enhance the user experience with our maps.
   <div class="modal-info">
   <br>The information is not used to identify or contact the user.<BR><BR>
   </div>
   <div class="modal-info">
   <span>&copy; Copyright 2022, All Rights Reserved<BR><a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm"> Get the latest version on <i class="fa-brands fa-github"></i></a></span><BR><BR>
   </div>
-  <div class="modal-button">
-  <button class="accept" onClick="toggleModal();">Click to Continue  <i class="fa-solid fa-thumbs-up"></i></button>
-  </div>
+
+
+  <a class="button accept" onClick="toggleModal();">Continue</a>
+  <br clear=all>&nbsp;
+  </center>
   `;
 
-  toggleModal('', reqLocation, 'modalblur');
+  toggleModal('', reqLocation, 'modalblur',{"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
+  //toggleModal('', reqLocation, 'modalblur',{"background-color":"red"});
 };
 
 //
@@ -259,7 +318,7 @@ const reqLocationModal = () => {
 const modal = document.querySelector(".modal");
 const closeButton = document.querySelector(".close-button");
 $("#propertySubmit").removeAttr("style"); // helps eliminate any initial page draw showing the modal window
-const toggleModal = function(title,body,effect) {
+const toggleModal = function(title,body,effect,extracss) {
   // modal-title, modal-body
   /*
   $("#modal-title").html(title);
@@ -274,6 +333,13 @@ const toggleModal = function(title,body,effect) {
   }*/
   // TODO remove above when below is tested
     // modal-title, modal-body
+    if(extracss) {
+      console.log("EXTRACSS:",extracss);
+      // REFERENCE: css gradient builder
+      $("#modal-content").css(extracss);
+      // todo - we need to remove and reset the modal css  when we close it.
+      // https://stackoverflow.com/questions/754607/can-jquery-get-all-css-styles-associated-with-an-element
+    }
     $("#modal-title").html(title);
     $("#modal-body").html(body);
     modal.classList.toggle("show-modal");

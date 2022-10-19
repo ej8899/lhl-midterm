@@ -45,6 +45,7 @@ https://www.sliderrevolution.com/resources/css-tooltip/
   background: rgba(0,0,0,.75);
   border-radius: 2px;
   color: #fff;
+  z-index: 10;
   content: attr(data-title);
   font-size: 14px;
   padding: 6px 10px;
