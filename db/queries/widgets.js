@@ -27,11 +27,11 @@ const getAllNoPrivateMaps = () => {
 const addMap = (map) => {
   const queryValues = [
     map.name,
-    map.owner_id,
+    map.ownerId,
     map.description,
     map.category,
-    map.map_pins,
-    map.is_private,
+    map.mapPins,
+    map.isPrivate,
   ];
 
   return query(`
@@ -52,19 +52,19 @@ const addMap = (map) => {
 const getPointsWithMapIdAndContributorId = (point) => {
   let whereClause = '';
   let queryValues = [];
-  if (!!point.map_id && !!point.contirbutor_id) {
+  if (!!point.mapId && !!point.contirbutorId) {
     whereClause += 'WHERE map_id = $1 AND contributor_id = $2';
-    queryValues = [point.map_id, point.contirbutor_id];
+    queryValues = [point.mapId, point.contirbutorId];
   }
 
-  if (!!point.map_id && !point.contirbutor_id) {
+  if (!!point.mapId && !point.contirbutorId) {
     whereClause += 'WHERE map_id = $1';
-    queryValues = [point.map_id];
+    queryValues = [point.mapId];
   }
 
-  if (!point.map_id && !!point.contirbutor_id) {
+  if (!point.mapId && !!point.contirbutorId) {
     whereClause += 'WHERE contributor_id = $1';
-    queryValues = [point.contirbutor_id];
+    queryValues = [point.contirbutorId];
   }
 
   return query(`SELECT m.name AS map_name, u.name AS contributor_name, p.* FROM points AS p
@@ -82,10 +82,10 @@ const getPointsWithMapIdAndContributorId = (point) => {
 const addPoint = (point) => {
   const queryValues = [
     point.title,
-    point.map_id,
-    point.contributor_id,
+    point.mapId,
+    point.contributorId,
     point.description,
-    point.image_url,
+    point.imageUrl,
     point.latitude,
     point.longitude,
   ];
@@ -106,10 +106,10 @@ const addPoint = (point) => {
 const updatePoint = (point) => {
   const queryValues = [
     point.title,
-    point.map_id,
-    point.contributor_id,
+    point.mapId,
+    point.contributorId,
     point.description,
-    point.image_url,
+    point.imageUrl,
     point.latitude,
     point.longitude,
     point.id,
@@ -155,8 +155,8 @@ const getFavouritesWithUserId = (id) => {
  */
 const addFavourite = (favourite) => {
   const queryValues = [
-    favourite.map_id,
-    favourite.user_id,
+    favourite.mapId,
+    favourite.userId,
   ];
 
   return query(`INSERT INTO favourites (map_id, user_id) VALUES ($1, $2) RETURNING *;`, queryValues, result => result.rows[0]);
@@ -169,8 +169,8 @@ const addFavourite = (favourite) => {
  */
 const deleteFavourite = (favourite) => {
   const queryValues = [
-    favourite.map_id,
-    favourite.user_id,
+    favourite.mapId,
+    favourite.userId,
   ];
 
   return query(`DELETE FROM favourites WHERE map_id = $1 AND user_id = $2 RETURNING *;`, queryValues, result => result.rows[0]);
