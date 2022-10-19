@@ -43,6 +43,31 @@ const addMap = (map) => {
 };
 
 /**
+ * Update a map to the database.
+ * @param {{}}} map. An object containing all of the map details.
+ * @return {Promise<{}>} A promise to the map.
+ */
+const updateMap = (map) => {
+  const queryValues = [
+    map.name,
+    map.ownerId,
+    map.description,
+    map.category,
+    map.mapPins,
+    map.isPrivate,
+    map.mapId,
+  ];
+
+  return query(`
+  UPDATE maps SET
+  (name, owner_id, description, category, map_pins, is_private) =
+  ($1, $2, $3, $4, $5, $6)
+  WHERE id = $7
+  RETURNING *;
+  `, queryValues, result => result.rows[0]);
+};
+
+/**
  * Delete a map.
  * @param {string}} map id.
  * @return {Promise<{}>} A promise to the point.
@@ -191,6 +216,7 @@ module.exports = {
   getAllNoPrivateMaps,
   getPointsWithMapIdAndContributorId,
   addMap,
+  updateMap,
   deleteMap,
   addPoint,
   updatePoint,
