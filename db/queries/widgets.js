@@ -46,7 +46,7 @@ const addMap = (map) => {
 
 /**
  * Get points from database given map_id.
- * @param {{ mapId: string, contirbutorId: string }} map_id, contributor_id.
+ * @param {{ mapId: string, contributorId: string }} map_id, contributor_id.
  * @return {Promise<{}>} A promise to the points.
  */
 const getPointsWithMapIdAndContributorId = (point) => {
