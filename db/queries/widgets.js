@@ -8,7 +8,7 @@ const query = require('../connection');
  * @return {Promise<{}>} A promise to the map.
  */
 const getMapsWithOwnerId = (id) => {
-  return query('SELECT * FROM maps WHERE owner_id = $1;', [id], result => result.rows);
+  return query('SELECT * FROM maps WHERE owner_id = $1 ORDER BY name ASC;', [id], result => result.rows);
 };
 
 /**
@@ -80,7 +80,7 @@ const getPointsWithMapIdAndContributorId = (point) => {
   JOIN users AS u ON p.contributor_id = u.id
   JOIN maps AS m ON p.map_id = m.id
   ${whereClause}
-  ORDER BY map_name ASC;`, queryValues, result => result.rows);
+  ORDER BY map_name ASC, p.title ASC;`, queryValues, result => result.rows);
 };
 
 /**
