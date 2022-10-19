@@ -51,18 +51,19 @@ router.post('/maps', (req, res) => {
 router.delete('/maps', (req, res) => {
   const { userId } = req.session;
   const { mapId } = req.query;
-  let canDelete = false;
 
   widgetsQueries.getMapsWithOwnerId(userId)
     .then(maps => {
-      canDelete = maps.map(m => m.id).includes(Number(mapId));
-      console.log(canDelete);
-      if (!canDelete) {
+      return maps.map(m => m.id).includes(Number(mapId));
+    })
+    .then(value => {
+      if (!value) {
         res.status(400)
           .json({ error: 'Invalid values'});
         return;
       }
-      widgetsQueries.deleteMap(mapId)
+
+      return widgetsQueries.deleteMap(mapId)
         .then(map => {
           res.send(map);
         })
@@ -71,6 +72,14 @@ router.delete('/maps', (req, res) => {
             .status(500)
             .json({ error: err.message });
         });
+    })
+    .then(map => {
+      res.send(map);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
     });
 });
 
