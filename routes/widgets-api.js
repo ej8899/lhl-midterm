@@ -4,7 +4,6 @@
  *   these routes are mounted onto /api/widgets
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
-/* eslint-disable camelcase*/
 
 const express = require('express');
 const router  = express.Router();
@@ -38,7 +37,7 @@ router.get('/no-private-maps', (req, res) => {
 
 router.post('/maps', (req, res) => {
   const { userId } = req.session;
-  widgetsQueries.addMap({ ...req.body, owner_id: userId })
+  widgetsQueries.addMap({ ...req.body, ownerId: userId })
     .then(map => {
       res.send(map);
     })
@@ -52,7 +51,7 @@ router.post('/maps', (req, res) => {
 // points
 router.get('/points', (req, res) => {
   const { mapId, contributorId } = req.query;
-  widgetsQueries.getPointsWithMapIdAndContributorId({ map_id: mapId, contirbutor_id: contributorId })
+  widgetsQueries.getPointsWithMapIdAndContributorId({ mapId, contributorId })
     .then(points => {
       res.json({ points });
     })
@@ -65,7 +64,7 @@ router.get('/points', (req, res) => {
 
 router.post('/points', (req, res) => {
   const { userId } = req.session;
-  widgetsQueries.addPoint({ ...req.body, contributor_id: userId })
+  widgetsQueries.addPoint({ ...req.body, contributorId: userId })
     .then(point => {
       res.send(point);
     })
@@ -79,7 +78,7 @@ router.post('/points', (req, res) => {
 router.put('/points', (req, res) => {
   const { userId } = req.session;
   const { pointId } = req.query;
-  widgetsQueries.updatePoint({ ...req.body, contributor_id: userId, id: pointId })
+  widgetsQueries.updatePoint({ ...req.body, contributorId: userId, id: pointId })
     .then(point => {
       res.send(point);
     })
@@ -120,7 +119,7 @@ router.get('/favourites', (req, res) => {
 router.post('/favourites', (req, res) => {
   const { userId } = req.session;
   const { mapId } = req.query;
-  widgetsQueries.addFavourite({ map_id: mapId, user_id: userId })
+  widgetsQueries.addFavourite({ mapId, userId })
     .then(favourite => {
       res.send(favourite);
     })
@@ -134,7 +133,7 @@ router.post('/favourites', (req, res) => {
 router.delete('/favourites', (req, res) => {
   const { userId } = req.session;
   const { mapId } = req.query;
-  widgetsQueries.deleteFavourite({ map_id: mapId, user_id: userId })
+  widgetsQueries.deleteFavourite({ mapId, userId })
     .then(favourite => {
       res.send(favourite);
     })
