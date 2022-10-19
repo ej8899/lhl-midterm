@@ -19,7 +19,10 @@ const query = (text, params, callback) => {
       console.log('executed query', { text, duration, params, rows: result.rowCount });
       return callback(result);
     })
-    .catch(err => console.log(err.message));
+    .catch(err => {
+      console.log(err.message);
+      return err.message;
+    });
 };
 
 module.exports = query;

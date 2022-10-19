@@ -8,7 +8,7 @@ const query = require('../connection');
  * @return {Promise<{}>} A promise to the map.
  */
 const getMapsWithOwnerId = (id) => {
-  return query('SELECT * FROM maps WHERE owner_id = $1;', [id], result => result.rows);
+  return query('SELECT * FROM maps WHERE owner_id = $1 ORDER BY name ASC;', [id], result => result.rows);
 };
 
 /**
@@ -42,6 +42,15 @@ const addMap = (map) => {
   `, queryValues, result => result.rows[0]);
 };
 
+/**
+ * Delete a map.
+ * @param {string}} map id.
+ * @return {Promise<{}>} A promise to the point.
+ */
+const deleteMap = (id) => {
+  return query(`DELETE FROM maps WHERE id = $1 RETURNING *;`, [id], result => result.rows[0]);
+};
+
 // points
 
 /**
@@ -71,7 +80,7 @@ const getPointsWithMapIdAndContributorId = (point) => {
   JOIN users AS u ON p.contributor_id = u.id
   JOIN maps AS m ON p.map_id = m.id
   ${whereClause}
-  ORDER BY map_name ASC;`, queryValues, result => result.rows);
+  ORDER BY map_name ASC, p.title ASC;`, queryValues, result => result.rows);
 };
 
 /**
@@ -126,12 +135,13 @@ const updatePoint = (point) => {
 
 /**
  * Delete a point.
- * @param {{}}} point id.
+ * @param {string}} point id.
  * @return {Promise<{}>} A promise to the point.
  */
 const deletePoint = (id) => {
   return query(`DELETE FROM points WHERE id = $1 RETURNING *;`, [id], result => result.rows[0]);
 };
+
 // favourites
 
 /**
@@ -181,6 +191,7 @@ module.exports = {
   getAllNoPrivateMaps,
   getPointsWithMapIdAndContributorId,
   addMap,
+  deleteMap,
   addPoint,
   updatePoint,
   deletePoint,

@@ -48,6 +48,43 @@ router.post('/maps', (req, res) => {
     });
 });
 
+router.delete('/maps', (req, res) => {
+  const { userId } = req.session;
+  const { mapId } = req.query;
+
+  widgetsQueries.getMapsWithOwnerId(userId)
+    .then(maps => {
+      // return boolean whether the user own the given mapId
+      return maps.map(m => m.id).includes(Number(mapId));
+    })
+    .then(value => {
+      // if the returned value is false, the user don't own the map and response an error
+      if (!value) {
+        res.status(400)
+          .json({ error: 'Invalid values'});
+        return;
+      }
+
+      return widgetsQueries.deleteMap(mapId)
+        .then(map => {
+          res.send(map);
+        })
+        .catch(err => {
+          res
+            .status(500)
+            .json({ error: err.message });
+        });
+    })
+    .then(map => {
+      res.send(map);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 // points
 router.get('/points', (req, res) => {
   const { mapId, contributorId } = req.query;
