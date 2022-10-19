@@ -138,8 +138,10 @@ function getallPointsbyUserIDAPI(params) {
   });
 }
 
-
-function getPointsByMap(mapID) {
+//
+// moveMap is true if we want to call moveToLocation
+//
+function getPointsByMap(mapID,moveMap) {
   //return pointsData[1];
   getPointsByMapAPI(mapID)
     .then(function(json) {
@@ -154,7 +156,11 @@ function getPointsByMap(mapID) {
         placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description,x);
         x ++;
       }
-      mapMoveToLocation(+json.points[0].latitude,+json.points[0].longitude);
+      if(!moveMap) {
+        //
+      } else {
+        mapMoveToLocation(+json.points[0].latitude,+json.points[0].longitude);
+      }
     });
 }
 function getPointsByMapAPI(params) {
@@ -186,6 +192,13 @@ function getListofMaps() {
     // refresh the maps list here
 
     //console.log("MAPSLIST: ",mapsList)
+
+    // clear and rebuilt the map list
+    $("#selectwrapper").empty();
+    let baselist = `<select name="sources" id="map-sources" class="custom-select map-sources" placeholder="Select a Map...">
+    <option value="newmap" class="selectmap">Create your own map</option></select>`;
+    $("#selectwrapper").append(baselist);
+    // add all the maps
     for (const map in mapsListObject) {
       console.log("MAP:",map)
       console.log("MAP NAME:",mapsListObject[map].name)

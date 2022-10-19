@@ -167,9 +167,9 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     }
     let itemDescription = `
       ${mapsPointsObject[pointNumber].description}<BR><BR clear=all>
-      <section class="property-listing__preview-image">
+      <section class="property-listing__preview-image"><center>
       <img src="${imageURL}" alt="${itemTitle}" class="imgthumb" id="modalimage">
-      </section>
+      <center></section>
       ${contributorname}
       ${adminOptions}
     `;

@@ -190,6 +190,11 @@ toggleDarkMode('check');
 
 
 const mapSelectHandler = function() {
+  let svg1 = `<svg style="height:20px;width:32px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Pro 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path fill="#505050ff" d="`;
+  let svg2 = `"/></svg>`;
+  let mapIcon;
+  let defaultMapIcon = "M384 476.1L192 421.2V35.9L384 90.8V476.1zm32-1.2V88.4L543.1 37.5c15.8-6.3 32.9 5.3 32.9 22.3V394.6c0 9.8-6 18.6-15.1 22.3L416 474.8zM15.1 95.1L160 37.2V423.6L32.9 474.5C17.1 480.8 0 469.2 0 452.2V117.4c0-9.8 6-18.6 15.1-22.3z";
+
   $(".custom-select").each(function() {
     let classes = $(this).attr("class"),
         id      = $(this).attr("id"),
@@ -198,7 +203,11 @@ const mapSelectHandler = function() {
         template += '<span class="custom-select-trigger">' + $(this).attr("placeholder") + '</span>';
         template += '<div class="custom-options">';
         $(this).find("option").each(function() {
-          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + $(this).html() + '</span>';
+          mapIcon = findMapIcon($(this).attr("value"));
+          if(!mapIcon) {
+            mapIcon = defaultMapIcon;
+          }
+          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + svg1 + mapIcon + svg2 + '&nbsp;' + $(this).html() + '</span>';
         });
     template += '</div></div>';
 
@@ -248,6 +257,7 @@ const findMapDescription = function(mapID) {
   }
   return mapDescription;
 }
+
 // find map PIN data in our map list object
 const findMapPinData = function(mapID) {
   let pinData ='';
@@ -259,6 +269,18 @@ const findMapPinData = function(mapID) {
   }
   return pinData;
 };
+
+// find and return the map pin (SVG) if included in a map
+const findMapIcon = function(mapID) {
+  let mapIcon = `M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z`;
+
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.map_pins;
+    }
+  }
+  return mapIcon;
+}
 
 const updateNav = function(user) {
   // update the nav bar if logged in or not
