@@ -29,7 +29,8 @@ const newPin = function(lat,lng) {
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__title">Title</label>
-    <input type="text" name="title" placeholder="Title" id="new-property-form__title">
+    <input type="text" name="title" placeholder="Title" id="new-property-form__title"><br clear="all">
+    <small></small>
   </div>
 
   <div class="new-property-form__field-wrapper">
@@ -51,6 +52,14 @@ const newPin = function(lat,lng) {
   toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> New Pin',content);
   $('#newpinform').on('submit', function (event) {
     event.preventDefault();
+
+    // run validations
+    const titleEl = document.querySelector('#new-property-form__title');
+    let isTitleValid = formCheckIfEmpty(titleEl);
+    if (!isTitleValid) {
+      return;
+    }
+
     let data = $(this).serialize();
 
     data += `&contributor_id=${currentUID}&latitude=${lat}&longitude=${lng}&map_id=${currentMap}`;
@@ -373,3 +382,40 @@ const windowOnClick = function(event) {
 // modal listeners for general window click and close button
 closeButton.addEventListener("click", toggleModal);
 window.addEventListener("click", windowOnClick);
+
+
+//
+// form validation functions:
+//
+// TODO fully implement this concept for future use
+// https://www.javascripttutorial.net/javascript-dom/javascript-form-validation/#:~:text=What%20is%20form%20validation,is%20called%20client%2Dside%20validation.
+const isRequired = value => value === '' ? false : true;
+
+const showFormError = (input, message) => {
+  const formField = input.parentElement;
+  formField.classList.remove('formsuccess');
+  formField.classList.add('formerror');
+  const error = formField.querySelector('small');
+  error.textContent = message;
+};
+
+const showFormSuccess = (input) => {
+  const formField = input.parentElement;
+  formField.classList.remove('formerror');
+  formField.classList.add('formsuccess');
+  const error = formField.querySelector('small');
+  error.textContent = '';
+};
+
+const formCheckIfEmpty = (elementId,errorMessage) => {
+  let valid = false;
+  const username = elementId.value.trim();
+
+  if (!isRequired(username)) {
+    showFormError(elementId, 'Pin title cannot be blank.');
+  } else {
+    showFormSuccess(elementId);
+    valid = true;
+  }
+  return valid;
+}

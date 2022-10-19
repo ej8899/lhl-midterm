@@ -103,7 +103,13 @@ const fetchAdmin = function() {
           usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
         }
         usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><i class="fa-solid fa-map-pin"></i>&nbsp;`;
-        usermaplist += json.points[x].title;
+        console.log(json.points[x].title)
+        if(!json.points[x].title) {
+          pointname = 'no point title';
+        } else {
+          pointname = json.points[x].title;
+        }
+        usermaplist += pointname;
         usermaplist += '<BR>' + json.points[x].description;
         usermaplist += `</td><td style="padding-left:10px;" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square hoverpointer"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash hoverpointer"></i></a></td></tr>`;
       }
