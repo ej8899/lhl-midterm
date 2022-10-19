@@ -125,7 +125,7 @@ body {
   transform: translate(-50%, -50%);
   background-color: white;
   padding: 1rem 1.5rem;
-  width: 28rem;
+  width: 500px;
   border-radius: 0.5rem;
   color: var(--cardcontentcolor);
 }
@@ -157,14 +157,13 @@ body {
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
 .accept {
-  background-color: rgb(184, 182, 182);
-  border-radius: 2rem;
+  //background-color: rgb(184, 182, 182);
+  //border-radius: 2rem;
 }
-
 .accept:hover {
   background-color: orange;
   cursor: pointer;
-  text-align: center;
+  //text-align: center;
 }
 
 .modal-button {
@@ -342,7 +341,8 @@ body {
   font-size: 20px;
   align-items: center;
   padding: 0.5rem;
-
+  position: fixed;
+  z-index: 2;
 }
 
 .navbar-userlinks {
@@ -511,7 +511,7 @@ canvas {
 .canvas-container {
   height: 50vh;
   clip-path: polygon(0 0, 100% 0, 100% 36%, 0 95%);
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: -1;
 }
@@ -572,7 +572,7 @@ canvas {
       margin-left: auto;
       margin-right: auto;
       */
-      width: 400px;
+      width: 500px;
       height: 100%;
       object-fit: scale-down;
       /* ORIGINAL CSS:
@@ -691,4 +691,9 @@ TOGGLES
 */
 .navbar-userlinksend {
   align-items: center;
+}
+
+
+.hoverpointer:hover {
+  cursor: pointer;
 }

@@ -152,7 +152,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     console.log("currentUID:",currentUID);
     if (currentUID === mapsPointsObject[pointNumber].contributor_id) {
       // show trash icon
-      adminOptions += `<br clear=all><hr><a onclick="deletePin(${mapsPointsObject[pointNumber].id});toggleModal();"; class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a href="" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
+      adminOptions += `<br clear=all><hr><a onclick="deletePin(${mapsPointsObject[pointNumber].id});toggleModal();"; class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a onclick="editPin(${mapsPointsObject[pointNumber].id});toggleModal();" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
     }
 
     let contributorname ='';
