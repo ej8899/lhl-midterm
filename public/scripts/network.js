@@ -156,10 +156,11 @@ function getPointsByMap(mapID,moveMap) {
         placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description,x);
         x ++;
       }
-      if(!moveMap) {
+      if(moveMap === false) {
         //
       } else {
-        mapMoveToLocation(+json.points[0].latitude,+json.points[0].longitude);
+        let randomPoint = Math.floor(Math.random() * x);
+        mapMoveToLocation(+json.points[randomPoint].latitude,+json.points[randomPoint].longitude);
       }
     });
 }
@@ -237,6 +238,7 @@ const deletePin = function(pinID) {
   deletePinAPI(pinID)
   .then(function(json) {
     console.log(json)
+    fetchAdmin();
   });
 }
 const deletePinAPI = function(data) {
@@ -255,6 +257,7 @@ const deleteFav = function(mapid) {
   deleteFavAPI(mapid)
   .then(function(json) {
     console.log(json)
+    fetchFavorites();
   });
 }
 const deleteFavAPI = function(data) {
@@ -272,7 +275,8 @@ const deleteFavAPI = function(data) {
 const setFav = function(mapid) {
   setFavAPI(mapid)
   .then(function(json) {
-    console.log(json)
+    console.log(json);
+    fetchFavorites();
   });
 }
 const setFavAPI = function(data) {
@@ -296,6 +300,7 @@ const deleteMap = function(pinID) {
   deleteMapAPI(pinID)
   .then(function(json) {
     console.log(json)
+    fetchAdmin();
   });
 }
 const deleteMapAPI = function(data) {
