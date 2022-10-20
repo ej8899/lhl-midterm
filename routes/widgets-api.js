@@ -51,7 +51,7 @@ router.post('/maps', (req, res) => {
 router.put('/maps', (req, res) => {
   const { userId } = req.session;
   const { mapId } = req.body;
-  widgetsQueries.getMapsWithMapId(mapId)
+  widgetsQueries.getMapWithMapId(mapId)
     .then(map => {
       return !map.is_private || Number(userId) === map.owner_id;
     })

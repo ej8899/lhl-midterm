@@ -7,8 +7,8 @@ const query = require('../connection');
  * @param {String} map_id.
  * @return {Promise<{}>} A promise to the map.
  */
-const getMapsWithMapId = (id) => {
-  return query('SELECT * FROM maps WHERE id = $1 ORDER BY name ASC;', [id], result => result.rows[0]);
+const getMapWithMapId = (id) => {
+  return query('SELECT * FROM maps WHERE id = $1;', [id], result => result.rows[0]);
 };
 
 /**
@@ -221,7 +221,7 @@ const deleteFavourite = (favourite) => {
 };
 
 module.exports = {
-  getMapsWithMapId,
+  getMapWithMapId,
   getMapsWithOwnerId,
   getAllNoPrivateMaps,
   getPointsWithMapIdAndContributorId,
