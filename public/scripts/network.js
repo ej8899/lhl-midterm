@@ -36,6 +36,7 @@ const fetchFavorites = function() {
   getFavoritesAPI(currentUID)
   .then(function(json) {
     console.log("FAVORITES OBJ:",json.favourites);
+    favoritesObject = json.favourites;
     let favscount = json.favourites.length;
     console.log("FAV COUNT:",favscount);
     if(favscount > 0) {
@@ -43,7 +44,7 @@ const fetchFavorites = function() {
       for (let x =0; x< favscount; x++) {
         userfavSection += '<tr><td width=100% valign=top>';
         userfavSection += json.favourites[x].map_name;
-        userfavSection += `</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
+        userfavSection += `</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
       }
 
       // TODO - make the heart toggle fav mode off and when off, refetch favorites
@@ -103,7 +104,7 @@ const fetchAdmin = function() {
           usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
         }
         usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><i class="fa-solid fa-map-pin"></i>&nbsp;`;
-        console.log(json.points[x].title)
+        // console.log(json.points[x].title)
         if(!json.points[x].title) {
           pointname = 'no point title';
         } else {
@@ -156,10 +157,11 @@ function getPointsByMap(mapID,moveMap) {
         placeMarker({lat:+key.latitude,lng:+key.longitude},key.title,key.description,x);
         x ++;
       }
-      if(!moveMap) {
+      if(moveMap === false) {
         //
       } else {
-        mapMoveToLocation(+json.points[0].latitude,+json.points[0].longitude);
+        let randomPoint = Math.floor(Math.random() * x);
+        mapMoveToLocation(+json.points[randomPoint].latitude,+json.points[randomPoint].longitude);
       }
     });
 }
@@ -237,6 +239,7 @@ const deletePin = function(pinID) {
   deletePinAPI(pinID)
   .then(function(json) {
     console.log(json)
+    fetchAdmin();
   });
 }
 const deletePinAPI = function(data) {
@@ -255,6 +258,7 @@ const deleteFav = function(mapid) {
   deleteFavAPI(mapid)
   .then(function(json) {
     console.log(json)
+    fetchFavorites();
   });
 }
 const deleteFavAPI = function(data) {
@@ -272,7 +276,8 @@ const deleteFavAPI = function(data) {
 const setFav = function(mapid) {
   setFavAPI(mapid)
   .then(function(json) {
-    console.log(json)
+    console.log(json);
+    fetchFavorites();
   });
 }
 const setFavAPI = function(data) {
@@ -296,6 +301,7 @@ const deleteMap = function(pinID) {
   deleteMapAPI(pinID)
   .then(function(json) {
     console.log(json)
+    fetchAdmin();
   });
 }
 const deleteMapAPI = function(data) {

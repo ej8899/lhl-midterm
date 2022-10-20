@@ -121,7 +121,7 @@ const updatePoint = (point) => {
     point.imageUrl,
     point.latitude,
     point.longitude,
-    point.id,
+    point.pointId,
   ];
 
   return query(`

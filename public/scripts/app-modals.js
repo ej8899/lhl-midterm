@@ -1,4 +1,43 @@
 //
+//  app-modals.js
+//  modal window handler, supporting code and various app specific modal windows (& content)
+//
+
+// create generic error modal, but with custom message
+const modalError = function(message) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">Continue</a>
+  </center>`;
+  toggleModal(null,messageOutput,'modalblur');
+};
+
+// create generic success modal, but with custom message
+const modalSuccess = function(message) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-check" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">Continue</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+};
+
+// create confirmation modal - get yes/no type input for buttons
+const modalConfirmation = function (yesButtonText,noButtonText) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  <h3>Are you sure?</h3>
+  ${message}<br clear=all><BR>
+  // todo dim the no button color
+  // todo toggle g-variable state to show user has confirmed
+  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();">${yesButtonText}</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+};
+
+
+//
 // show Privacy Policy modal window
 //
 const showPrivacyPolicy = () => {
@@ -40,7 +79,7 @@ const newPin = function(lat,lng) {
 
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__image">Image URL</label>
-    <input type="text" name="image_url" placeholder="image url" id="new-property-form__imageurl">
+    <input type="text" name="imageUrl" placeholder="image url" id="new-property-form__imageurl">
   </div>
 
   <div class="login-form__field-wrapper">
@@ -62,7 +101,7 @@ const newPin = function(lat,lng) {
 
     let data = $(this).serialize();
 
-    data += `&contributor_id=${currentUID}&latitude=${lat}&longitude=${lng}&map_id=${currentMap}`;
+    data += `&contributorId=${currentUID}&latitude=${lat}&longitude=${lng}&mapId=${currentMap}`;
 
     // TODO - add map ID and submitter ID to the data
     console.log("NEW PIN: ",data)
@@ -110,7 +149,7 @@ const editPinModal = function(existingPinObject) {
 
   <div class="new-property-form__field-wrapper">
     <label for="new-property-form__image">Image URL</label>
-    <input type="text" name="image_url" placeholder="image url" id="new-property-form__imageurl" value="${existingPinObject.image_url}">
+    <input type="text" name="imageUrl" placeholder="image url" id="new-property-form__imageurl" value="${existingPinObject.image_url}">
   </div>
 
   <div class="login-form__field-wrapper">
@@ -124,7 +163,7 @@ const editPinModal = function(existingPinObject) {
     event.preventDefault();
     let data = $(this).serialize();
 
-    data += `&contributor_id=${currentUID}&latitude=${Number(existingPinObject.latitude)}&longitude=${Number(existingPinObject.longitude)}&map_id=${existingPinObject.map_id}&pointId=${existingPinObject.id}`;
+    data += `&contributorId=${currentUID}&latitude=${Number(existingPinObject.latitude)}&longitude=${Number(existingPinObject.longitude)}&mapId=${existingPinObject.map_id}&pointId=${existingPinObject.id}`;
 
     // TODO - add map ID and submitter ID to the data
     console.log("UPDATE PIN URL: ",data)
@@ -132,7 +171,7 @@ const editPinModal = function(existingPinObject) {
     .then(() => {
       toggleModal();
       toggleModal(`Got It!`,`Your pin is now changed!`);
-      getPointsByMap(currentMap);
+      getPointsByMap(currentMap,false);
       // push the details into our object mapsPointsObject
       // call placeMarker to drop pin
     })
@@ -197,7 +236,7 @@ const newMapModal = function() {
     }
 
     let data = $(this).serialize();
-    data += '&category=general&is_private=false&owner_id=';
+    data += '&category=general&isPrivate=false&ownerId=';
     data += currentUID;
     console.log("SUBMIT FOR MAP:",data)
     toggleModal();
@@ -258,6 +297,7 @@ const showLogin = () => {
         currentUID = json.user.id;
         updateNav(json.user);
         // show admin section
+        $('#favoritestatus').css('visibility','visible');
         fetchFavorites();
         fetchAdmin();
         $('#useronlysection').css('visibility','visible');
