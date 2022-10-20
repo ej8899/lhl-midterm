@@ -49,7 +49,29 @@ router.post('/maps', (req, res) => {
 });
 
 router.put('/maps', (req, res) => {
-  widgetsQueries.updateMap({ ...req.body})
+  const { userId } = req.session;
+  const { mapId } = req.body;
+  widgetsQueries.getMapsWithMapId(mapId)
+    .then(map => {
+      return !map.is_private || Number(userId) === map.owner_id;
+    })
+    .then(value => {
+      if (!value) {
+        res.status(400)
+          .json({ error: 'Invalid values'});
+        return;
+      }
+
+      return  widgetsQueries.updateMap(req.body)
+        .then(map => {
+          res.send(map);
+        })
+        .catch(err => {
+          res
+            .status(500)
+            .json({ error: err.message });
+        });
+    })
     .then(map => {
       res.send(map);
     })
@@ -58,7 +80,6 @@ router.put('/maps', (req, res) => {
         .status(500)
         .json({ error: err.message });
     });
-
 });
 
 router.delete('/maps', (req, res) => {
