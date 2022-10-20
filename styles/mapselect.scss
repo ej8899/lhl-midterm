@@ -86,7 +86,8 @@
     }
     .custom-option {
       position: relative;
-      display: block;
+      display: flex;
+      align-items: center;
       padding: 0 22px;
       border-bottom: 1px solid #b5b5b5;
       font-size: 18px;

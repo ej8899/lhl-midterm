@@ -94,6 +94,7 @@ body {
   text-decoration-color: orange;
   text-decoration-thickness: 3px;
   transition: all 300ms;
+  cursor:pointer;
 }
 
 /*
@@ -156,15 +157,7 @@ body {
   transform: scale(1.0);
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
-.accept {
-  //background-color: rgb(184, 182, 182);
-  //border-radius: 2rem;
-}
-.accept:hover {
-  background-color: orange;
-  cursor: pointer;
-  //text-align: center;
-}
+
 
 .modal-button {
   text-align: end;
@@ -255,9 +248,20 @@ body {
   z-index: 1;
 }
 .button:hover {
-  color: #fff;
+  // color: #fff;
+  background-color: orange;
+  cursor: pointer;
 }
 
+// .accept {
+//   //background-color: rgb(184, 182, 182);
+//   //border-radius: 2rem;
+// }
+// .accept:hover {
+//   background-color: orange;
+//   cursor: pointer;
+//   //text-align: center;
+// }
 
 /*
   SEARCH FILTER button
@@ -505,14 +509,45 @@ canvas {
   flex-direction: column;
   align-items: stretch;
   margin: auto; }
-  .search-property-form__field-wrapper, .login-form__field-wrapper, .new-property-form__field-wrapper, .sign-up-form__field-wrapper {
+  .search-property-form__field-wrapper, .login-form__field-wrapper,  .sign-up-form__field-wrapper {
     width: 100%;
     display: flex; }
   .search-property-form label, .login-form label, .new-property-form label, .sign-up-form label {
     display: none; }
-  .search-property-form textarea, .search-property-form select, .search-property-form input, .search-property-form label, .login-form textarea, .login-form select, .login-form input, .login-form label, .new-property-form textarea, .new-property-form select, .new-property-form input, .new-property-form label, .sign-up-form textarea, .sign-up-form select, .sign-up-form input, .sign-up-form label {
+  .search-property-form textarea, .search-property-form select, .search-property-form input, .search-property-form label, .login-form textarea, .login-form select, .login-form label, .sign-up-form textarea, .sign-up-form select, .sign-up-form input, .sign-up-form label {
     margin: 5px 5px;
     width: 100%; }
+
+    .login-form input, .new-property-form textarea, .new-property-form select, .new-property-form input,  .new-property-form label, .new-property-form__field-wrapper  {
+      margin-top: 5px;
+      width: 100%;
+    }
+
+    .subtitle {
+      text-align:center;
+    }
+
+    .subtitle-left {
+      margin-left:26px
+    }
+
+    .buttongap {
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .icongap {
+      margin-top:2rem;
+    }
+
+    .warning {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .signup-label {
+      padding-top: 0.5rem;
+    }
 
     input,textarea {
     font-size: 16px;

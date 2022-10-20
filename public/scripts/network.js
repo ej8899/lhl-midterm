@@ -8,6 +8,7 @@ function getMyDetails() {
 
 function logOut() {
   $('#useronlysection').css('visibility','hidden');
+  $('#favoritestatus').css('visibility','hidden');
   currentUID = 0;
   return $.ajax({
     method: "POST",
