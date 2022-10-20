@@ -102,11 +102,8 @@ const favoriteHandler = function() {
 const updateFavSatus = function() {
   let favoritestatus = 0;
   for (const key in favoritesObject) {
-    console.log("currmap:",currentMap);
-    console.log("mapinfav:",favoritesObject[key].map_id);
     if(+currentMap == +favoritesObject[key].map_id) {
       // toggle fav OFF
-      console.log("FAV-del")
       $('#favoritestatus').removeClass('fa-solid');
       $('#favoritestatus').addClass('fa-regular');
       deleteFav(currentMap);
@@ -114,7 +111,6 @@ const updateFavSatus = function() {
     }
   }
   if (favoritestatus === 0) {
-    console.log("FAV-add")
     // toggle fav ON
     $('#favoritestatus').addClass('fa-solid');
     $('#favoritestatus').removeClass('fa-regular');
@@ -125,11 +121,8 @@ const updateFavSatus = function() {
 const updateFavIcon = function() {
   let favoritestatus = 0;
   for (const key in favoritesObject) {
-    console.log("currmap:",currentMap);
-    console.log("mapinfav:",favoritesObject[key].map_id);
     if(+currentMap == +favoritesObject[key].map_id) {
       // toggle fav ON
-      console.log("FAV-del")
       $('#favoritestatus').addClass('fa-solid');
       $('#favoritestatus').removeClass('fa-regular');
       favoritestatus = 1;
@@ -281,9 +274,16 @@ const mapSelectHandler = function() {
   });
 };
 
+const switchMap = function(mapId) {
+  getPointsByMap(mapId);
+  updateFavIcon();
+  $("#titlemap").text(findMapTitle(mapId));
+  $("#aboutmap").text(findMapDescription(mapId));
+};
+
 // find map descriptions in our map list object
 const findMapDescription = function(mapID) {
-  let mapDescription = 'Map My Wiki';
+  let mapDescription = 'Create your own wiki - mapped!';
   // mapsListObject[x].description
   for (const key of mapsListObject) {
     if(key.id === +mapID) {
@@ -291,7 +291,28 @@ const findMapDescription = function(mapID) {
     }
   }
   return mapDescription;
-}
+};
+
+// find map title in our map list object
+const findMapTitle = function(mapID) {
+  let mapDescription = 'Map My Wiki';
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.name;
+    }
+  }
+  return mapDescription;
+};
+
+// find map owner in our map list object
+const findMapOwnerId = function(mapID) {
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.owner_id;
+    }
+  }
+  return null;
+};
 
 // find map PIN data in our map list object
 const findMapPinData = function(mapID) {

@@ -116,6 +116,7 @@ const newPin = function(lat,lng) {
       `;
       toggleModal(``,modalText);
       getPointsByMap(currentMap,false);
+      fetchAdmin();
       // push the details into our object mapsPointsObject
       // call placeMarker to drop pin
     })
@@ -135,6 +136,7 @@ const newPin = function(lat,lng) {
 //
 const editPinModal = function(existingPinObject) {
   // TODO - need input form for new map point
+  console.log("EDITPINobject:",existingPinObject);
   let content = `For your pin at ${Number(existingPinObject.latitude).toFixed(4)}, ${Number(existingPinObject.longitude).toFixed(4)}
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
@@ -251,6 +253,7 @@ const newMapModal = function() {
       `;
         toggleModal(``,modalText);
         // refresh maps list and set to this new map
+        fetchAdmin();
         getListofMaps();
       })
       .catch((error) => {
