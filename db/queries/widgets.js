@@ -3,9 +3,18 @@ const query = require('../connection');
 // maps
 
 /**
- * Get a single map from the database given oener_id.
- * @param {String} owner_id.
+ * Get a single map from the database given map_id.
+ * @param {String} map_id.
  * @return {Promise<{}>} A promise to the map.
+ */
+const getMapWithMapId = (id) => {
+  return query('SELECT * FROM maps WHERE id = $1;', [id], result => result.rows[0]);
+};
+
+/**
+ * Get maps from the database given oener_id.
+ * @param {String} owner_id.
+ * @return {Promise<{}>} A promise to the maps.
  */
 const getMapsWithOwnerId = (id) => {
   return query('SELECT * FROM maps WHERE owner_id = $1 ORDER BY name ASC;', [id], result => result.rows);
@@ -38,6 +47,31 @@ const addMap = (map) => {
   INSERT INTO maps
   (name, owner_id, description, category, map_pins, is_private)
   VALUES ($1, $2, $3, $4, $5, $6)
+  RETURNING *;
+  `, queryValues, result => result.rows[0]);
+};
+
+/**
+ * Update a map to the database.
+ * @param {{}}} map. An object containing all of the map details.
+ * @return {Promise<{}>} A promise to the map.
+ */
+const updateMap = (map) => {
+  const queryValues = [
+    map.name,
+    map.ownerId,
+    map.description,
+    map.category,
+    map.mapPins,
+    map.isPrivate,
+    map.mapId,
+  ];
+
+  return query(`
+  UPDATE maps SET
+  (name, owner_id, description, category, map_pins, is_private) =
+  ($1, $2, $3, $4, $5, $6)
+  WHERE id = $7
   RETURNING *;
   `, queryValues, result => result.rows[0]);
 };
@@ -187,10 +221,12 @@ const deleteFavourite = (favourite) => {
 };
 
 module.exports = {
+  getMapWithMapId,
   getMapsWithOwnerId,
   getAllNoPrivateMaps,
   getPointsWithMapIdAndContributorId,
   addMap,
+  updateMap,
   deleteMap,
   addPoint,
   updatePoint,

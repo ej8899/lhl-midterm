@@ -48,6 +48,42 @@ router.post('/maps', (req, res) => {
     });
 });
 
+router.put('/maps', (req, res) => {
+  const { userId } = req.session;
+  const { mapId } = req.body;
+  widgetsQueries.getMapWithMapId(mapId)
+    .then(map => {
+      // return boolean whether the map is not private or the user is an owner of the map
+      return !map.is_private || Number(userId) === map.owner_id;
+    })
+    .then(value => {
+      // if the value is false, the user don't own the map and response an error
+      if (!value) {
+        res.status(400)
+          .json({ error: 'Invalid values'});
+        return;
+      }
+
+      return  widgetsQueries.updateMap(req.body)
+        .then(map => {
+          res.send(map);
+        })
+        .catch(err => {
+          res
+            .status(500)
+            .json({ error: err.message });
+        });
+    })
+    .then(map => {
+      res.send(map);
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 router.delete('/maps', (req, res) => {
   const { userId } = req.session;
   const { mapId } = req.query;
@@ -58,7 +94,7 @@ router.delete('/maps', (req, res) => {
       return maps.map(m => m.id).includes(Number(mapId));
     })
     .then(value => {
-      // if the returned value is false, the user don't own the map and response an error
+      // if the value is false, the user don't own the map and response an error
       if (!value) {
         res.status(400)
           .json({ error: 'Invalid values'});
