@@ -295,7 +295,79 @@ const newMapModal = function() {
       });
   });
 };
+const updateMapModal = function(existingMapid) {
+  // need to fetch the map details from list
+  let theMapObject = findMapObject(existingMapid);
+  console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
+  let content = `<div class="subtitle"><b>Update a map</b></div>
+  <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
+  <div class="new-property-form__field-wrapper">
+    <div class="signup-label">Map Name</div>
+    </div>
+  <div class="new-property-form__field-wrapper warning">
+    <input type="text" name="name" id="new-property-form__title" value="${theMapObject.name}">
+    <small style="margin-left:5px; color:#d1342fff"></small>
+  </div>
 
+
+  <div class="new-property-form__field-wrapper">
+    <div class="signup-label">Description</div>
+    </div>
+  <div class="new-property-form__field-wrapper">
+    <textarea name="description" id="property-form__description" cols="30" rows="5">${theMapObject.description}</textarea>
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <div class="signup-label">Pin Icon (SVG)</div>
+    </div>
+  <div class="new-property-form__field-wrapper">
+    <input type="text" name="map_pins" id="new-property-form__mappin" value="${theMapObject.map_pins}">
+  </div>
+  <br>
+  <div class="login-form__field-wrapper buttongap">
+    <button class="button">Update Map</button>&nbsp;
+    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+  </div>
+  </form>
+  `;
+  toggleModal('<i class="fa-solid fa-map fa-xl icongap"></i> Edit a Map',content,null,{"background":"white"});
+  $('#new-map-form').on('submit', function (event) {
+    event.preventDefault();
+
+    // run validations
+    const titleEl = document.querySelector('#new-property-form__title');
+    let isTitleValid = formCheckIfEmpty(titleEl,"Map title can not be empty!");
+    if (!isTitleValid) {
+      return;
+    }
+
+    let data = $(this).serialize();
+    data += '&category=general&isPrivate=false&ownerId=';
+    data += currentUID;
+    console.log("SUBMIT FOR EDIT MAP:",data)
+    toggleModal();
+
+    submitEditMap(data)
+      .then(() => {
+        let modalText = `<center>
+        <i class="fashadow fa-solid fa-map" style="font-size:6rem; color:orange"></i><br clear=all><BR>
+        Your map has been updated!<br clear=all><BR>
+        <a class="button accept" onClick="toggleModal();">Continue</a>
+        </center>
+      `;
+        toggleModal(``,modalText);
+        // refresh maps list and set to this new map
+        fetchAdmin();
+        getListofMaps();
+      })
+      .catch((error) => {
+        // TODO - need to JSON stringify the error object for readability
+        toggleModal(`Woah!`,`There was an error updating your map in our database.<BR>${error}`);
+        console.error(error);
+        // refresh to default map
+      });
+  });
+};
 
 const showLogin = () => {
   let data = `<div class="subtitle-left"><b>Login to your Map My Wiki account to access and customize your maps</b></div>
@@ -398,16 +470,21 @@ const showAbout = () => {
 // show "contact us" modal window
 //
 const showContact = () => {
-  let privacyPolicy = `
-  Reach out to the Developers:<BR>
+  let privacyPolicy = `<center>
+  <i class="fashadow fa-solid fa-address-card" style="font-size:6rem;color:orange"></i><br clear=all>
+  <h3>Contact the Developers:</h3>
   <div class="modal-contact">
-  <li>
-  Ernie Johnson <a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/  class="tooltip expand" data-title="check us out on linkedin" target=_new><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></i></a><br></li>
-  <li>Atsuyuki Yoshimatsu <a href="https://www.linkedin.com/in/atsuyuki/ class="tooltip expand" data-title="check us out on linkedin" target=_new><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></i></a></li>
+  <table border=0 style="font-size:1.1rem;">
+  <tr><td>
+  <li>Ernie Johnson</li></td><td><a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/"  class="tooltip expand" data-title="check us out on linkedin" target=_new><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></i></a></td></tr>
+  <tr><td><li>Atsuyuki Yoshimatsu</li></td><td><a href="https://www.linkedin.com/in/atsuyuki/" class="tooltip expand" data-title="check us out on linkedin" target=_new><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></i></a></td></tr></table>
   </div>
+  <br clear=all><a class="button accept" onClick="toggleModal();">Close</a>
+  <br clear=all>&nbsp;
+  </center>
   `;
 
-  toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Contact Us',privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
+  toggleModal('',privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
 };
 
 //

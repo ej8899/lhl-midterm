@@ -50,7 +50,6 @@ const fetchFavorites = function() {
       userfavSection += `</table>`;
       $('#user-favorites-title').text('Favorites (' + json.favourites.length + '):');
       $('#user-favorites').html(userfavSection);
-      // TODO - make the heart toggle fav mode off and when off, refetch favorites
       updateFavIcon();
     }
   });
@@ -96,7 +95,7 @@ const fetchAdmin = function() {
     console.log("ALL POINTS COUNT:",usermapscount)
     if (usermapscount > 0) {
       let usermaplist = `<table border="0" width="100%">`;
-      // TODO sort this output list by alpha
+      // TODO sort this output list by alpha (sent to backend dev 2022-10-18)
       let mapTitle = '';
       for(let x = 0; x < usermapscount; x ++) {
         if(json.points[x].map_name !== mapTitle) {
@@ -240,7 +239,7 @@ const deletePin = function(pinID) {
   .then(function(json) {
     console.log(json)
     // find where this PIN is -- if on current map, we need to refresh it
-    if (currentMap === currentMap) {
+    if(findPointinMapsPointCache(pinID) !== undefined) {
       switchMap(currentMap);
     }
     fetchAdmin();
@@ -319,7 +318,7 @@ const deleteMapAPI = function(data) {
   });
 }
 
-const updateMap = function(data) {
+const submitEditMap = function(data) {
   return $.ajax({
     method: "PUT",
     url: "/api/widgets/maps",

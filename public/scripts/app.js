@@ -269,16 +269,23 @@ const mapSelectHandler = function() {
     currentMap = mapChangeID;
     getPointsByMap(mapChangeID);
     updateFavIcon();
-    $("#titlemap").text($(this).text());
-    $("#aboutmap").text(findMapDescription(mapChangeID));
+    $("#titlemap").text($(this).text().trim());
+    $("#aboutmap").text(findMapDescription(mapChangeID).trim());
   });
 };
 
 const switchMap = function(mapId) {
+  // TODO - how do we force a click event??
+  //let selectItem = $(".custom-option").find(`[data-value='${mapId}']`).trigger("click");
+  //console.log("SELECTITEM:",selectItem)
+  //selectItem.trigger("click");
+
+  currentMap = mapId;
   getPointsByMap(mapId);
   updateFavIcon();
-  $("#titlemap").text(findMapTitle(mapId));
-  $("#aboutmap").text(findMapDescription(mapId));
+  $("#titlemap").text(findMapTitle(mapId)).trim();
+  $("#aboutmap").text(findMapDescription(mapId)).trim();
+
 };
 
 // find map descriptions in our map list object
@@ -302,6 +309,16 @@ const findMapTitle = function(mapID) {
     }
   }
   return mapDescription;
+};
+
+// find (& return) entire map object in our map list object
+const findMapObject = function(mapID) {
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key;
+    }
+  }
+  return null;
 };
 
 // find map owner in our map list object
