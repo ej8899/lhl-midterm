@@ -8,6 +8,7 @@ function getMyDetails() {
 
 function logOut() {
   $('#useronlysection').css('visibility','hidden');
+  $('#favoritestatus').css('visibility','hidden');
   currentUID = 0;
   return $.ajax({
     method: "POST",
@@ -42,16 +43,14 @@ const fetchFavorites = function() {
     if(favscount > 0) {
       let userfavSection = `<table border="0" width="100%">`;
       for (let x =0; x< favscount; x++) {
-        userfavSection += '<tr><td width=100% valign=top>';
+        userfavSection += `<tr><td width=100% valign=top><a class="hoverpointer" onClick="switchMap(${json.favourites[x].map_id});"><b>`;
         userfavSection += json.favourites[x].map_name;
-        userfavSection += `</td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
+        userfavSection += `</b></a></td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark trash hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
       }
-
-      // TODO - make the heart toggle fav mode off and when off, refetch favorites
-
       userfavSection += `</table>`;
-      $('#user-favorites-title').text('Favorites (' + json.favourites.length + '):');
+      $('#user-favorites-title').html(`<div>Favorite Maps <i class="fa-solid fa-heart badge fa-lg" data-badge=${json.favourites.length}></i> `);
       $('#user-favorites').html(userfavSection);
+      updateFavIcon();
     }
   });
 };
@@ -77,13 +76,13 @@ const fetchAdmin = function() {
       let usermaplist = `<table border="0" width="100%">`;
       // TODO sort this output list by alpha - sent to BACKEND DEV 2022-10-18
       for(let x = 0; x < usermapscount; x ++) {
-        usermaplist += '<tr ><td width=100% style="padding-bottom:20px;"><Big>';
+        usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>`;
         usermaplist += json.maps[x].name;
-        usermaplist += '</big><BR><b>' + json.maps[x].description;
-        usermaplist += '</b></td><td style="padding-left:10px;" valign="top"><a href="" class="tooltip expand" data-title="edit this map"><i class="fa-solid fa-pen-to-square"></i></a></td><td style="padding-left:10px;" valign="top"><a href="" class="tooltip expand" data-title="delete this map"><i class="fa-solid fa-trash"></i></a></td></tr>';
+        usermaplist += '</b></a><div style="padding-left:10px; font-size:small">' + json.maps[x].description;
+        usermaplist += `</div></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" onClick="updateMapModal(${json.maps[x].id});" data-title="edit this map"><i class="fa-solid fa-pen-to-square edit"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this map" onClick="deleteMap(${json.maps[x].id});"><i class="fa-solid fa-trash trash"></i></a></td></tr>`;
       }
       usermaplist += '</table>';
-      $('#user-mapslist-title').text('Your Maps (' + usermapscount + '):');
+      $('#user-mapslist-title').html(`<div>Your Maps <i class="fa-solid fa-map badge fa-lg" data-badge=${usermapscount}></i> `);
       $('#user-mapslist').html(usermaplist);
     }
   });
@@ -96,14 +95,14 @@ const fetchAdmin = function() {
     console.log("ALL POINTS COUNT:",usermapscount)
     if (usermapscount > 0) {
       let usermaplist = `<table border="0" width="100%">`;
-      // TODO sort this output list by alpha
+      // TODO sort this output list by alpha (sent to backend dev 2022-10-18)
       let mapTitle = '';
       for(let x = 0; x < usermapscount; x ++) {
         if(json.points[x].map_name !== mapTitle) {
           mapTitle = json.points[x].map_name;
-          usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
+          usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
         }
-        usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><i class="fa-solid fa-map-pin"></i>&nbsp;`;
+        usermaplist += `<tr ><td width=100% style="padding-bottom:10px; padding-top:10px"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
         // console.log(json.points[x].title)
         if(!json.points[x].title) {
           pointname = 'no point title';
@@ -111,11 +110,11 @@ const fetchAdmin = function() {
           pointname = json.points[x].title;
         }
         usermaplist += pointname;
-        usermaplist += '<BR>' + json.points[x].description;
-        usermaplist += `</td><td style="padding-left:10px;" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square hoverpointer"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash hoverpointer"></i></a></td></tr>`;
+        usermaplist += '</b><div style="padding-left:15px; font-size:small">' + json.points[x].description;
+        usermaplist += `</div></td><td style="padding-left:10px; padding-top:10px" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square edit hoverpointer"></i></a></td><td style="padding-left:10px; padding-top:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash trash hoverpointer"></i></a></td></tr>`;
       }
       usermaplist += '</table>';
-      $('#user-pointslist-title').text('Your Points (' + usermapscount + '):');
+      $('#user-pointslist-title').html(`<div>Your Points <i class="fa-solid fa-map-pin badge fa-lg" data-badge=${usermapscount}></i> `);
       $('#user-pointslist').html(usermaplist);
     }
   });
@@ -150,7 +149,7 @@ function getPointsByMap(mapID,moveMap) {
       console.log("POINTS LIST:",json.points);
 
       mapsPointsObject = json.points;
-
+      cacheImages();
       let x = 0;
       for (const key of mapsPointsObject) {
         //console.log(key.title)
@@ -236,9 +235,14 @@ const submitNewPin = function(data) {
 
 const deletePin = function(pinID) {
   // TODO CONFIRMATION modal
+  modalConfirmation('delete this point','delete','cancel');
   deletePinAPI(pinID)
   .then(function(json) {
     console.log(json)
+    // find where this PIN is -- if on current map, we need to refresh it
+    if(findPointinMapsPointCache(pinID) !== undefined) {
+      switchMap(currentMap);
+    }
     fetchAdmin();
   });
 }
@@ -295,19 +299,19 @@ const setFavAPI = function(data) {
 
 
 
-// TODO - waiting on backend code for this
 const deleteMap = function(pinID) {
   // TODO CONFIRMATION modal
   deleteMapAPI(pinID)
   .then(function(json) {
     console.log(json)
     fetchAdmin();
+    getListofMaps();
   });
 }
 const deleteMapAPI = function(data) {
-  let url = "/api/widgets/points";
+  let url = "/api/widgets/maps";
   if (data) {
-    url += "?pointId=" + data;
+    url += "?mapId=" + data;
   }
   return $.ajax({
     method: "DELETE",
@@ -315,6 +319,13 @@ const deleteMapAPI = function(data) {
   });
 }
 
+const submitEditMap = function(data) {
+  return $.ajax({
+    method: "PUT",
+    url: "/api/widgets/maps",
+    data,
+  });
+}
 
 const submitNewMap = function(data) {
   return $.ajax({

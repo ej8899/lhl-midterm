@@ -35,7 +35,7 @@ MapMyWiki is a joint effort between
 - you'll need the Postgress DB installed and some seed data would be helpful too: 
 - install any dependencies: ```npm install```
 - ```npm run local``` to start the server
-- point your browser to ```localhost:3000```  
+- point your browser to ```localhost:8080```  
 [( back to top 🔺)](#lightbnb)
 
 --- 

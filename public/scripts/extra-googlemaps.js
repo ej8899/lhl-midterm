@@ -55,7 +55,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     scale: 0.05,
   };
 
-  console.log("MAP LIST OBJECT all:",mapsListObject)
+  //console.log("MAP LIST OBJECT all:",mapsListObject)
   //console.log("MAP LIST OBJECT:",mapsListObject[currentMap])
   //console.log("PIN DATA:",mapsListObject[currentMap].map_pins)
   const newPinPath = findMapPinData(currentMap);
@@ -152,9 +152,20 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
 
     // TODO - deal with map owner and pin owners
     // if current user is same as this point contributor - OR map owner, allow for DELETE button/icon
-    console.log("currentUID:",currentUID);
+    // check if map owner
+    // if mapslistobject of current map has owner_id = currentUID then ok to edit.
+    let adminEdit = 0;
+    const mapOwner = findMapOwnerId(currentMap);
+    if (mapOwner === currentUID) {
+      adminEdit = 1;
+    }
     if (currentUID === mapsPointsObject[pointNumber].contributor_id) {
-      // show trash icon
+      adminEdit = 1;
+    }
+    console.log("POINTSNUMBER:",pointNumber)
+    console.log("MAPPOINTOBJECT:",mapsPointsObject);
+    if (adminEdit === 1) {
+      // show trash icon and edit icons
       adminOptions += `<br clear=all><hr><a onclick="deletePin(${mapsPointsObject[pointNumber].id});toggleModal();"; class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a onclick="editPin(${mapsPointsObject[pointNumber].id});toggleModal();" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
     }
 
@@ -177,7 +188,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
       ${adminOptions}
     `;
 
-    toggleModal(itemTitle,itemDescription);
+    toggleModal(itemTitle,itemDescription,null,{"background":"white"});
   });
 
 };

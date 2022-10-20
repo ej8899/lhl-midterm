@@ -7,8 +7,9 @@
 //
 // Setup GLOBAL variables
 //
-let currentMap = 1; // what is the current map ID being viewed?
-let currentUID = 0; // what is the current USER ID (0 not logged in, else db user id)
+let currentMap = 1;     // what is the current map ID being viewed?
+let currentUID = 0;     // what is the current USER ID (0 not logged in, else db user id)
+let gConfirmation = 0;  // global confirmation variable 0 = no, 1 = yes
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
@@ -102,11 +103,8 @@ const favoriteHandler = function() {
 const updateFavSatus = function() {
   let favoritestatus = 0;
   for (const key in favoritesObject) {
-    console.log("currmap:",currentMap);
-    console.log("mapinfav:",favoritesObject[key].map_id);
     if(+currentMap == +favoritesObject[key].map_id) {
       // toggle fav OFF
-      console.log("FAV-del")
       $('#favoritestatus').removeClass('fa-solid');
       $('#favoritestatus').addClass('fa-regular');
       deleteFav(currentMap);
@@ -114,7 +112,6 @@ const updateFavSatus = function() {
     }
   }
   if (favoritestatus === 0) {
-    console.log("FAV-add")
     // toggle fav ON
     $('#favoritestatus').addClass('fa-solid');
     $('#favoritestatus').removeClass('fa-regular');
@@ -125,11 +122,8 @@ const updateFavSatus = function() {
 const updateFavIcon = function() {
   let favoritestatus = 0;
   for (const key in favoritesObject) {
-    console.log("currmap:",currentMap);
-    console.log("mapinfav:",favoritesObject[key].map_id);
     if(+currentMap == +favoritesObject[key].map_id) {
       // toggle fav ON
-      console.log("FAV-del")
       $('#favoritestatus').addClass('fa-solid');
       $('#favoritestatus').removeClass('fa-regular');
       favoritestatus = 1;
@@ -241,7 +235,7 @@ const mapSelectHandler = function() {
           if(!mapIcon) {
             mapIcon = defaultMapIcon;
           }
-          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + svg1 + mapIcon + svg2 + '&nbsp;' + $(this).html() + '</span>';
+          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + svg1 + mapIcon + svg2 + '&nbsp;&nbsp;' + $(this).html() + '</span>';
         });
     template += '</div></div>';
 
@@ -276,14 +270,35 @@ const mapSelectHandler = function() {
     currentMap = mapChangeID;
     getPointsByMap(mapChangeID);
     updateFavIcon();
-    $("#titlemap").text($(this).text());
-    $("#aboutmap").text(findMapDescription(mapChangeID));
+    $("#titlemap").text($(this).text().trim());
+    $("#aboutmap").text(findMapDescription(mapChangeID).trim());
   });
+};
+
+// pre-fetch images for quicker loading
+const cacheImages = function(mapId) {
+  let img = [], x = 0;
+  if(!mapsPointsObject) {
+    // problem, let's get out of here
+    return;
+  }
+  for (const key of mapsPointsObject) {
+    console.log("PREFETCH:",key.image_url)
+    img[x] = new Image();
+    img[x].src = key.image_url;
+  };
+}
+
+// fake a click or tap on map select list to ensure everything stays in sync
+const switchMap = function(mapId) {
+  // map select handler has process for switching maps, so lets simulate a click on the map
+  let selectItem = $(`[data-value="${mapId}"]`);
+  selectItem.trigger("click");
 };
 
 // find map descriptions in our map list object
 const findMapDescription = function(mapID) {
-  let mapDescription = 'Map My Wiki';
+  let mapDescription = 'Create your own wiki - mapped!';
   // mapsListObject[x].description
   for (const key of mapsListObject) {
     if(key.id === +mapID) {
@@ -291,7 +306,38 @@ const findMapDescription = function(mapID) {
     }
   }
   return mapDescription;
-}
+};
+
+// find map title in our map list object
+const findMapTitle = function(mapID) {
+  let mapDescription = 'Map My Wiki';
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.name;
+    }
+  }
+  return mapDescription;
+};
+
+// find (& return) entire map object in our map list object
+const findMapObject = function(mapID) {
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key;
+    }
+  }
+  return null;
+};
+
+// find map owner in our map list object
+const findMapOwnerId = function(mapID) {
+  for (const key of mapsListObject) {
+    if(key.id === +mapID) {
+      return key.owner_id;
+    }
+  }
+  return null;
+};
 
 // find map PIN data in our map list object
 const findMapPinData = function(mapID) {
@@ -307,7 +353,9 @@ const findMapPinData = function(mapID) {
 
 // find and return the map pin (SVG) if included in a map
 const findMapIcon = function(mapID) {
-  let mapIcon = `M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z`;
+  // plus icon
+  //let mapIcon = `M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z`;
+  let mapIcon = `M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z`;
 
   for (const key of mapsListObject) {
     if(key.id === +mapID) {
@@ -345,8 +393,32 @@ const updateNav = function(user) {
   $pageHeader.append(userLinks);
 };
 
+const editPinFromMap = function(pinId) {
+
+};
+
 const editPin = function(pin) {
-  editPinModal(findPointinCache(pin));
+  console.log("FINDPOINTINCACHE:",findPointinCache(pin))
+  // find the pin - is it current user owned:
+  if(findPointinCache(pin)) {
+    editPinModal(findPointinCache(pin));
+  } else {
+    alert("map owned")
+    // check the map point cache instead of owner cache
+    editPinModal(findPointinMapsPointCache(pin));
+  }
+  // find the pin - is it map owner 'owned':
+
+
+  //editPinModal(findPointinCache(pin));
+};
+const findPointinMapsPointCache = function(pin) {
+  for (const key of mapsPointsObject) {
+    if(key.id === +pin) {
+      console.log ("POINT OBJECT:",key)
+      return key;
+    }
+  }
 };
 
 const findPointinCache = function(pin) {

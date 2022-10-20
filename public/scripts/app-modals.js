@@ -24,13 +24,12 @@ const modalSuccess = function(message) {
 };
 
 // create confirmation modal - get yes/no type input for buttons
-const modalConfirmation = function (yesButtonText,noButtonText) {
+const modalConfirmation = function (message,yesButtonText,noButtonText) {
+  // todo toggle g-variable state to show user has confirmed
   let messageOutput = `<center>
   <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
   <h3>Are you sure?</h3>
   ${message}<br clear=all><BR>
-  // todo dim the no button color
-  // todo toggle g-variable state to show user has confirmed
   <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();">${yesButtonText}</a>
   </center>`;
   toggleModal(null,messageOutput);
@@ -45,50 +44,57 @@ const showPrivacyPolicy = () => {
   This privacy policy is to inform you on how the information collected on this website is used. Be sure to read this privacy policy before using our website or submitting any personal information and be aware that by using our website, you are accepting the practices described in this policy. We reserve the right to make changes to this website's policy at any time without prior notice. Be also aware that privacy practices set forth in this here are for this website only and do not apply for any other linking websites.<BR><BR>
   ....etc, etc, etc.
   `;
-  toggleModal('<i class="fa-solid fa-lock fa-xl"></i> Privacy Policy',privacyPolicy,"modalblur");
+  toggleModal('<i class="fa-solid fa-lock fa-xl icongap"></i> Privacy Policy',privacyPolicy,"modalblur", {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
 };
+
 
 //
 //  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
 //
 const newPin = function(lat,lng) {
   // TODO - if not logged in, advise user they need to login or sign up (and show links to do either)
-  if (currentUID === 0) {
-    let content = `You need to be a registered user (or signed in) to add pins to maps to existing maps.
-    <BR><BR>
-    Sign up<BR>
-    Sign in
-    `;
-    toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Not Logged In',content);
-    return;
-  }
+  // if (currentUID === 0) {
+  //   let content = `You need to be a registered user (or signed in) to add pins to maps to existing maps.
+  //   <BR><BR>
+  //   Sign up<BR>
+  //   Sign in
+  //   `;
+  //   toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Not Logged In',content);
+  //   return;
+  // }
 
   // TODO - need input form for new map point
-  let content = `For your pin at ${lat.toFixed(4)}, ${lng.toFixed(4)}
+  let content = `<div class="subtitle"><b>For your pin at ${lat.toFixed(4)}, ${lng.toFixed(4)}</b></div>
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__title">Title</label>
-    <input type="text" name="title" placeholder="Title" id="new-property-form__title"><br clear="all">
-    <small></small>
+    <div for="new-property-form__title" class="signup-label">Title</div>
+    </div>
+    <div class="new-property-form__field-wrapper warning">
+    <input type="text" name="title" id="new-property-form__title">
+    <small style="margin-left:5px; color:#d1342fff"></small>
   </div>
 
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__description">Description</label>
-    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="5"></textarea>
+    <div for="new-property-form__description" class="signup-label">Description</div>
+    </div>
+    <div class="new-property-form__field-wrapper">
+    <textarea name="description" id="property-form__description" cols="30" rows="5"></textarea>
   </div>
 
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__image">Image URL</label>
-    <input type="text" name="imageUrl" placeholder="image url" id="new-property-form__imageurl">
+    <div for="new-property-form__image" class="signup-label">Image URL</div>
+    </div>
+    <div class="new-property-form__field-wrapper">
+    <input type="text" name="imageUrl" id="new-property-form__imageurl">
   </div>
-
-  <div class="login-form__field-wrapper">
+  <br>
+  <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Location</button>&nbsp;
     <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
-  toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> New Pin',content);
+  toggleModal('<i class="fa-solid fa-location-dot fa-xl icongap"></i> New Pin',content,null,{"background":"white"});
   $('#newpinform').on('submit', function (event) {
     event.preventDefault();
 
@@ -109,13 +115,14 @@ const newPin = function(lat,lng) {
     .then(() => {
       toggleModal(); // turn off existing modal
       let modalText = `<center>
-        <i class="fashadow fa-solid fa-location-dot" style="font-size:6rem;"></i><br clear=all><BR>
-        Your point has been added!<br clear=all><BR>
-        <a class="button accept" onClick="toggleModal();">Continue</a>
-        </center>
+      <i class="fashadow fa-solid fa-location-dot" style="font-size:6rem; color:orange;"></i><br clear=all><BR>
+      Your point has been added!<br clear=all><BR>
+      <a class="button accept" onClick="toggleModal();">Continue</a>
+      </center>
       `;
       toggleModal(``,modalText);
       getPointsByMap(currentMap,false);
+      fetchAdmin();
       // push the details into our object mapsPointsObject
       // call placeMarker to drop pin
     })
@@ -135,30 +142,37 @@ const newPin = function(lat,lng) {
 //
 const editPinModal = function(existingPinObject) {
   // TODO - need input form for new map point
-  let content = `For your pin at ${Number(existingPinObject.latitude).toFixed(4)}, ${Number(existingPinObject.longitude).toFixed(4)}
+  console.log("EDITPINobject:",existingPinObject);
+  let content = `<div class="subtitle"><b>For your pin at ${Number(existingPinObject.latitude).toFixed(4)}, ${Number(existingPinObject.longitude).toFixed(4)}</b></div>
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__title">Title</label>
+    <div class="signup-label">Title</div>
+    </div>
+    <div class="new-property-form__field-wrapper warning">
     <input type="text" name="title" placeholder="Title" id="new-property-form__title" value="${existingPinObject.title}">
   </div>
 
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__description">Description</label>
+    <div class="signup-label">Description</div>
+    </div>
+    <div class="new-property-form__field-wrapper">
     <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="5">${existingPinObject.description}</textarea>
   </div>
 
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__image">Image URL</label>
+    <div class="signup-label">Image URL</div>
+    </div>
+    <div class="new-property-form__field-wrapper">
     <input type="text" name="imageUrl" placeholder="image url" id="new-property-form__imageurl" value="${existingPinObject.image_url}">
   </div>
-
-  <div class="login-form__field-wrapper">
+  <br>
+  <div class="login-form__field-wrapper buttongap">
     <button class="button">Update Point</button>&nbsp;
     <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
-  toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Edit Existing Pin',content);
+  toggleModal('<i class="fa-solid fa-location-dot fa-xl icongap"></i> Edit Existing Pin',content,null,{"background":"white"});
   $('#newpinform').on('submit', function (event) {
     event.preventDefault();
     let data = $(this).serialize();
@@ -170,8 +184,13 @@ const editPinModal = function(existingPinObject) {
     updatePin(data)
     .then(() => {
       toggleModal();
-      toggleModal(`Got It!`,`Your pin is now changed!`);
+      toggleModal(``,`<center>
+      <i class="fashadow fa-solid fa-location-dot" style="font-size:6rem; color:orange;"></i><br clear=all><BR>
+      Your point has been updated!<br clear=all><BR>
+      <a class="button accept" onClick="toggleModal();">Continue</a>
+      </center>`);
       getPointsByMap(currentMap,false);
+      fetchAdmin();
       // push the details into our object mapsPointsObject
       // call placeMarker to drop pin
     })
@@ -191,40 +210,53 @@ const editPinModal = function(existingPinObject) {
 //
 const newMapModal = function() {
   if (currentUID === 0) {
-    let content = `You need to be a registered user (or signed in) to create a new map.
-    <BR><BR>
-    Sign up<BR>
-    Sign in
+    let content = `<div class="subtitle"><b>You need to be a registered user (or signed in) to create a new map.</b>
+    </div>
+    <br>
+    <div class="login-form__field-wrapper buttongap">
+    <a class="accept button" onClick="toggleModal(); showSignUp();">Sign Up</a>
+    <br clear=all>&nbsp;
+    </center>
+    <a class="accept button" onClick="toggleModal(); showLogin();">Login</a>
+    <br clear=all>&nbsp;
+    </center>
+    </div>
     `;
-    toggleModal('<i class="fa-solid fa-location-pin fa-xl"></i> Not Logged In',content);
+    toggleModal('<i class="fa-regular fa-circle-xmark fa-xl icongap" style="color:#d1342fff;"></i> Not Logged In',content,null,{"background":"white"});
     return;
   }
-  let content = `Create a new map
+  let content = `<div class="subtitle"><b>Create a new map</b></div>
   <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__title">Map Name</label>
-    <input type="text" name="name" placeholder="Map Title" id="new-property-form__title">
-    <small><small>
+    <div class="signup-label">Map Name</div>
+    </div>
+  <div class="new-property-form__field-wrapper warning">
+    <input type="text" name="name" id="new-property-form__title">
+    <small style="margin-left:5px; color:#d1342fff"></small>
   </div>
 
 
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__description">Description</label>
-    <textarea placeholder="Description" name="description" id="property-form__description" cols="30" rows="5"></textarea>
+    <div class="signup-label">Description</div>
+    </div>
+  <div class="new-property-form__field-wrapper">
+    <textarea name="description" id="property-form__description" cols="30" rows="5"></textarea>
   </div>
 
   <div class="new-property-form__field-wrapper">
-    <label for="new-property-form__image">Pin Icon (SVG)</label>
-    <input type="text" name="map_pins" placeholder="svg path" id="new-property-form__mappin">
+    <div class="signup-label">Pin Icon (SVG)</div>
+    </div>
+  <div class="new-property-form__field-wrapper">
+    <input type="text" name="mapPins" id="new-property-form__mappin">
   </div>
-
-  <div class="login-form__field-wrapper">
+  <br>
+  <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Map</button>&nbsp;
     <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
-  toggleModal('<i class="fa-solid fa-map fa-xl"></i> New Map',content);
+  toggleModal('<i class="fa-solid fa-map fa-xl icongap"></i> New Map',content,null,{"background":"white"});
   $('#new-map-form').on('submit', function (event) {
     event.preventDefault();
 
@@ -244,13 +276,14 @@ const newMapModal = function() {
     submitNewMap(data)
       .then(() => {
         let modalText = `<center>
-        <i class="fashadow fa-solid fa-map" style="font-size:6rem;"></i><br clear=all><BR>
+        <i class="fashadow fa-solid fa-map" style="font-size:6rem; color:orange"></i><br clear=all><BR>
         Your new map has been added!<br clear=all><BR>
         <a class="button accept" onClick="toggleModal();">Continue</a>
         </center>
       `;
         toggleModal(``,modalText);
         // refresh maps list and set to this new map
+        fetchAdmin();
         getListofMaps();
       })
       .catch((error) => {
@@ -261,26 +294,104 @@ const newMapModal = function() {
       });
   });
 };
+const updateMapModal = function(existingMapid) {
+  // need to fetch the map details from list
+  let theMapObject = findMapObject(existingMapid);
+  console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
+  let content = `<div class="subtitle"><b>Update a map</b></div>
+  <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
+  <div class="new-property-form__field-wrapper">
+    <div class="signup-label">Map Name</div>
+    </div>
+  <div class="new-property-form__field-wrapper warning">
+    <input type="text" name="name" id="new-property-form__title" value="${theMapObject.name}">
+    <small style="margin-left:5px; color:#d1342fff"></small>
+  </div>
 
+
+  <div class="new-property-form__field-wrapper">
+    <div class="signup-label">Description</div>
+    </div>
+  <div class="new-property-form__field-wrapper">
+    <textarea name="description" id="property-form__description" cols="30" rows="5">${theMapObject.description}</textarea>
+  </div>
+
+  <div class="new-property-form__field-wrapper">
+    <div class="signup-label">Pin Icon (SVG)</div>
+    </div>
+  <div class="new-property-form__field-wrapper">
+    <input type="text" name="mapPins" id="new-property-form__mappin" value="${theMapObject.map_pins}">
+  </div>
+  <br>
+  <div class="login-form__field-wrapper buttongap">
+    <button class="button">Update Map</button>&nbsp;
+    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+  </div>
+  </form>
+  `;
+  toggleModal('<i class="fa-solid fa-map fa-xl icongap"></i> Edit a Map',content,null,{"background":"white"});
+  $('#new-map-form').on('submit', function (event) {
+    event.preventDefault();
+
+    // run validations
+    const titleEl = document.querySelector('#new-property-form__title');
+    let isTitleValid = formCheckIfEmpty(titleEl,"Map title can not be empty!");
+    if (!isTitleValid) {
+      return;
+    }
+
+    let data = $(this).serialize();
+    data += '&category=general&isPrivate=false&ownerId=';
+    data += currentUID;
+    console.log("SUBMIT FOR EDIT MAP:",data)
+    toggleModal();
+
+    submitEditMap(data)
+      .then(() => {
+        let modalText = `<center>
+        <i class="fashadow fa-solid fa-map" style="font-size:6rem; color:orange"></i><br clear=all><BR>
+        Your map has been updated!<br clear=all><BR>
+        <a class="button accept" onClick="toggleModal();">Continue</a>
+        </center>
+      `;
+        toggleModal(``,modalText);
+        // refresh maps list and set to this new map
+        fetchAdmin();
+        getListofMaps();
+      })
+      .catch((error) => {
+        // TODO - need to JSON stringify the error object for readability
+        toggleModal(`Woah!`,`There was an error updating your map in our database.<BR>${error}`);
+        console.error(error);
+        // refresh to default map
+      });
+  });
+};
 
 const showLogin = () => {
-  let data = `
+  let data = `<div class="subtitle-left"><b>Login to your Map My Wiki account to access and customize your maps</b></div>
   <form id="login-form" class="login-form">
       <div class="login-form__field-wrapper">
-        <input type="email" name="email" placeholder="Email">
+        <div class="signup-label">Email</div>
+      </div>
+      <div class="login-form__field-wrapper">
+        <input type="email" name="email">
       </div>
 
       <div class="login-form__field-wrapper">
-          <input type="password" name="password" placeholder="Password">
-        </div>
-
+        <div class="signup-label">Password</div>
+      </div>
       <div class="login-form__field-wrapper">
+          <input type="password" name="password" >
+        </div>
+      <br>
+      <div class="login-form__field-wrapper buttongap">
           <button class="button">Login</button>&nbsp;
           <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
       </div>
     </form>
     `;
-    toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Log In',data,null,{"background":"white"});
+    toggleModal('<i class="fa-solid fa-user fa-xl icongap" ></i> Login',data,null,{"background":"white"});
     $('#login-form').on('submit', function (event) {
       event.preventDefault();
       let data = $(this).serialize();
@@ -290,7 +401,11 @@ const showLogin = () => {
       .then(json => {
         console.log(json);
         if (!json.user) {
-          toggleModal('','<i class="fa-regular fa-circle-xmark"></i> failed to log in - check your user name and or password');
+          toggleModal('',`<center>
+          <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:4rem;"></i><br clear=all><BR>
+          Failed to login.<BR>Please check your user name and password.<br clear=all><BR>
+          <a class="button accept" onClick="toggleModal(); showLogin();">Try Again</a>
+          </center>`);
           return;
         }
         console.log(json.user);
@@ -306,23 +421,29 @@ const showLogin = () => {
 }
 
 const showSignUp = () => {
-  let data = `SIGN UP FORM - give info WHY (custom maps)
+  let data = `<div class="subtitle-left"><b>Create an account for Map My Wiki to access and customize your maps</b></div>
   <form id="login-form" class="login-form">
       <div class="login-form__field-wrapper">
-        <input type="email" name="email" placeholder="Email">
+        <div class="signup-label">Email</div>
+      </div>
+      <div class="login-form__field-wrapper">
+        <input type="email" name="email">
       </div>
 
       <div class="login-form__field-wrapper">
-          <input type="password" name="password" placeholder="Password">
-        </div>
-
+        <div class="signup-label">Password</div>
+      </div>
       <div class="login-form__field-wrapper">
+          <input type="password" name="password" >
+        </div>
+      <br>
+      <div class="login-form__field-wrapper buttongap">
           <button class="button">Register</button>&nbsp;
           <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
       </div>
     </form>
     `;
-    toggleModal('<i class="fa-solid fa-users fa-xl"></i> Sign Up',data);
+    toggleModal('<i class="fa-solid fa-user-plus fa-xl icongap"></i> Sign Up',data,null,{"background":"white"});
 }
 
 
@@ -336,11 +457,11 @@ const showAbout = () => {
   <span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></a></i> Ernie Johnson (Frontend)  <i class="fa-brands fa-sass" ></i> <i class="fa-brands fa-node-js"></i> <i class="fa-brands fa-html5" ></i>  <i class="fa-brands fa-css3-alt "></i></span><BR>
   <span class="modal-info"><a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></a></i> Atsuyuki Yoshimatsu (Backend) <i class="fa-brands fa-node-js"></i> <i class="fa-solid fa-database" ></i></span>
   <div class="modal-info">
-  <p>&copy; Copyright 2022, All Rights Reserved<BR><a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm">Get the latest version on <i class="fa-brands fa-github"></i></a></p>
+  <p>&copy; Copyright 2022, All Rights Reserved | <a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm">Get the latest version on <i class="fa-brands fa-github"></i></a></p>
   </div>
   `;
 
-  toggleModal('<i class="fa-solid fa-circle-question fa-xl"></i> About', privacyPolicy);
+  toggleModal('<i class="fa-solid fa-circle-question fa-xl icongap"></i> About', privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
 };
 
 
@@ -348,16 +469,21 @@ const showAbout = () => {
 // show "contact us" modal window
 //
 const showContact = () => {
-  let privacyPolicy = `
-  Reach out to the Developers:<BR>
+  let privacyPolicy = `<center>
+  <i class="fashadow fa-solid fa-address-card" style="font-size:6rem;color:orange"></i><br clear=all>
+  <h3>Contact the Developers:</h3>
   <div class="modal-contact">
-  <li>
-  Ernie Johnson <a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></i></a><br></li>
-  <li>Atsuyuki Yoshimatsu <a href="https://www.linkedin.com/in/atsuyuki/ target="new" class="tooltip expand" data-title="check us out on linkedin"><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></i></a></li>
+  <table border=0 style="font-size:1.1rem;">
+  <tr><td>
+  <li>Ernie Johnson</li></td><td><a href="https://www.linkedin.com/in/ernie-johnson-3b77829b/"  class="tooltip expand" data-title="check us out on linkedin" target=_new><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></i></a></td></tr>
+  <tr><td><li>Atsuyuki Yoshimatsu</li></td><td><a href="https://www.linkedin.com/in/atsuyuki/" class="tooltip expand" data-title="check us out on linkedin" target=_new><i class="fa-brands fa-linkedin fa-lg"></i></a> <a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></i></a></td></tr></table>
   </div>
+  <br clear=all><a class="button accept" onClick="toggleModal();">Close</a>
+  <br clear=all>&nbsp;
+  </center>
   `;
 
-  toggleModal('<i class="fa-solid fa-address-card fa-xl"></i> Contact Us',privacyPolicy);
+  toggleModal('',privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
 };
 
 //
@@ -373,7 +499,7 @@ const reqLocationModal = () => {
   <br>The information is not used to identify or contact the user.<BR><BR>
   </div>
   <div class="modal-info">
-  <span>&copy; Copyright 2022, All Rights Reserved<BR><a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm"> Get the latest version on <i class="fa-brands fa-github"></i></a></span><BR><BR>
+  <span>&copy; Copyright 2022, All Rights Reserved | <a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm"> Get the latest version on <i class="fa-brands fa-github"></i></a></span><BR><BR>
   </div>
 
 
@@ -395,8 +521,6 @@ const closeButton = document.querySelector(".close-button");
 $("#propertySubmit").removeAttr("style"); // helps eliminate any initial page draw showing the modal window
 const toggleModal = function(title,body,effect,extracss) {
   if(extracss) {
-    console.log("EXTRACSS:",extracss);
-    // REFERENCE: css gradient builder
     $("#modal-content").css(extracss);
     // todo - we need to remove and reset the modal css  when we close it.
     // https://stackoverflow.com/questions/754607/can-jquery-get-all-css-styles-associated-with-an-element

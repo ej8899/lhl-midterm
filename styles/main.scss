@@ -94,6 +94,7 @@ body {
   text-decoration-color: orange;
   text-decoration-thickness: 3px;
   transition: all 300ms;
+  cursor:pointer;
 }
 
 /*
@@ -156,15 +157,7 @@ body {
   transform: scale(1.0);
   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
-.accept {
-  //background-color: rgb(184, 182, 182);
-  //border-radius: 2rem;
-}
-.accept:hover {
-  background-color: orange;
-  cursor: pointer;
-  //text-align: center;
-}
+
 
 .modal-button {
   text-align: end;
@@ -255,9 +248,20 @@ body {
   z-index: 1;
 }
 .button:hover {
-  color: #fff;
+  // color: #fff;
+  background-color: orange;
+  cursor: pointer;
 }
 
+// .accept {
+//   //background-color: rgb(184, 182, 182);
+//   //border-radius: 2rem;
+// }
+// .accept:hover {
+//   background-color: orange;
+//   cursor: pointer;
+//   //text-align: center;
+// }
 
 /*
   SEARCH FILTER button
@@ -299,6 +303,7 @@ body {
   max-width: 800px;
   width: 800px;
   margin: 0 auto;
+  z-index:10;
 }
 .gm-ui-hover-effect {
   display: none !important;
@@ -505,14 +510,45 @@ canvas {
   flex-direction: column;
   align-items: stretch;
   margin: auto; }
-  .search-property-form__field-wrapper, .login-form__field-wrapper, .new-property-form__field-wrapper, .sign-up-form__field-wrapper {
+  .search-property-form__field-wrapper, .login-form__field-wrapper,  .sign-up-form__field-wrapper {
     width: 100%;
     display: flex; }
   .search-property-form label, .login-form label, .new-property-form label, .sign-up-form label {
     display: none; }
-  .search-property-form textarea, .search-property-form select, .search-property-form input, .search-property-form label, .login-form textarea, .login-form select, .login-form input, .login-form label, .new-property-form textarea, .new-property-form select, .new-property-form input, .new-property-form label, .sign-up-form textarea, .sign-up-form select, .sign-up-form input, .sign-up-form label {
+  .search-property-form textarea, .search-property-form select, .search-property-form input, .search-property-form label, .login-form textarea, .login-form select, .login-form label, .sign-up-form textarea, .sign-up-form select, .sign-up-form input, .sign-up-form label {
     margin: 5px 5px;
     width: 100%; }
+
+    .login-form input, .new-property-form textarea, .new-property-form select, .new-property-form input,  .new-property-form label, .new-property-form__field-wrapper  {
+      margin-top: 5px;
+      width: 100%;
+    }
+
+    .subtitle {
+      text-align:center;
+    }
+
+    .subtitle-left {
+      margin-left:26px
+    }
+
+    .buttongap {
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .icongap {
+      margin-top:2rem;
+    }
+
+    .warning {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .signup-label {
+      padding-top: 0.5rem;
+    }
 
     input,textarea {
     font-size: 16px;
@@ -636,15 +672,25 @@ TOGGLES
 */
 .toggle-wrap {
   width: 800px;
+  background-color: var(--cardbackgroundcolor);
+  border: solid;
+  border-width: 2px;
+  border-radius: 1rem;
+  border-color: black;
+  padding: 1rem;
+  padding-top: 2rem;
+  position: relative;
+  top: -2rem;
+  z-index: 9;
   .toggle-block {
-    border-bottom: 1px solid #ccc;
-    color: #999;
+    border-bottom: 1px solid var(--cardcontentcolor);
+    color: var(--cardcontentcolor);
     .toggle-trigger {
       cursor: pointer;
       position: relative;
       padding: 15px 20px 15px 0;
       margin: 0;
-      font-size: 16pt;
+      font-size: 14pt;
       &::after {
         content: "\f078";
         font-family: "Font Awesome 5 Free";
@@ -653,14 +699,19 @@ TOGGLES
         transform: translateY(-50%);
         right: 0;
         top: 50%;
+        color: var(--cardcontentcolor);
+        padding-top:10px;
       }
     }
     .toggle-able {
       display: none;
-      padding-bottom: 15px;
+      padding: 1rem;
+      padding-bottom: 0;
+      padding-top:0;
+      color: var(--cardcontentcolor);
     }
     &.active {
-      color: #000;
+      color: var(--cardcontentcolor);
       .toggle-trigger {
         &::after {
           content: "\f077";
@@ -707,4 +758,41 @@ TOGGLES
   order: 0;
   flex: 0 1 auto;
   align-self: auto;
+  }
+
+  .badge {
+    position: relative;
+  }
+
+  .badge[data-badge]:after {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    content: attr(data-badge);
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 22px;
+    height: 16px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 20%;
+    border-style: solid;
+    border-width: 0.15rem;
+    box-shadow: 0 0 1px #333;
+    font-size: 10px;
+    font-weight: 600;
+    border-color: var(--persian-red);
+    color: var(--persian-red);
+  }
+
+  .edit:hover {
+    cursor: pointer;
+    color: var(--wasteal);
+  }
+
+  .trash:hover  {
+    cursor: pointer;
+    color: var(--persian-red);
   }
