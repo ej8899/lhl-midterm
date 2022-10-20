@@ -191,6 +191,7 @@ const editPinModal = function(existingPinObject) {
       <a class="button accept" onClick="toggleModal();">Continue</a>
       </center>`);
       getPointsByMap(currentMap,false);
+      fetchAdmin();
       // push the details into our object mapsPointsObject
       // call placeMarker to drop pin
     })
@@ -330,8 +331,8 @@ const showLogin = () => {
         console.log(json);
         if (!json.user) {
           toggleModal('',`<center>
-          <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
-          Failed to login - check your user name and password<br clear=all><BR>
+          <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:4rem;"></i><br clear=all><BR>
+          Failed to login.<BR>Please check your user name and password.<br clear=all><BR>
           <a class="button accept" onClick="toggleModal(); showLogin();">Try Again</a>
           </center>`);
           return;
@@ -444,8 +445,6 @@ const closeButton = document.querySelector(".close-button");
 $("#propertySubmit").removeAttr("style"); // helps eliminate any initial page draw showing the modal window
 const toggleModal = function(title,body,effect,extracss) {
   if(extracss) {
-    console.log("EXTRACSS:",extracss);
-    // REFERENCE: css gradient builder
     $("#modal-content").css(extracss);
     // todo - we need to remove and reset the modal css  when we close it.
     // https://stackoverflow.com/questions/754607/can-jquery-get-all-css-styles-associated-with-an-element

@@ -188,7 +188,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
       ${adminOptions}
     `;
 
-    toggleModal(itemTitle,itemDescription);
+    toggleModal(itemTitle,itemDescription,null,{"background":"white"});
   });
 
 };

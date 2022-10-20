@@ -47,12 +47,11 @@ const fetchFavorites = function() {
         userfavSection += json.favourites[x].map_name;
         userfavSection += `</a></td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
       }
-
-      // TODO - make the heart toggle fav mode off and when off, refetch favorites
-
       userfavSection += `</table>`;
       $('#user-favorites-title').text('Favorites (' + json.favourites.length + '):');
       $('#user-favorites').html(userfavSection);
+      // TODO - make the heart toggle fav mode off and when off, refetch favorites
+      updateFavIcon();
     }
   });
 };
@@ -240,6 +239,10 @@ const deletePin = function(pinID) {
   deletePinAPI(pinID)
   .then(function(json) {
     console.log(json)
+    // find where this PIN is -- if on current map, we need to refresh it
+    if (currentMap === currentMap) {
+      switchMap(currentMap);
+    }
     fetchAdmin();
   });
 }

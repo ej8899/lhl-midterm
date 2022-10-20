@@ -234,7 +234,7 @@ const mapSelectHandler = function() {
           if(!mapIcon) {
             mapIcon = defaultMapIcon;
           }
-          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + svg1 + mapIcon + svg2 + '&nbsp;' + $(this).html() + '</span>';
+          template += '<span class="custom-option ' + $(this).attr("class") + '" data-value="' + $(this).attr("value") + '">' + svg1 + mapIcon + svg2 + '&nbsp;&nbsp;' + $(this).html() + '</span>';
         });
     template += '</div></div>';
 
@@ -328,7 +328,9 @@ const findMapPinData = function(mapID) {
 
 // find and return the map pin (SVG) if included in a map
 const findMapIcon = function(mapID) {
-  let mapIcon = `M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z`;
+  // plus icon
+  //let mapIcon = `M320 144c0 79.5-64.5 144-144 144S32 223.5 32 144S96.5 0 176 0s144 64.5 144 144zM176 80c8.8 0 16-7.2 16-16s-7.2-16-16-16c-53 0-96 43-96 96c0 8.8 7.2 16 16 16s16-7.2 16-16c0-35.3 28.7-64 64-64zM144 480V317.1c10.4 1.9 21.1 2.9 32 2.9s21.6-1 32-2.9V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z`;
+  let mapIcon = `M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z`;
 
   for (const key of mapsListObject) {
     if(key.id === +mapID) {
@@ -366,8 +368,32 @@ const updateNav = function(user) {
   $pageHeader.append(userLinks);
 };
 
+const editPinFromMap = function(pinId) {
+
+};
+
 const editPin = function(pin) {
-  editPinModal(findPointinCache(pin));
+  console.log("FINDPOINTINCACHE:",findPointinCache(pin))
+  // find the pin - is it current user owned:
+  if(findPointinCache(pin)) {
+    editPinModal(findPointinCache(pin));
+  } else {
+    alert("map owned")
+    // check the map point cache instead of owner cache
+    editPinModal(findPointinMapsPointCache(pin));
+  }
+  // find the pin - is it map owner 'owned':
+
+
+  //editPinModal(findPointinCache(pin));
+};
+const findPointinMapsPointCache = function(pin) {
+  for (const key of mapsPointsObject) {
+    if(key.id === +pin) {
+      console.log ("POINT OBJECT:",key)
+      return key;
+    }
+  }
 };
 
 const findPointinCache = function(pin) {
