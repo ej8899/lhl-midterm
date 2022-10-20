@@ -405,30 +405,7 @@ body {
 
 
 
-/*
-  Assorted Buttons
-*/
-.button {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  text-decoration: none;
-  display: inline-block;
-  padding: 0.75rem 1.25rem;
-  border-radius: 10rem;
-  border: 2px solid;
-  border-color: var(--davys-grey);
-  background-color: var(--dutch-white);
-  color: var(--davys-grey);
-  text-transform: uppercase;
-  font-size: 1rem;
-  letter-spacing: 0.15rem;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-}
-.button:hover {
-  color: #fff;
-}
+
 
 
 
@@ -565,6 +542,8 @@ canvas {
       overflow: hidden;
       border-top-right-radius: 10px;
       border-bottom-right-radius: 10px;
+      border-bottom-left-radius: 10px;
+      border-top-left-radius: 10px;
       border: 1px transparent;
       -moz-border-radius: 10px;
       max-width: 100%;
@@ -715,7 +694,7 @@ TOGGLES
   flex-wrap: nowrap;
   justify-content: flex-end;
   align-content: flex-end;
-  align-items: flex-start;
+  align-items: baseline;
   }
 
 .mapnav-item:nth-child(1) {

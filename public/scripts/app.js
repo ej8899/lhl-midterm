@@ -95,16 +95,51 @@ $(document).ready(function() {
 //
 const favoriteHandler = function() {
   $("#favoritestatus").on("click", function() {
-    // toggle ON if heart is OFF
-    // add to favs table
-    setFav(currentMap);
-
-    // toggle OFF if heart is ON
-    // delete from favs table
-
-    // TODO need read all favorites store in cache memory -
+    updateFavSatus();
   });
 };
+// updator for fav status - call when map changes, etc to update admin area and heart icons
+const updateFavSatus = function() {
+  let favoritestatus = 0;
+  for (const key in favoritesObject) {
+    console.log("currmap:",currentMap);
+    console.log("mapinfav:",favoritesObject[key].map_id);
+    if(+currentMap == +favoritesObject[key].map_id) {
+      // toggle fav OFF
+      console.log("FAV-del")
+      $('#favoritestatus').removeClass('fa-solid');
+      $('#favoritestatus').addClass('fa-regular');
+      deleteFav(currentMap);
+      favoritestatus = 1;
+    }
+  }
+  if (favoritestatus === 0) {
+    console.log("FAV-add")
+    // toggle fav ON
+    $('#favoritestatus').addClass('fa-solid');
+    $('#favoritestatus').removeClass('fa-regular');
+    setFav(currentMap);
+  }
+};
+// check favorites icon for proper status
+const updateFavIcon = function() {
+  let favoritestatus = 0;
+  for (const key in favoritesObject) {
+    console.log("currmap:",currentMap);
+    console.log("mapinfav:",favoritesObject[key].map_id);
+    if(+currentMap == +favoritesObject[key].map_id) {
+      // toggle fav ON
+      console.log("FAV-del")
+      $('#favoritestatus').addClass('fa-solid');
+      $('#favoritestatus').removeClass('fa-regular');
+      favoritestatus = 1;
+    }
+  }
+  if(favoritestatus === 0) {
+    $('#favoritestatus').removeClass('fa-solid');
+    $('#favoritestatus').addClass('fa-regular');
+  }
+}
 
 //
 // sliderToggle() - this toggles info sliders open & closed
@@ -240,6 +275,7 @@ const mapSelectHandler = function() {
     }
     currentMap = mapChangeID;
     getPointsByMap(mapChangeID);
+    updateFavIcon();
     $("#titlemap").text($(this).text());
     $("#aboutmap").text(findMapDescription(mapChangeID));
   });

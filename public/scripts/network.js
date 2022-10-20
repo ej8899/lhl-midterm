@@ -36,6 +36,7 @@ const fetchFavorites = function() {
   getFavoritesAPI(currentUID)
   .then(function(json) {
     console.log("FAVORITES OBJ:",json.favourites);
+    favoritesObject = json.favourites;
     let favscount = json.favourites.length;
     console.log("FAV COUNT:",favscount);
     if(favscount > 0) {
@@ -103,7 +104,7 @@ const fetchAdmin = function() {
           usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
         }
         usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><i class="fa-solid fa-map-pin"></i>&nbsp;`;
-        console.log(json.points[x].title)
+        // console.log(json.points[x].title)
         if(!json.points[x].title) {
           pointname = 'no point title';
         } else {
