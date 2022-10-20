@@ -55,7 +55,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     scale: 0.05,
   };
 
-  console.log("MAP LIST OBJECT all:",mapsListObject)
+  //console.log("MAP LIST OBJECT all:",mapsListObject)
   //console.log("MAP LIST OBJECT:",mapsListObject[currentMap])
   //console.log("PIN DATA:",mapsListObject[currentMap].map_pins)
   const newPinPath = findMapPinData(currentMap);

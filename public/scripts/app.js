@@ -7,8 +7,9 @@
 //
 // Setup GLOBAL variables
 //
-let currentMap = 1; // what is the current map ID being viewed?
-let currentUID = 0; // what is the current USER ID (0 not logged in, else db user id)
+let currentMap = 1;     // what is the current map ID being viewed?
+let currentUID = 0;     // what is the current USER ID (0 not logged in, else db user id)
+let gConfirmation = 0;  // global confirmation variable 0 = no, 1 = yes
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
@@ -274,18 +275,25 @@ const mapSelectHandler = function() {
   });
 };
 
+// pre-fetch images for quicker loading
+const cacheImages = function(mapId) {
+  let img = [], x = 0;
+  if(!mapsPointsObject) {
+    // problem, let's get out of here
+    return;
+  }
+  for (const key of mapsPointsObject) {
+    console.log("PREFETCH:",key.image_url)
+    img[x] = new Image();
+    img[x].src = key.image_url;
+  };
+}
+
+// fake a click or tap on map select list to ensure everything stays in sync
 const switchMap = function(mapId) {
-  // TODO - how do we force a click event??
-  //let selectItem = $(".custom-option").find(`[data-value='${mapId}']`).trigger("click");
-  //console.log("SELECTITEM:",selectItem)
-  //selectItem.trigger("click");
-
-  currentMap = mapId;
-  getPointsByMap(mapId);
-  updateFavIcon();
-  $("#titlemap").text(findMapTitle(mapId)).trim();
-  $("#aboutmap").text(findMapDescription(mapId)).trim();
-
+  // map select handler has process for switching maps, so lets simulate a click on the map
+  let selectItem = $(`[data-value="${mapId}"]`);
+  selectItem.trigger("click");
 };
 
 // find map descriptions in our map list object

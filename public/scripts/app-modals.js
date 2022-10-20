@@ -24,13 +24,12 @@ const modalSuccess = function(message) {
 };
 
 // create confirmation modal - get yes/no type input for buttons
-const modalConfirmation = function (yesButtonText,noButtonText) {
+const modalConfirmation = function (message,yesButtonText,noButtonText) {
+  // todo toggle g-variable state to show user has confirmed
   let messageOutput = `<center>
   <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
   <h3>Are you sure?</h3>
   ${message}<br clear=all><BR>
-  // todo dim the no button color
-  // todo toggle g-variable state to show user has confirmed
   <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();">${yesButtonText}</a>
   </center>`;
   toggleModal(null,messageOutput);
@@ -248,7 +247,7 @@ const newMapModal = function() {
     <div class="signup-label">Pin Icon (SVG)</div>
     </div>
   <div class="new-property-form__field-wrapper">
-    <input type="text" name="map_pins" id="new-property-form__mappin">
+    <input type="text" name="mapPins" id="new-property-form__mappin">
   </div>
   <br>
   <div class="login-form__field-wrapper buttongap">
@@ -321,7 +320,7 @@ const updateMapModal = function(existingMapid) {
     <div class="signup-label">Pin Icon (SVG)</div>
     </div>
   <div class="new-property-form__field-wrapper">
-    <input type="text" name="map_pins" id="new-property-form__mappin" value="${theMapObject.map_pins}">
+    <input type="text" name="mapPins" id="new-property-form__mappin" value="${theMapObject.map_pins}">
   </div>
   <br>
   <div class="login-form__field-wrapper buttongap">

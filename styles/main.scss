@@ -303,6 +303,7 @@ body {
   max-width: 800px;
   width: 800px;
   margin: 0 auto;
+  z-index:10;
 }
 .gm-ui-hover-effect {
   display: none !important;
@@ -671,15 +672,25 @@ TOGGLES
 */
 .toggle-wrap {
   width: 800px;
+  background-color: var(--cardbackgroundcolor);
+  border: solid;
+  border-width: 2px;
+  border-radius: 1rem;
+  border-color: black;
+  padding: 1rem;
+  padding-top: 2rem;
+  position: relative;
+  top: -2rem;
+  z-index: 9;
   .toggle-block {
-    border-bottom: 1px solid #ccc;
-    color: #999;
+    border-bottom: 1px solid var(--cardcontentcolor);
+    color: var(--cardcontentcolor);
     .toggle-trigger {
       cursor: pointer;
       position: relative;
       padding: 15px 20px 15px 0;
       margin: 0;
-      font-size: 16pt;
+      font-size: 14pt;
       &::after {
         content: "\f078";
         font-family: "Font Awesome 5 Free";
@@ -688,14 +699,19 @@ TOGGLES
         transform: translateY(-50%);
         right: 0;
         top: 50%;
+        color: var(--cardcontentcolor);
+        padding-top:10px;
       }
     }
     .toggle-able {
       display: none;
-      padding-bottom: 15px;
+      padding: 1rem;
+      padding-bottom: 0;
+      padding-top:0;
+      color: var(--cardcontentcolor);
     }
     &.active {
-      color: #000;
+      color: var(--cardcontentcolor);
       .toggle-trigger {
         &::after {
           content: "\f077";
@@ -742,4 +758,41 @@ TOGGLES
   order: 0;
   flex: 0 1 auto;
   align-self: auto;
+  }
+
+  .badge {
+    position: relative;
+  }
+
+  .badge[data-badge]:after {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    content: attr(data-badge);
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 22px;
+    height: 16px;
+    text-align: center;
+    line-height: 18px;
+    border-radius: 20%;
+    border-style: solid;
+    border-width: 0.15rem;
+    box-shadow: 0 0 1px #333;
+    font-size: 10px;
+    font-weight: 600;
+    border-color: var(--persian-red);
+    color: var(--persian-red);
+  }
+
+  .edit:hover {
+    cursor: pointer;
+    color: var(--wasteal);
+  }
+
+  .trash:hover  {
+    cursor: pointer;
+    color: var(--persian-red);
   }
