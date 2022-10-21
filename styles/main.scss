@@ -484,6 +484,7 @@ h1 {
 .hero-subtitle {
   display: flex;
   justify-content: center;
+  font-size: 1.3rem;
 }
 
 canvas {
@@ -702,6 +703,9 @@ TOGGLES
         color: var(--cardcontentcolor);
         padding-top:10px;
       }
+      &:hover::after {
+        color: var(--persian-red);
+      }
     }
     .toggle-able {
       display: none;
@@ -765,14 +769,15 @@ TOGGLES
   }
 
   .badge[data-badge]:after {
+    transform: rotate(17deg);
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     content: attr(data-badge);
     position: absolute;
-    top: -20px;
-    right: -20px;
+    top: -16px;
+    right: -18px;
     width: 22px;
     height: 16px;
     text-align: center;

@@ -3,6 +3,7 @@
 //  modal window handler, supporting code and various app specific modal windows (& content)
 //
 
+
 // create generic error modal, but with custom message
 const modalError = function(message) {
   let messageOutput = `<center>
@@ -26,15 +27,26 @@ const modalSuccess = function(message) {
 // create confirmation modal - get yes/no type input for buttons
 const modalConfirmation = function (message,yesButtonText,noButtonText) {
   // todo toggle g-variable state to show user has confirmed
+  gConfirmation = 0; // reset state to default "no"
   let messageOutput = `<center>
   <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
   <h3>Are you sure?</h3>
   ${message}<br clear=all><BR>
-  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();">${yesButtonText}</a>
+  <a class="button accept" onClick="toggleModal();gConfirmation=0;">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();gConfirmation=1;">${yesButtonText}</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+  console.log("gCONFIRMATION:",gConfirmation)
+};
+
+const delPinConfirmation = function (pid,message,yesButtonText,noButtonText) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  <h3>Are you sure?</h3>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();deletePinNext(${pid});">${yesButtonText}</a>
   </center>`;
   toggleModal(null,messageOutput);
 };
-
 
 //
 // show Privacy Policy modal window
@@ -129,7 +141,7 @@ const newPin = function(lat,lng) {
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
       toggleModal();
-      toggleModal(`Woah!`,`There was an error saving your map pin to this map.<BR>${error}`);
+      toggleModal(`Woah!`,`There was an error saving your map pin to this map.<BR>${JSON.stringify(error)}`);
       console.error(error);
       // refresh to default map
     });
@@ -197,7 +209,7 @@ const editPinModal = function(existingPinObject) {
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
       toggleModal();
-      toggleModal(`Woah!`,`There was an error updating your map pin details.<BR>${error}`);
+      toggleModal(`Woah!`,`There was an error updating your map pin details.<BR>${JSON.stringify(error)}`);
       console.error(error);
       // refresh to default map
     });
@@ -272,23 +284,23 @@ const newMapModal = function() {
     data += currentUID;
     console.log("SUBMIT FOR MAP:",data)
     toggleModal();
-
+    newMapTitle = titleEl.value.trim();
     submitNewMap(data)
       .then(() => {
         let modalText = `<center>
         <i class="fashadow fa-solid fa-map" style="font-size:6rem; color:orange"></i><br clear=all><BR>
-        Your new map has been added!<br clear=all><BR>
+        Your new map<BR><b>${newMapTitle}</b><BR>has been added!<br clear=all><BR>
         <a class="button accept" onClick="toggleModal();">Continue</a>
         </center>
       `;
         toggleModal(``,modalText);
         // refresh maps list and set to this new map
         fetchAdmin();
-        getListofMaps();
+        getListofMaps(newMapTitle); // force a map to go to
       })
       .catch((error) => {
         // TODO - need to JSON stringify the error object for readability
-        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${error}`);
+        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${JSON.stringify(error)}`);
         console.error(error);
         // refresh to default map
       });
@@ -341,7 +353,7 @@ const updateMapModal = function(existingMapid) {
     }
 
     let data = $(this).serialize();
-    data += '&category=general&isPrivate=false&ownerId=';
+    data += `&category=general&isPrivate=false&mapId=${existingMapid}&ownerId=`;
     data += currentUID;
     console.log("SUBMIT FOR EDIT MAP:",data)
     toggleModal();
@@ -360,8 +372,8 @@ const updateMapModal = function(existingMapid) {
         getListofMaps();
       })
       .catch((error) => {
-        // TODO - need to JSON stringify the error object for readability
-        toggleModal(`Woah!`,`There was an error updating your map in our database.<BR>${error}`);
+        //toggleModal(`Woah!`,`There was an error updating your map in our database.<BR>${JSON.stringify(error)}`);
+        modalError("<h3>Critical Error!</h3>"+JSON.stringify(error));
         console.error(error);
         // refresh to default map
       });

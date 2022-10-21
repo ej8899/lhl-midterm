@@ -319,6 +319,19 @@ const findMapTitle = function(mapID) {
   return mapDescription;
 };
 
+// find map ID by title and return the id
+const findMapByTitle = function(mapTitle) {
+  let mapId = null;
+  for (const key of mapsListObject) {
+    console.log("KEY.name",key.name);
+    console.log("mapTitle:",mapTitle)
+    if(key.name == mapTitle) {
+      return key.id;
+    }
+  }
+  return mapId;
+};
+
 // find (& return) entire map object in our map list object
 const findMapObject = function(mapID) {
   for (const key of mapsListObject) {
@@ -403,14 +416,9 @@ const editPin = function(pin) {
   if(findPointinCache(pin)) {
     editPinModal(findPointinCache(pin));
   } else {
-    alert("map owned")
     // check the map point cache instead of owner cache
     editPinModal(findPointinMapsPointCache(pin));
   }
-  // find the pin - is it map owner 'owned':
-
-
-  //editPinModal(findPointinCache(pin));
 };
 const findPointinMapsPointCache = function(pin) {
   for (const key of mapsPointsObject) {
@@ -420,7 +428,6 @@ const findPointinMapsPointCache = function(pin) {
     }
   }
 };
-
 const findPointinCache = function(pin) {
   // points cache for this user is at userPointCache
   for (const key of userPointCache) {

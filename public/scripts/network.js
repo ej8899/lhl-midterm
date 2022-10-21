@@ -69,6 +69,7 @@ const fetchAdmin = function() {
   // deal with the maps list section
   getallMapsAPI(currentUID)
   .then(function(json) {
+    let privateIcon = "";
     console.log("ALL MAPS for user:",json)
     let usermapscount = json.maps.length;
     console.log("ALL MAP COUNT:",usermapscount)
@@ -76,7 +77,14 @@ const fetchAdmin = function() {
       let usermaplist = `<table border="0" width="100%">`;
       // TODO sort this output list by alpha - sent to BACKEND DEV 2022-10-18
       for(let x = 0; x < usermapscount; x ++) {
-        usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>`;
+        console.log(json.maps[x].is_private)
+        if(json.maps[x].is_private === true) {
+          privateIcon = `<span class="tooltip expand" data-title="private map"><i class="fa-solid fa-lock"></i></span>`;
+        } else {
+          privateIcon = "";
+        }
+        usermaplist += `<tr><td width=100% style="padding-bottom:20px;">${privateIcon}<a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>&nbsp;`;
+
         usermaplist += json.maps[x].name;
         usermaplist += '</b></a><div style="padding-left:10px; font-size:small">' + json.maps[x].description;
         usermaplist += `</div></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" onClick="updateMapModal(${json.maps[x].id});" data-title="edit this map"><i class="fa-solid fa-pen-to-square edit"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this map" onClick="deleteMap(${json.maps[x].id});"><i class="fa-solid fa-trash trash"></i></a></td></tr>`;
@@ -102,7 +110,7 @@ const fetchAdmin = function() {
           mapTitle = json.points[x].map_name;
           usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
         }
-        usermaplist += `<tr ><td width=100% style="padding-bottom:10px; padding-top:10px"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
+        usermaplist += `<tr ><td width=100% style="padding-bottom:10px; padding-top:10px; padding-left:10px;"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
         // console.log(json.points[x].title)
         if(!json.points[x].title) {
           pointname = 'no point title';
@@ -177,22 +185,13 @@ function getPointsByMapAPI(params) {
 //
 // get all our public maps and cache the data
 //
-function getListofMaps() {
+function getListofMaps(forceSwitchName) {
   let mapNames=[];
   getListofMapsAPI().then(function(json) {
     console.log(json.maps)
-    /*
-    for(element in json.maps) {
-      mapNames.push(json.maps[element].name);
-      //console.log(json.maps[element].name)
-    }
-    */
-    //console.log(mapNames)
+
     mapsList = mapNames;
     mapsListObject = json.maps;
-    // refresh the maps list here
-
-    //console.log("MAPSLIST: ",mapsList)
 
     // clear and rebuilt the map list
     $("#selectwrapper").empty();
@@ -206,10 +205,14 @@ function getListofMaps() {
       $("#map-sources").append(`<option value="${mapsListObject[map].id}" class="selectmap">${mapsListObject[map].name}</option>`);
     }
     mapSelectHandler();
+    if(forceSwitchName) {
+      switchMap(findMapByTitle(newMapTitle));
+    }
   });
 }
 function getListofMapsAPI() {
   let url = "/api/widgets/no-private-maps";
+  //let url = "/api/widgets/maps";
   return $.ajax({
     url,
   });
@@ -233,9 +236,10 @@ const submitNewPin = function(data) {
 }
 
 
-const deletePin = function(pinID) {
-  // TODO CONFIRMATION modal
-  modalConfirmation('delete this point','delete','cancel');
+const deletePin = function(pinId) {
+  delPinConfirmation(pinId,'delete this point','delete','cancel');
+};
+const deletePinNext = function(pinID) {
   deletePinAPI(pinID)
   .then(function(json) {
     console.log(json)
