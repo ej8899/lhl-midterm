@@ -6,7 +6,7 @@ MapMyWiki is a joint effort between
 - Ernie Johnson
 - Atsuyuki
 ## Top Page View
-![Screen Shot of Top Page](./screenshots/mockup.jpg)
+![Screen Shot of Top Page](./screenshots/ERD.png)
 
 ---
 ## Contents...
@@ -57,7 +57,7 @@ MapMyWiki is a joint effort between
 [( back to top 🔺)](#MapMyWiki)
 ---
 # ERD
-!["Screenshot of ERD"](https://github.com/ej8899/lhl-midterm/blob/document/master/screenshots/ERD.png)
+!["Screenshot of ERD"](./screenshots/ERD.png)
 ---
 ## Attributions...
 - [conColors](https://github.com/ej8899/conColors) (misc. functions)
