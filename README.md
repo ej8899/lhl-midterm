@@ -25,6 +25,7 @@ MapMyWiki is a joint effort between
   - username: `labber`
   - password: `labber`
   - database: `midterm`
+'labber' must has all GRANT of operation on 'midterm'.
 3. Install dependencies: `npm i`
 4. Fix to binaries for sass: `npm rebuild node-sass`
 5. Reset database: `npm run db:reset`
