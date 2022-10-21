@@ -110,10 +110,10 @@ const fetchAdmin = function() {
 
         if(json.points[x].map_name !== mapTitle && x>0) {
           mapTitle = json.points[x].map_name;
-          usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
         } else if(json.points[x].map_name !== mapTitle) {
           mapTitle = json.points[x].map_name;
-          usermaplist += `<tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          usermaplist += `<tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
         }
         usermaplist += `<tr><td width=100% style="padding-bottom:10px; padding-top:10px; padding-left:10px;"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
         // console.log(json.points[x].title)
@@ -131,6 +131,9 @@ const fetchAdmin = function() {
       $('#user-pointslist-title').html(`<div>Your Points <i class="fa-solid fa-map-pin badge fa-lg" data-badge=${usermapscount}></i> `);
       $('#user-pointslist').html(usermaplist);
     }
+  })
+  .catch((e) => {
+    console.error("ERROR",e)
   });
 };
 function getallMapsAPI(params) {

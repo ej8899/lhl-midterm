@@ -97,6 +97,11 @@ body {
   cursor:pointer;
 }
 
+.hoverpointercolor:hover {
+  cursor: pointer;
+  color: var(--wasteal);
+}
+
 /*
   MODAL BOX
 */

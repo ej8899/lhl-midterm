@@ -305,6 +305,14 @@ const switchMap = function(mapId) {
   // map select handler has process for switching maps, so lets simulate a click on the map
   let selectItem = $(`[data-value="${mapId}"]`);
   selectItem.trigger("click");
+  //event.stopPropagation();
+};
+
+const switchMapPoint = function(mapId) {
+  // map select handler has process for switching maps, so lets simulate a click on the map
+  let selectItem = $(`[data-value="${mapId}"]`);
+  selectItem.trigger("click");
+  event.stopPropagation();
 };
 
 // find map descriptions in our map list object
