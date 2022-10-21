@@ -12,7 +12,7 @@ const app = express();
 
 app.use(cookieSession({
   name: 'session',
-  keys: [process.env.SECRET_KEY]
+  keys: ['key1']
 }));
 
 app.set('view engine', 'ejs');
