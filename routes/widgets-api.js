@@ -23,6 +23,18 @@ router.get('/maps', (req, res) => {
     });
 });
 
+router.get('/all-maps', (req, res) => {
+  widgetsQueries.getAllMaps()
+    .then(maps => {
+      res.json({ maps });
+    })
+    .catch(err => {
+      res
+        .status(500)
+        .json({ error: err.message });
+    });
+});
+
 router.get('/no-private-maps', (req, res) => {
   widgetsQueries.getAllNoPrivateMaps()
     .then(maps => {
