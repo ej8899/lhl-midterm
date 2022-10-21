@@ -7,8 +7,9 @@ function getMyDetails() {
 }
 
 function logOut() {
-  $('#useronlysection').css('visibility','hidden');
-  $('#favoritestatus').css('visibility','hidden');
+  $('#useronlysection').hide();
+  $('#favoritestatus').hide();
+  $('#adminsection').hide();
   currentUID = 0;
   return $.ajax({
     method: "POST",
@@ -102,15 +103,19 @@ const fetchAdmin = function() {
     userPointCache = json.points;
     console.log("ALL POINTS COUNT:",usermapscount)
     if (usermapscount > 0) {
-      let usermaplist = `<table border="0" width="100%">`;
       // TODO sort this output list by alpha (sent to backend dev 2022-10-18)
       let mapTitle = '';
+      let usermaplist = `<div class="mini-block"><table  width="100%">`;
       for(let x = 0; x < usermapscount; x ++) {
-        if(json.points[x].map_name !== mapTitle) {
+
+        if(json.points[x].map_name !== mapTitle && x>0) {
           mapTitle = json.points[x].map_name;
-          usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
+          usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+        } else if(json.points[x].map_name !== mapTitle) {
+          mapTitle = json.points[x].map_name;
+          usermaplist += `<tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr><tbody class="mini-able">`;
         }
-        usermaplist += `<tr ><td width=100% style="padding-bottom:10px; padding-top:10px; padding-left:10px;"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
+        usermaplist += `<tr><td width=100% style="padding-bottom:10px; padding-top:10px; padding-left:10px;"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
         // console.log(json.points[x].title)
         if(!json.points[x].title) {
           pointname = 'no point title';
@@ -121,7 +126,8 @@ const fetchAdmin = function() {
         usermaplist += '</b><div style="padding-left:15px; font-size:small">' + json.points[x].description;
         usermaplist += `</div></td><td style="padding-left:10px; padding-top:10px" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square edit hoverpointer"></i></a></td><td style="padding-left:10px; padding-top:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash trash hoverpointer"></i></a></td></tr>`;
       }
-      usermaplist += '</table>';
+      usermaplist += '</tbody></table>';
+
       $('#user-pointslist-title').html(`<div>Your Points <i class="fa-solid fa-map-pin badge fa-lg" data-badge=${usermapscount}></i> `);
       $('#user-pointslist').html(usermaplist);
     }

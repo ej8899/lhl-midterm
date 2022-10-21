@@ -682,7 +682,7 @@ TOGGLES
   padding-top: 2rem;
   position: relative;
   top: -2rem;
-  z-index: 9;
+  z-index: 8;
   .toggle-block {
     border-bottom: 1px solid var(--cardcontentcolor);
     color: var(--cardcontentcolor);
@@ -725,7 +725,62 @@ TOGGLES
   }
 }
 
+.mini-block {
+  color: var(--cardcontentcolor);
+  .mini-trigger {
+    cursor: pointer;
+    position: relative;
+    padding: 15px 20px 15px 0;
+    margin: 0;
+    font-size: 14pt;
+    &::after {
+      content: "\f078";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      position: absolute;
+      transform: translateY(-50%);
+      right: 0;
+      top: 50%;
+      color: var(--cardcontentcolor);
+      padding-top:10px;
+    }
+    &:hover::after {
+      color: var(--persian-red);
+    }
+  }
+  .mini-able {
+    display: none;
+    padding: 1rem;
+    padding-bottom: 0;
+    padding-top:0;
+    color: var(--cardcontentcolor);
+  }
+  &.active {
+    color: var(--cardcontentcolor);
+    .mini-trigger {
+      border-bottom: 1px solid black;
+      &::after {
+        content: "\f077";
+      }
+    }
+  }
+}
 
+.admin-wrap {
+  width: 800px;
+  background-color: var(--cardbackgroundcolor);
+  border: solid;
+  border-width: 2px;
+  border-radius: 0rem 0rem 1rem 1rem;
+  border-color: black;
+  padding: 0.1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  position: relative;
+  text-align: right;
+  top: -1rem;
+  z-index: 9;
+}
 /*
 
 */

@@ -88,7 +88,10 @@
 
   </main>
 
-  <div id="useronlysection" class="toggle-wrap" style="visibility:hidden;">
+  <div id="adminsection" class="admin-wrap hoverbutton" onclick="showAdminSection();"><b>Manage My Maps <i class="fa-regular fa-square-caret-down hoverbutton"></i></b>
+  </div>
+
+  <div id="useronlysection" class="toggle-wrap">
     <div class="toggle-block">
     <h4 class="toggle-trigger" id="user-favorites-title">Favorites</h4>
     <div class="toggle-able" id="user-favorites"></div>
@@ -102,6 +105,9 @@
     <div class="toggle-block">
       <h4 class="toggle-trigger" id="user-pointslist-title">Your Created Points: ) show count of maps and points added if there are any)</h4>
       <div class="toggle-able" id="user-pointslist">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, harum at! Illo nemo sapiente officia harum aliquid architecto sint expedita labore deserunt vel commodi recusandae, nesciunt doloremque cumque blanditiis fugiat.</div>
+    </div>
+
+    <div id="adminsectionhide" class="toggle-trigger hoverbutton" style="text-align:right; padding-top:10px" onclick="hideAdminSection();"><b>Hide <i class="fa-regular fa-square-caret-up hoverbutton"></i></b>
     </div>
 
   </div>

@@ -56,9 +56,12 @@ $(document).ready(function() {
   getListofMaps();
   sliderToggle();
   favoriteHandler();
+  miniToggle();
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
+  $('#useronlysection').hide();
+  $('#adminsection').hide();
   $('#back-top').click(function() {
     window.scrollTo({top: 0, behavior: 'smooth'});
   });
@@ -148,6 +151,14 @@ const sliderToggle = function() {
   })
 }
 
+const miniToggle = function() {
+  // $('.mini-block:first-child').addClass('active');
+  // $('.mini-block:first-child').find('.mini-able').slideToggle();
+  $('body').on('click', '.mini-trigger', function() {
+    $(this).closest('.mini-block').toggleClass('active');
+    $(this).closest('.mini-block').find('.mini-able').stop().slideToggle();
+  })
+}
 //
 //  toggleDarkMode(option);
 //  toggle to switch classes between .light and .dark

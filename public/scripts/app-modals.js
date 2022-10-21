@@ -427,10 +427,39 @@ const showLogin = () => {
         $('#favoritestatus').css('visibility','visible');
         fetchFavorites();
         fetchAdmin();
-        $('#useronlysection').css('visibility','visible');
+        $('#adminsection').slideDown('slow');
       });
     });
 }
+
+const showAdminSection =() => {
+  $('#adminsection').hide();
+  $('#useronlysection').slideDown('slow');
+};
+
+const hideAdminSection =() => {
+  let intervalTime = 425;
+  if($('.mini-block').hasClass('active')) {
+    $('#adminsection').delay(intervalTime * 5).slideDown('slow');
+    $('#useronlysection').delay(intervalTime * 4).slideUp('slow');
+    $('.mini-able').slideUp('slow');
+    $('.mini-block').removeClass('active');
+    $('.toggle-able').delay(intervalTime * 2).slideUp('slow');
+    $('.toggle-block').removeClass('active');
+    return;
+  } else if ($('.toggle-block').hasClass('active')) {
+    $('#adminsection').delay(intervalTime * 3).slideDown('slow');
+    $('#useronlysection').delay(intervalTime * 2).slideUp('slow');
+    $('.toggle-able').slideUp('slow');
+    $('.toggle-block').removeClass('active');
+    return;
+  } else {
+    $('#adminsection').delay(intervalTime).slideDown('slow');
+    $('#useronlysection').slideUp('slow');
+    return;
+  }
+};
+
 
 const showSignUp = () => {
   let data = `<div class="subtitle-left"><b>Create an account for Map My Wiki to access and customize your maps</b></div>
