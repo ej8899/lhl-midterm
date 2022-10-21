@@ -6,7 +6,7 @@ MapMyWiki is a joint effort between
 - Ernie Johnson
 - Atsuyuki
 ## Top Page View
-![Screen Shot of Top Page](./screenshots/ERD.png)
+![Screen Shot of Top Page](./screenshots/TopPageImage.png)
 
 ---
 ## Contents...
