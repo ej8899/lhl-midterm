@@ -21,8 +21,16 @@ const getMapsWithOwnerId = (id) => {
 };
 
 /**
+ * Get all mapsfrom the database.
+ * @return {Promise<{}>} A promise to the maps.
+ */
+const getAllMaps = () => {
+  return query('SELECT * FROM maps;', [], result => result.rows);
+};
+
+/**
  * Get maps those are not private from the database.
- * @return {Promise<{}>} A promise to the map.
+ * @return {Promise<{}>} A promise to the maps.
  */
 const getAllNoPrivateMaps = () => {
   return query('SELECT * FROM maps WHERE is_private = false ORDER BY name ASC;', [], result => result.rows);
@@ -223,6 +231,7 @@ const deleteFavourite = (favourite) => {
 module.exports = {
   getMapWithMapId,
   getMapsWithOwnerId,
+  getAllMaps,
   getAllNoPrivateMaps,
   getPointsWithMapIdAndContributorId,
   addMap,
