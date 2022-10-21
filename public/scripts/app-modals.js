@@ -261,6 +261,15 @@ const newMapModal = function() {
   <div class="new-property-form__field-wrapper">
     <input type="text" name="mapPins" id="new-property-form__mappin">
   </div>
+
+  <div class="new-property-form__field-wrapper">
+    <div id="privateToggleContainer">
+    <input id="setPrivateToggle" class="private-toggle" type="checkbox" name="isPrivate">
+    <label for="setPrivateToggle"></label>
+    <label for="setPrivateToggle">Private Map?</label>Private Map?
+    </div>
+  </div>
+
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Map</button>&nbsp;
@@ -280,7 +289,7 @@ const newMapModal = function() {
     }
 
     let data = $(this).serialize();
-    data += '&category=general&isPrivate=false&ownerId=';
+    data += '&category=general&ownerId=';
     data += currentUID;
     console.log("SUBMIT FOR MAP:",data)
     toggleModal();
@@ -310,6 +319,10 @@ const updateMapModal = function(existingMapid) {
   // need to fetch the map details from list
   let theMapObject = findMapObject(existingMapid);
   console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
+  let checkornot = '';
+  if(theMapObject.is_private) {
+    checkornot = 'checked';
+  }
   let content = `<div class="subtitle"><b>Update a map</b></div>
   <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
   <div class="new-property-form__field-wrapper">
@@ -334,6 +347,15 @@ const updateMapModal = function(existingMapid) {
   <div class="new-property-form__field-wrapper">
     <input type="text" name="mapPins" id="new-property-form__mappin" value="${theMapObject.map_pins}">
   </div>
+
+  <div class="new-property-form__field-wrapper">
+  <div id="privateToggleContainer">
+  <input id="setPrivateToggle" class="private-toggle" type="checkbox" name="isPrivate" ${checkornot}>
+  <label for="setPrivateToggle"></label>
+  <label for="setPrivateToggle">Private Map?</label>Private Map?
+  </div>
+  </div>
+
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Update Map</button>&nbsp;
@@ -353,7 +375,7 @@ const updateMapModal = function(existingMapid) {
     }
 
     let data = $(this).serialize();
-    data += `&category=general&isPrivate=false&mapId=${existingMapid}&ownerId=`;
+    data += `&category=general&mapId=${existingMapid}&ownerId=`;
     data += currentUID;
     console.log("SUBMIT FOR EDIT MAP:",data)
     toggleModal();
@@ -492,17 +514,20 @@ const showSignUp = () => {
 // show "about" modal window
 //
 const showAbout = () => {
-  let privacyPolicy = `
-  Map My Wiki is a mid-term project for <a href="http://www.lighthouselabs.ca" title="https://www.lighthouselabs.ca" target=_new>Light House Labs</a>.<BR><BR>
-  Produced by Full-Stack Developers:<br>
-  <span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></a></i> Ernie Johnson (Frontend)  <i class="fa-brands fa-sass" ></i> <i class="fa-brands fa-node-js"></i> <i class="fa-brands fa-html5" ></i>  <i class="fa-brands fa-css3-alt "></i></span><BR>
-  <span class="modal-info"><a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></a></i> Atsuyuki Yoshimatsu (Backend) <i class="fa-brands fa-node-js"></i> <i class="fa-solid fa-database" ></i></span>
-  <div class="modal-info">
+  let privacyPolicy = `<center>
+  <i class="fashadow fa-solid fa-circle-question" style="font-size:6rem;color:orange"></i><br clear=all>
+  <h3 style="font-size:1.3rem">About Map My Wiki</h3>
+  <div style="font-size:1.1rem">Map My Wiki is a mid-term project for <a href="http://www.lighthouselabs.ca" title="https://www.lighthouselabs.ca" target=_new>LightHouse Labs</a>.</div><BR>
+  <div style="font-size:1.1rem">Produced by Full-Stack Developers:<br>
+  <div style="text-align:left; padding-left:5.8rem;"><span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github abouticoncolor"></a></i> Ernie Johnson (Frontend)&nbsp;<i class="fa-brands fa-sass abouticoncolor" ></i> <i class="fa-brands fa-square-js abouticoncolor"></i>&nbsp;<i class="fa-brands fa-html5 abouticoncolor"></i>&nbsp;  <i class="fa-brands fa-css3-alt abouticoncolor"></i></span><BR>
+  <span class="modal-info"><a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github abouticoncolor"></a></i> Atsuyuki Yoshimatsu (Backend)&nbsp; <i class="fa-brands fa-node-js abouticoncolor"></i>&nbsp; <i class="fa-solid fa-database abouticoncolor" ></i></span></div></div>
+  <div class="modal-info"><BR>
   <p>&copy; Copyright 2022, All Rights Reserved | <a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm">Get the latest version on <i class="fa-brands fa-github"></i></a></p>
   </div>
+  <center><br clear=all><a class="button accept" onClick="toggleModal();">Close</a></center>
   `;
 
-  toggleModal('<i class="fa-solid fa-circle-question fa-xl icongap"></i> About', privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
+  toggleModal('', privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
 };
 
 
@@ -544,7 +569,7 @@ const reqLocationModal = () => {
   </div>
 
 
-  <a class="button accept" onClick="toggleModal();">Continue</a>
+  <a class="button accept" onClick="toggleModal();tisTheSeason();">Continue</a>
   <br clear=all>&nbsp;
   </center>
   `;

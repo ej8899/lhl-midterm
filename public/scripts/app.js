@@ -448,3 +448,41 @@ const findPointinCache = function(pin) {
     }
   }
 };
+
+
+
+const tisTheSeason = async function() {
+  $('.spider').css('visibility',"visible");
+  let yvalue;
+  let restingY = randomIntFromInterval(10,130);
+  let droppedY = randomIntFromInterval(150,320);
+  for (let y = 0; y <= 320; y ++) {
+    yvalue = y + 'px';
+    $('.spiderweb').css('height',yvalue);
+    await sleep(6);
+  }
+  await sleep(randomIntFromInterval(1,2000));
+  for (let y = 320; y >= restingY; y --) {
+    yvalue = y + 'px';
+    $('.spiderweb').css('height',yvalue);
+    await sleep(10);
+  }
+  $('.spiderweb').css('z-index',-1);
+  // sleep x amount of time
+  await sleep(randomIntFromInterval(10000,99999));
+  // wind up to top
+  for (let y = restingY; y >= 0; y --) {
+    yvalue = y + 'px';
+    $('.spiderweb').css('height',yvalue);
+    await sleep(10);
+  }
+  // sleep x amoutn of time
+  await sleep(randomIntFromInterval(10000,99999));
+  // restart function
+  tisTheSeason();
+};
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function randomIntFromInterval(min, max) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}

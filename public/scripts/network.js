@@ -80,14 +80,14 @@ const fetchAdmin = function() {
       for(let x = 0; x < usermapscount; x ++) {
         console.log(json.maps[x].is_private)
         if(json.maps[x].is_private === true) {
-          privateIcon = `<span class="tooltip expand" data-title="private map"><i class="fa-solid fa-lock"></i></span>`;
+          privateIcon = `<span class="tooltip expand" data-title="private map"><i class="fa-solid fa-lock fa-sm"></i></span>`;
         } else {
           privateIcon = "";
         }
-        usermaplist += `<tr><td width=100% style="padding-bottom:20px;">${privateIcon}<a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>&nbsp;`;
+        usermaplist += `<tr><td width=100% style="padding-bottom:20px;"><a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>`;
 
         usermaplist += json.maps[x].name;
-        usermaplist += '</b></a><div style="padding-left:10px; font-size:small">' + json.maps[x].description;
+        usermaplist += `</b></a>&nbsp;${privateIcon}<div style="padding-left:10px; font-size:small">` + json.maps[x].description;
         usermaplist += `</div></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" onClick="updateMapModal(${json.maps[x].id});" data-title="edit this map"><i class="fa-solid fa-pen-to-square edit"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this map" onClick="deleteMap(${json.maps[x].id});"><i class="fa-solid fa-trash trash"></i></a></td></tr>`;
       }
       usermaplist += '</table>';
@@ -217,8 +217,8 @@ function getListofMaps(forceSwitchName) {
   });
 }
 function getListofMapsAPI() {
-  let url = "/api/widgets/no-private-maps";
-  //let url = "/api/widgets/maps";
+  //let url = "/api/widgets/no-private-maps";
+  let url = "/api/widgets/all-maps";
   return $.ajax({
     url,
   });

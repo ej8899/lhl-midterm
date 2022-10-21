@@ -31,7 +31,17 @@ const initMap = function() {
   // general MAPS click event handler
   google.maps.event.addListener(map, 'click', function( event ){
     //alert( "Latitude: "+event.latLng.lat()+" "+", longitude: "+event.latLng.lng() );
-    if (currentUID > 0 && currentMap > 1) {
+    if (currentUID > 0) {
+      // check if private map - if so, owner has to be current user
+      let currentmap = findMapObject(currentMap);
+      if (currentmap.is_private === true) {
+        //is owner the user
+        if(currentUID != currentmap.owner_id) {
+          modalError('This is a private map, you need to be the owner to add pins!');
+          return;
+        }
+      }
+
       console.log("CURRENT MAP:",currentMap)
       newPin(event.latLng.lat(),event.latLng.lng());
     } else if (currentUID === 0) {
@@ -162,8 +172,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     if (currentUID === mapsPointsObject[pointNumber].contributor_id) {
       adminEdit = 1;
     }
-    console.log("POINTSNUMBER:",pointNumber)
-    console.log("MAPPOINTOBJECT:",mapsPointsObject);
+
     if (adminEdit === 1) {
       // show trash icon and edit icons
       adminOptions += `<br clear=all><hr><a onclick="deletePin(${mapsPointsObject[pointNumber].id});toggleModal();"; class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a onclick="editPin(${mapsPointsObject[pointNumber].id});toggleModal();" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
