@@ -16,11 +16,13 @@ input[type=checkbox]:focus {
 .darkmodeIconVisible {
   transition: opacity 500ms;
   opacity: 1;
+  color: var(--black-olive);
 }
 
 .darkmodeIconInvisible {
   transition: opacity 500ms;
   opacity: 0.3;
+  color: var(--black-olive);
 }
 
 .switchcontainer {

@@ -97,6 +97,10 @@ body {
   cursor:pointer;
 }
 
+.hoverpointercolor {
+  text-decoration:none;
+  color:var(--concontentcolor);
+}
 .hoverpointercolor:hover {
   cursor: pointer;
   color: var(--wasteal);
@@ -206,6 +210,7 @@ body {
   background-color: var(--black-olive);
   animation: bounce-in 1s ease;
   transition: color 500ms, opacity 2s;
+  z-index:99;
 }
 .back-top:hover {
   color: var(--persian-red);
@@ -393,6 +398,7 @@ body {
   border-color: transparent;
   border-radius: 1em;
   background-color: transparent;
+  color: var(--black-olive);
 }
 
 .login_button:hover {

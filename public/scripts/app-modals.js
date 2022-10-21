@@ -102,7 +102,7 @@ const newPin = function(lat,lng) {
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Location</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -180,7 +180,7 @@ const editPinModal = function(existingPinObject) {
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Update Point</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -273,7 +273,7 @@ const newMapModal = function() {
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Map</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -359,7 +359,7 @@ const updateMapModal = function(existingMapid) {
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Update Map</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;

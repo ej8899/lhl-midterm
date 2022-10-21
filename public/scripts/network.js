@@ -10,6 +10,9 @@ function logOut() {
   $('#useronlysection').hide();
   $('#favoritestatus').hide();
   $('#adminsection').hide();
+  localStorage.clear('map');
+  console.log(localStorage);
+  mapslist = [];
   currentUID = 0;
   return $.ajax({
     method: "POST",
@@ -44,7 +47,7 @@ const fetchFavorites = function() {
     if(favscount > 0) {
       let userfavSection = `<table border="0" width="100%">`;
       for (let x =0; x< favscount; x++) {
-        userfavSection += `<tr><td width=100% valign=top><a class="hoverpointer" onClick="switchMap(${json.favourites[x].map_id});"><b>`;
+        userfavSection += `<tr><td width=100% valign=top><a class="hoverpointer" href="#" style="text-decoration:none; color:var(--concontentcolor)" onClick="switchMap(${json.favourites[x].map_id});"><b>`;
         userfavSection += json.favourites[x].map_name;
         userfavSection += `</b></a></td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark trash hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
       }
@@ -84,7 +87,7 @@ const fetchAdmin = function() {
         } else {
           privateIcon = "";
         }
-        usermaplist += `<tr><td width=100% style="padding-bottom:20px;"><a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>`;
+        usermaplist += `<tr><td width=100% style="padding-bottom:20px;"><a class="hoverpointer" href="#" style="text-decoration:none; color:var(--concontentcolor)" onClick="switchMap(${json.maps[x].id});"><b>`;
 
         usermaplist += json.maps[x].name;
         usermaplist += `</b></a>&nbsp;${privateIcon}<div style="padding-left:10px; font-size:small">` + json.maps[x].description;
@@ -105,15 +108,40 @@ const fetchAdmin = function() {
     if (usermapscount > 0) {
       // TODO sort this output list by alpha (sent to backend dev 2022-10-18)
       let mapTitle = '';
-      let usermaplist = `<div class="mini-block"><table  width="100%">`;
+      let usermaplist = '';
       for(let x = 0; x < usermapscount; x ++) {
 
         if(json.points[x].map_name !== mapTitle && x>0) {
+          if(JSON.parse(localStorage.getItem('map')) !== null) {
+            let storagemaplist = JSON.parse(localStorage.getItem('map'));
+            console.log(storagemaplist);
+            if(storagemaplist.includes(json.points[x].map_name)){
+              mapTitle = json.points[x].map_name;
+              usermaplist += `</td></tr></tbody></table></div><div class="mini-block active"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able" style="display:block">`;
+            } else {
+              mapTitle = json.points[x].map_name;
+              usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+            }
+          } else {
           mapTitle = json.points[x].map_name;
-          usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          }
         } else if(json.points[x].map_name !== mapTitle) {
+          if(JSON.parse(localStorage.getItem('map')) !== null) {
+            let storagemaplist = JSON.parse(localStorage.getItem('map'));
+            console.log(storagemaplist);
+            console.log('working')
+            if(storagemaplist.includes(json.points[x].map_name)){
+              mapTitle = json.points[x].map_name;
+              usermaplist += `<div class="mini-block active"><table  width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able" style="display:block">`;
+            } else {
+              mapTitle = json.points[x].map_name;
+              usermaplist += `<div class="mini-block"><table  width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+            }
+          } else {
           mapTitle = json.points[x].map_name;
-          usermaplist += `<tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          usermaplist += `<div class="mini-block"><table  width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          }
         }
         usermaplist += `<tr><td width=100% style="padding-bottom:10px; padding-top:10px; padding-left:10px;"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
         // console.log(json.points[x].title)

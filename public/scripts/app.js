@@ -57,6 +57,7 @@ $(document).ready(function() {
   sliderToggle();
   favoriteHandler();
   miniToggle();
+  localStorage.clear('map');
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
@@ -151,10 +152,33 @@ const sliderToggle = function() {
   })
 }
 
+let mapslist = [];
+
 const miniToggle = function() {
   // $('.mini-block:first-child').addClass('active');
   // $('.mini-block:first-child').find('.mini-able').slideToggle();
-  $('body').on('click', '.mini-trigger', function() {
+  $('body').on('click', '.mini-trigger', function(json) {
+    let mapname = json.target.innerText.trim();
+
+    if(JSON.parse(localStorage.getItem('map')) !== null) {
+      mapslist = JSON.parse(localStorage.getItem('map'));
+      console.log(mapslist);
+      if(mapslist.includes(mapname)){
+        console.log(`found it`);
+        for(let x = 0; x < mapslist.length; x++) {
+          if (mapname === mapslist[x]) {
+            mapslist.splice(x, 1);
+          }
+        }
+      } else {
+        mapslist.push(mapname);
+      }
+    } else {
+      mapslist.push(mapname);
+    }
+    console.log(mapslist);
+    localStorage.setItem('map', JSON.stringify(mapslist))
+    console.log(localStorage.getItem('map'));
     $(this).closest('.mini-block').toggleClass('active');
     $(this).closest('.mini-block').find('.mini-able').stop().slideToggle();
   })
@@ -405,7 +429,7 @@ const updateNav = function(user) {
 
   let fixedItems = `<span style="padding-right:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
 
-  <div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked style="min-height: 22px; height:22px !important;" onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left:6px"></i></div>`;
+  <div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon darkmodeIconInvisible" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked style="min-height: 22px; height:22px !important;" onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon darkmodeIconVisible" id="nighticon" style="padding-left:6px"></i></div>`;
   if (!user) {
     userLinks = `
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
