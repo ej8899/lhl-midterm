@@ -5,7 +5,7 @@ Intro 1-2min
  ・Self-introduction
    Ernie - construction utilities manager making a change back to full stack web developer
 
-   Atsuyuki -- ???
+   Atsuyuki -- After many years experience in the telecommunication field, changed career as a web developer.
 
  ・What we chose as the midterm project
     We chose the wiki maps project and called it simply,  "Map My Wiki" -- where we can map points of interest with brief notes. Any number of maps can be added to the system with any idea the user has. 
@@ -37,5 +37,5 @@ App flow 2 min
 Conclusion 1 min
  ・What we learned though the project is… 
  - (ernie) - a good task management plan makes for efficient work flow, I come from a more chaotic work-flow pattern where a lot of communication is not very clear-cut in who does what, when and how, so working with Atsu via Discord chats and our Trello task board was a nice change. 
- -
+ - (Atsu) - A good communication is the most important part in the group project. We divided tasks frontend and backend. That means we are connecting the apis between them. We needed to discuss about what kind of parameters sent by frontend and what kind of values returned from backend. This conversation was a key point of success.
 
