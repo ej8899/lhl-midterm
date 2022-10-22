@@ -541,7 +541,7 @@ const showSignUp = () => {
 const showAbout = () => {
   let privacyPolicy = `<center>
   <i class="fashadow fa-solid fa-circle-question" style="font-size:6rem;color:orange"></i><br clear=all>
-  <h3 style="font-size:1.3rem">About Map My Wiki</h3>
+  <h3 style="font-size:1.3rem">Map My Wiki<BR>v0.9</h3>
   <div style="font-size:1.1rem">Map My Wiki is a mid-term project for <a href="http://www.lighthouselabs.ca" title="https://www.lighthouselabs.ca" target=_new>LightHouse Labs</a>.</div><BR>
   <div style="font-size:1.1rem">Produced by Full-Stack Developers:<br>
   <div style="text-align:left; padding-left:5.8rem;"><span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github abouticoncolor"></a></i> Ernie Johnson (Frontend)&nbsp;<i class="fa-brands fa-sass abouticoncolor" ></i> <i class="fa-brands fa-square-js abouticoncolor"></i>&nbsp;<i class="fa-brands fa-html5 abouticoncolor"></i>&nbsp;  <i class="fa-brands fa-css3-alt abouticoncolor"></i></span><BR>

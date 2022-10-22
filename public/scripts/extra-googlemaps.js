@@ -45,7 +45,21 @@ const initMap = function() {
       console.log("CURRENT MAP:",currentMap)
       newPin(event.latLng.lat(),event.latLng.lng());
     } else if (currentUID === 0) {
-      showLogin();
+      //showLogin();
+      let content = `<div class="subtitle"><b>You need to be a registered user (or signed in) to create a new pin.</b>
+      </div>
+      <br>
+      <div class="login-form__field-wrapper buttongap">
+      <a class="accept button" onClick="toggleModal(); showSignUp();">Sign Up</a>
+      <br clear=all>&nbsp;
+      </center>
+      <a class="accept button" onClick="toggleModal(); showLogin();">Login</a>
+      <br clear=all>&nbsp;
+      </center>
+      </div>
+      `;
+      toggleModal('<i class="fa-regular fa-circle-xmark fa-xl icongap" style="color:#d1342fff;"></i> Not Logged In',content,null,{"background":"white"});
+      return;
     } else {
       modalError('Please select a map before trying to add points!');
     }
