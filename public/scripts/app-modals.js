@@ -48,6 +48,16 @@ const delPinConfirmation = function (pid,message,yesButtonText,noButtonText) {
   toggleModal(null,messageOutput);
 };
 
+const delMapConfirmation = function (pid,message,yesButtonText,noButtonText) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  <h3>Are you sure?</h3>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();deleteMapNext(${pid});">${yesButtonText}</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+};
+
 //
 // show Privacy Policy modal window
 //
@@ -218,7 +228,7 @@ const editPinModal = function(existingPinObject) {
 
 
 //
-//  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
+//  newMapModal- collect map info and save as a new map
 //
 const newMapModal = function() {
   if (currentUID === 0) {
@@ -289,6 +299,15 @@ const newMapModal = function() {
     }
 
     let data = $(this).serialize();
+
+    if ( $('setPrivateToggle').prop('checked')) {
+      // checked - will default proper to serialize
+      console.log("PRIVATE: yes")
+    } else {
+      data += '&isPrivate=false';
+      console.log("PRIVATE: NO")
+    }
+
     data += '&category=general&ownerId=';
     data += currentUID;
     console.log("SUBMIT FOR MAP:",data)
@@ -373,8 +392,20 @@ const updateMapModal = function(existingMapid) {
     if (!isTitleValid) {
       return;
     }
+    let checkBox = $('#setPrivateToggle').val();
+    if(!checkBox) {
+      data += 'isPrivate=false';
+    }
+
 
     let data = $(this).serialize();
+    if ( $('setPrivateToggle').prop('checked')) {
+      // checked - will default proper to serialize
+      console.log("PRIVATE: yes")
+    } else {
+      data += '&isPrivate=false';
+      console.log("PRIVATE: NO")
+    }
     data += `&category=general&mapId=${existingMapid}&ownerId=`;
     data += currentUID;
     console.log("SUBMIT FOR EDIT MAP:",data)

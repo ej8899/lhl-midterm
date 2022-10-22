@@ -274,7 +274,7 @@ const submitNewPin = function(data) {
 
 
 const deletePin = function(pinId) {
-  delPinConfirmation(pinId,'delete this point','delete','cancel');
+  delPinConfirmation(pinId,'Are you sure you want to permanently delete this point?','delete','cancel');
 };
 const deletePinNext = function(pinID) {
   deletePinAPI(pinID)
@@ -340,7 +340,11 @@ const setFavAPI = function(data) {
 
 
 
-const deleteMap = function(pinID) {
+const deleteMap = function(pinId) {
+  delMapConfirmation(pinId,'Are you sure you want to permanently delete this map?','delete','cancel');
+};
+
+const deleteMapNext = function(pinID) {
   // TODO CONFIRMATION modal
   deleteMapAPI(pinID)
   .then(function(json) {
