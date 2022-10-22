@@ -243,7 +243,7 @@ function getListofMaps(forceSwitchName) {
     }
     mapSelectHandler();
     if(forceSwitchName) {
-      switchMap(findMapByTitle(newMapTitle));
+      switchMap(findMapByTitle(forceSwitchName));
     }
   });
 }
@@ -348,9 +348,10 @@ const deleteMapNext = function(pinID) {
   // TODO CONFIRMATION modal
   deleteMapAPI(pinID)
   .then(function(json) {
-    console.log(json)
+    console.log(json);
+    let randomNum = Math.floor(Math.random() * (mapsListObject.length));
     fetchAdmin();
-    getListofMaps();
+    getListofMaps(mapsListObject[randomNum].name);
   });
 }
 const deleteMapAPI = function(data) {

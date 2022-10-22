@@ -15,6 +15,9 @@ let gConfirmation = 0;  // global confirmation variable 0 = no, 1 = yes
 let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
 
+// set the users geo coords so we only have to fetch once per session
+let uLon, uLat;
+
 // GLOBAL cached DB query data
 let mapsList, mapsListObject, mapsPointsObject, favoritesObject, gCurrentMapId, userPointCache;
 
@@ -31,8 +34,8 @@ const main = function() {
     maximumAge: 0
   };
   function success(gotPosition) {
-    let uLat = gotPosition.coords.latitude;
-    let uLon = gotPosition.coords.longitude;
+    uLat = gotPosition.coords.latitude;
+    uLon = gotPosition.coords.longitude;
     console.log(`${uLat}`, `${uLon}`);
     mapMoveToLocation(uLat,uLon);
   };
@@ -56,6 +59,7 @@ $(document).ready(function() {
   getListofMaps();
   sliderToggle();
   favoriteHandler();
+  geoHomeHandler();
   miniToggle();
   localStorage.clear('map');
 
@@ -94,6 +98,15 @@ $(document).ready(function() {
 
 }); // END DOCUMENT READY
 
+
+//
+// add click handler to geo home icon on map
+//
+const geoHomeHandler = function() {
+  $("#locationhome").on("click", function() {
+    mapMoveToLocation(uLat,uLon);
+  });
+};
 
 //
 // add click handler to favorite/heart icon on map
@@ -486,15 +499,15 @@ const findPointinCache = function(pin) {
 const tisTheSeason = async function() {
   $('.spider').css('visibility',"visible");
   let yvalue;
-  let restingY = randomIntFromInterval(10,130);
-  let droppedY = randomIntFromInterval(150,320);
-  for (let y = 0; y <= 320; y ++) {
+  let restingY = randomIntFromInterval(10,100);
+  let droppedY = randomIntFromInterval(100,320);
+  for (let y = 0; y <= droppedY; y ++) {
     yvalue = y + 'px';
     $('.spiderweb').css('height',yvalue);
     await sleep(6);
   }
   await sleep(randomIntFromInterval(1,2000));
-  for (let y = 320; y >= restingY; y --) {
+  for (let y = droppedY; y >= restingY; y --) {
     yvalue = y + 'px';
     $('.spiderweb').css('height',yvalue);
     await sleep(10);
@@ -515,6 +528,7 @@ const tisTheSeason = async function() {
 };
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 function randomIntFromInterval(min, max) { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min)
 }
