@@ -237,7 +237,30 @@ const mapMoveToLocation = function(lat,lng) {
   map.panTo(center);
 }
 
+const mapMoveToPinLocation = async function(mapId,lat,lng) {
+  console.log('TRIGGERED',mapId);
+  console.log('markersArray',markersArray);
 
+  let selectItem = $(`[data-value="${mapId}"]`);
+  selectItem.trigger("click");
+  await sleep(100);
+  console.log("MOVING MAP: ",lat,lng)
+  const center = new google.maps.LatLng(lat, lng);
+  map.panTo(center);
+
+  let i;
+  for (i = 0; i < markersArray.length; i++) {
+    //console.log("markersTitle:",markersArray[i].itemTitle);
+    let markerLat = markersArray[i].position.lat();
+    let markerLon = markersArray[i].position.lng();
+    if(markerLat === lat) {
+      if(markerLon === lng) {
+        google.maps.event.trigger(markersArray[i], 'click');
+      }
+    }
+  }
+
+}
 
 //
 // resetMapData(mapID)
