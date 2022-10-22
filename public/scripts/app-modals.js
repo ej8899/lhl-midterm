@@ -300,13 +300,12 @@ const newMapModal = function() {
 
     let data = $(this).serialize();
 
-    if ( $('setPrivateToggle').prop('checked')) {
-      // checked - will default proper to serialize
-      console.log("PRIVATE: yes")
-    } else {
-      data += '&isPrivate=false';
-      console.log("PRIVATE: NO")
+    console.log("CHECKBOX:",$('#setPrivateToggle').prop('checked'));
+
+    if ( $('#setPrivateToggle').prop('checked') === false) {
+      data += '&isPrivate=false'
     }
+
 
     data += '&category=general&ownerId=';
     data += currentUID;
@@ -325,6 +324,7 @@ const newMapModal = function() {
         // refresh maps list and set to this new map
         fetchAdmin();
         getListofMaps(newMapTitle); // force a map to go to
+        // findMapByTitle('')
       })
       .catch((error) => {
         // TODO - need to JSON stringify the error object for readability
@@ -392,20 +392,14 @@ const updateMapModal = function(existingMapid) {
     if (!isTitleValid) {
       return;
     }
-    let checkBox = $('#setPrivateToggle').val();
-    if(!checkBox) {
-      data += 'isPrivate=false';
-    }
-
-
     let data = $(this).serialize();
-    if ( $('setPrivateToggle').prop('checked')) {
-      // checked - will default proper to serialize
-      console.log("PRIVATE: yes")
-    } else {
-      data += '&isPrivate=false';
-      console.log("PRIVATE: NO")
+
+
+    if ( $('#setPrivateToggle').prop('checked') === false) {
+      data += '&isPrivate=false'
     }
+
+
     data += `&category=general&mapId=${existingMapid}&ownerId=`;
     data += currentUID;
     console.log("SUBMIT FOR EDIT MAP:",data)
