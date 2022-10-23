@@ -357,7 +357,11 @@ body {
   align-items: center;
   padding: 0.5rem;
   position: fixed;
-  z-index: 2;
+  z-index: 999;
+  /* frosted glass effect */
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px) saturate(100%) contrast(75%) brightness(100%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%) contrast(45%) brightness(140%);
 }
 
 .navbar-userlinks {
