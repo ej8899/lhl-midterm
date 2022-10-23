@@ -497,6 +497,7 @@ const findPointinCache = function(pin) {
 
 
 const tisTheSeason = async function() {
+  return; // UNCOMMENT for halloween - also see index.js for CSS to uncomment
   $('.spider').css('visibility',"visible");
   let yvalue;
   let restingY = randomIntFromInterval(10,100);
