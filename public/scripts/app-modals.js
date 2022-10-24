@@ -35,7 +35,7 @@ const modalConfirmation = function (message,yesButtonText,noButtonText) {
   <a class="button accept" onClick="toggleModal();gConfirmation=0;">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();gConfirmation=1;">${yesButtonText}</a>
   </center>`;
   toggleModal(null,messageOutput);
-  console.log("gCONFIRMATION:",gConfirmation)
+  if (debug) console.log("gCONFIRMATION:",gConfirmation)
 };
 
 const delPinConfirmation = function (pid,message,yesButtonText,noButtonText) {
@@ -132,7 +132,7 @@ const newPin = function(lat,lng) {
     data += `&contributorId=${currentUID}&latitude=${lat}&longitude=${lng}&mapId=${currentMap}`;
 
     // TODO - add map ID and submitter ID to the data
-    console.log("NEW PIN: ",data)
+    if (debug) console.log("NEW PIN: ",data)
     submitNewPin(data)
     .then(() => {
       toggleModal(); // turn off existing modal
@@ -164,7 +164,7 @@ const newPin = function(lat,lng) {
 //
 const editPinModal = function(existingPinObject) {
   // TODO - need input form for new map point
-  console.log("EDITPINobject:",existingPinObject);
+  if (debug) console.log("EDITPINobject:",existingPinObject);
   let content = `<div class="subtitle"><b>For your pin at ${Number(existingPinObject.latitude).toFixed(4)}, ${Number(existingPinObject.longitude).toFixed(4)}</b></div>
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
@@ -202,7 +202,7 @@ const editPinModal = function(existingPinObject) {
     data += `&contributorId=${currentUID}&latitude=${Number(existingPinObject.latitude)}&longitude=${Number(existingPinObject.longitude)}&mapId=${existingPinObject.map_id}&pointId=${existingPinObject.id}`;
 
     // TODO - add map ID and submitter ID to the data
-    console.log("UPDATE PIN URL: ",data)
+    if (debug) console.log("UPDATE PIN URL: ",data)
     updatePin(data)
     .then(() => {
       toggleModal();
@@ -300,7 +300,7 @@ const newMapModal = function() {
 
     let data = $(this).serialize();
 
-    console.log("CHECKBOX:",$('#setPrivateToggle').prop('checked'));
+    if (debug) console.log("CHECKBOX:",$('#setPrivateToggle').prop('checked'));
 
     if ( $('#setPrivateToggle').prop('checked') === false) {
       data += '&isPrivate=false'
@@ -309,7 +309,7 @@ const newMapModal = function() {
 
     data += '&category=general&ownerId=';
     data += currentUID;
-    console.log("SUBMIT FOR MAP:",data)
+    if (debug) console.log("SUBMIT FOR MAP:",data)
     toggleModal();
     newMapTitle = titleEl.value.trim();
     submitNewMap(data)
@@ -337,7 +337,7 @@ const newMapModal = function() {
 const updateMapModal = function(existingMapid) {
   // need to fetch the map details from list
   let theMapObject = findMapObject(existingMapid);
-  console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
+  if (debug) console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
   let checkornot = '';
   if(theMapObject.is_private) {
     checkornot = 'checked';
@@ -402,7 +402,7 @@ const updateMapModal = function(existingMapid) {
 
     data += `&category=general&mapId=${existingMapid}&ownerId=`;
     data += currentUID;
-    console.log("SUBMIT FOR EDIT MAP:",data)
+    if (debug) console.log("SUBMIT FOR EDIT MAP:",data)
     toggleModal();
 
     submitEditMap(data)
@@ -454,11 +454,11 @@ const showLogin = () => {
     $('#login-form').on('submit', function (event) {
       event.preventDefault();
       let data = $(this).serialize();
-      console.log(data)
+      if (debug) console.log(data)
       toggleModal();
       logIn(data)
       .then(json => {
-        console.log(json);
+        if (debug) console.log(json);
         if (!json.user) {
           toggleModal('',`<center>
           <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:4rem;"></i><br clear=all><BR>
@@ -467,7 +467,7 @@ const showLogin = () => {
           </center>`);
           return;
         }
-        console.log(json.user);
+        if (debug) console.log(json.user);
         currentUID = json.user.id;
         updateNav(json.user);
         // show admin section

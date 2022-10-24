@@ -10,6 +10,7 @@
 let currentMap = 1;     // what is the current map ID being viewed?
 let currentUID = 0;     // what is the current USER ID (0 not logged in, else db user id)
 let gConfirmation = 0;  // global confirmation variable 0 = no, 1 = yes
+let debug = false;
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
@@ -36,16 +37,13 @@ const main = function() {
   function success(gotPosition) {
     uLat = gotPosition.coords.latitude;
     uLon = gotPosition.coords.longitude;
-    console.log(`${uLat}`, `${uLon}`);
+    if (debug) console.log(`${uLat}`, `${uLon}`);
     mapMoveToLocation(uLat,uLon);
   };
   function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
   navigator.geolocation.getCurrentPosition(success, error, getPosition);
-
-
-
 };
 main();
 
@@ -183,9 +181,9 @@ const miniToggle = function() {
 
     if(JSON.parse(localStorage.getItem('map')) !== null) {
       mapslist = JSON.parse(localStorage.getItem('map'));
-      console.log(mapslist);
+      if (debug) console.log(mapslist);
       if(mapslist.includes(mapname)){
-        console.log(`found it`);
+        if (debug) console.log(`found it`);
         for(let x = 0; x < mapslist.length; x++) {
           if (mapname === mapslist[x]) {
             mapslist.splice(x, 1);
@@ -197,9 +195,9 @@ const miniToggle = function() {
     } else {
       mapslist.push(mapname);
     }
-    console.log(mapslist);
+    if (debug) console.log(mapslist);
     localStorage.setItem('map', JSON.stringify(mapslist))
-    console.log(localStorage.getItem('map'));
+    if (debug) console.log(localStorage.getItem('map'));
     $(this).closest('.mini-block').toggleClass('active');
     $(this).closest('.mini-block').find('.mini-able').stop().slideToggle();
   })
@@ -318,7 +316,7 @@ const mapSelectHandler = function() {
     $(this).parents(".custom-select").removeClass("opened");
     $(this).parents(".custom-select").find(".custom-select-trigger").text($(this).text());
     let mapChangeID = $("#map-sources").val();
-    console.log("MAP CHANGE - the map ID:",mapChangeID);
+    if (debug) console.log("MAP CHANGE - the map ID:",mapChangeID);
     if(mapChangeID === "newmap") {
       newMapModal();
       return;
@@ -339,7 +337,7 @@ const cacheImages = function(mapId) {
     return;
   }
   for (const key of mapsPointsObject) {
-    console.log("PREFETCH:",key.image_url)
+    if (debug) console.log("PREFETCH:",key.image_url)
     img[x] = new Image();
     img[x].src = key.image_url;
   };
@@ -387,8 +385,8 @@ const findMapTitle = function(mapID) {
 const findMapByTitle = function(mapTitle) {
   let mapId = null;
   for (const key of mapsListObject) {
-    console.log("KEY.name",key.name);
-    console.log("mapTitle:",mapTitle)
+    if (debug) console.log("KEY.name",key.name);
+    if (debug) console.log("mapTitle:",mapTitle)
     if(key.name == mapTitle) {
       return key.id;
     }
@@ -475,7 +473,7 @@ const editPinFromMap = function(pinId) {
 };
 
 const editPin = function(pin) {
-  console.log("FINDPOINTINCACHE:",findPointinCache(pin))
+  if (debug) console.log("FINDPOINTINCACHE:",findPointinCache(pin))
   // find the pin - is it current user owned:
   if(findPointinCache(pin)) {
     editPinModal(findPointinCache(pin));
@@ -487,7 +485,7 @@ const editPin = function(pin) {
 const findPointinMapsPointCache = function(pin) {
   for (const key of mapsPointsObject) {
     if(key.id === +pin) {
-      console.log ("POINT OBJECT:",key)
+      if (debug) console.log ("POINT OBJECT:",key)
       return key;
     }
   }
@@ -496,7 +494,7 @@ const findPointinCache = function(pin) {
   // points cache for this user is at userPointCache
   for (const key of userPointCache) {
     if(key.id === +pin) {
-      console.log ("POINT OBJECT:",key)
+      if (debug) console.log ("POINT OBJECT:",key)
       return key;
     }
   }
