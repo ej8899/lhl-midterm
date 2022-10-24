@@ -71,6 +71,12 @@ $(document).ready(function() {
     window.scrollTo({top: 0, behavior: 'smooth'});
   });
   $(window).on("scroll", function() {
+    let scrollPos = $(window).scrollTop();
+    if (scrollPos > 50) {
+      $('#page-navbar').addClass("navbar-main-onscroll");
+    } else if (scrollPos < 50) {
+      $('#page-navbar').removeClass("navbar-main-onscroll");
+    }
     // Show & Hide Back To Top Button
     if ($(window).scrollTop() > 300) {
       $('.back-top').removeClass("fadeout");
