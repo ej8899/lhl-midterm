@@ -1,0 +1,188 @@
+$background: #00034b;
+$white: #ffffff;
+$grey: #dbdbdb;
+$pink: #ffbeff;
+$shadow: #000232;
+
+
+.ghostbox {
+  position: fixed;
+  display: flex;
+  opacity: 0;
+  animation: ghost 60s ease 5s infinite
+}
+
+@keyframes ghost {
+  0% {
+    opacity: 0;
+    right: 20px;
+    bottom: 0;
+    transform: translateY(-100px);
+  }
+  2% {
+    opacity: 0.5;
+    transform: translateY(-170px);
+    right: 60px;
+    bottom: 0;
+  }
+  4% {
+    opacity: 1;
+    transform: translateY(-225px);
+    right: 80px;
+    bottom: 0;
+  }
+  6% {
+    opacity: 0;
+    transform: translateY(-250px);
+    right: 20px;
+    bottom: 0;
+  }
+
+  20% {
+    opacity: 0;
+    transform: translateY(-80px);
+    left: 20px;
+    bottom: 0;
+
+  }
+  35% {
+    opacity: 0.5;
+    transform: translateY(-170px);
+    left: 60px;
+    bottom: 0;
+  }
+  45% {
+    opacity: 1;
+    transform: translateY(-225px);
+    left: 80px;
+    bottom: 0;
+  }
+  60% {
+    opacity: 0;
+    transform: translateY(-200px);
+    left: none;
+    bottom: 0;
+  }
+
+  70% {
+    transform: translateY(80px);
+    opacity: 0;
+    left: 40px;
+
+  }
+  80% {
+    opacity: 0.5;
+    transform: translateY(100px);
+    left: 60px;
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(150px);
+    left: 80px;
+  }
+  95% {
+    opacity: 0;
+    transform: translateY(250px);
+    left: 40px;
+  }
+}
+
+
+.ghost {
+  position: relative;
+  width: 50px;
+  height: 55px;
+  background: $white;
+  box-shadow: -6px 0px 0px $grey inset, 0 0 50px #5939db;
+  border-radius: 100px 100px 0 0;
+  animation: float 2s infinite;
+
+  &__eyes {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto;
+    padding: 18px 3px 0;
+    width: 40px;
+    height: 1px;
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+      width: 6px;
+      height: 10px;
+      background: $background;
+      border-radius: 50%;
+    }
+  }
+
+  &__dimples {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto;
+    padding: 15px 0 0;
+    width: 50px;
+    height: 10px;
+    z-index: 20;
+
+    &:before,
+    &:after {
+      content: "";
+      display: block;
+      width: 7px;
+      height: 7px;
+      background: $pink;
+      border-radius: 50%;
+    }
+  }
+
+  &__feet {
+    width: 100%;
+    position: absolute;
+    bottom: -13px;
+    display: flex;
+    justify-content: space-between;
+
+    &-foot {
+      width: 25%;
+      height: 22px;
+      border-radius: 50%;
+      background: $white;
+
+      &:last-child {
+        background-image: linear-gradient(to right, $white 55%, $grey 45%);
+      }
+    }
+  }
+}
+
+.shadow {
+  background: $shadow;
+  width: 50px;
+  height: 20px;
+  margin-top: 20px;
+  border-radius: 50%;
+  animation: shadow 2s infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+@keyframes shadow {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.9);
+  }
+}

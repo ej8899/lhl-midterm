@@ -18,6 +18,11 @@
   <link rel="stylesheet" href="/styles/tooltips.css" />
   <link rel="stylesheet" href="/styles/mapselect.css" />
 
+  <!--
+  <link rel="stylesheet" href="/styles/halloween.css" />
+  <link rel="stylesheet" href="/styles/ghost.css" />
+  -->
+
   <script src="/vendor/jquery-3.0.0.js"></script>
 
   <!-- FONTS & ICON SETS -->
@@ -40,6 +45,28 @@
 </head>
 
 <body>
+  <div class="spider">
+    <div class="spiderweb"></div>
+    <div class="body">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+    </div>
+    <div class="legs left">
+      <div class="leg"></div>
+      <div class="leg"></div>
+      <div class="leg"></div>
+      <div class="leg"></div>
+    </div>
+    <div class="legs right">
+      <div class="leg"></div>
+      <div class="leg"></div>
+      <div class="leg"></div>
+      <div class="leg"></div>
+    </div>
+  </div>
+
+
+
   <!-- MODAL WINDOW CODE -->
   <div class="modal" id="propertySubmit" style="visibility:hidden">
     <div class="modal-content" id="modal-content">
@@ -69,7 +96,7 @@
 
   <div class="hero">
     <div class="hero-title-container">
-    <span class="hero-title" id="titlemap" style="padding-top: 40px;">Map My Wiki</span>
+    <span class="hero-title" id="titlemap" style="padding-top: 60px;">Map My Wiki</span>
     <span class="hero-subtitle" id="aboutmap">Select a map, then click the map to place a pin!</span>
     <!-- <p class="hero-title__overlay" aria-hidden="true"></p>-->
     </div>
@@ -88,7 +115,10 @@
 
   </main>
 
-  <div id="useronlysection" class="toggle-wrap" style="visibility:hidden;">
+  <div id="adminsection" class="admin-wrap hoverbutton" onclick="showAdminSection();"><b>Manage My Maps <i class="fa-regular fa-square-caret-down hoverbutton"></i></b>
+  </div>
+
+  <div id="useronlysection" class="toggle-wrap">
     <div class="toggle-block">
     <h4 class="toggle-trigger" id="user-favorites-title">Favorites</h4>
     <div class="toggle-able" id="user-favorites"></div>
@@ -104,8 +134,26 @@
       <div class="toggle-able" id="user-pointslist">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos, harum at! Illo nemo sapiente officia harum aliquid architecto sint expedita labore deserunt vel commodi recusandae, nesciunt doloremque cumque blanditiis fugiat.</div>
     </div>
 
+    <div id="adminsectionhide" class="toggle-trigger hoverbutton" style="text-align:right; padding-top:10px" onclick="hideAdminSection();"><b>Hide <i class="fa-regular fa-square-caret-up hoverbutton"></i></b>
+    </div>
+
   </div>
 
+  <div class="ghostbox">
+    <div class="ghostbox__elements">
+      <div class="ghost">
+        <div class="ghost__eyes"></div>
+        <div class="ghost__dimples"></div>
+        <div class="ghost__feet">
+          <div class="ghost__feet-foot"></div>
+          <div class="ghost__feet-foot"></div>
+          <div class="ghost__feet-foot"></div>
+          <div class="ghost__feet-foot"></div>
+        </div>
+      </div>
+      <div class="shadow"></div>
+    </div>
+    </div>
 
   <footer class="pagefooter">
     <i class="fa-solid fa-copyright"></i> 2022 Map My Wiki -

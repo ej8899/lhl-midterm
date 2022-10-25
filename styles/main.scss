@@ -97,6 +97,15 @@ body {
   cursor:pointer;
 }
 
+.hoverpointercolor {
+  text-decoration:none;
+  color:var(--concontentcolor);
+}
+.hoverpointercolor:hover {
+  cursor: pointer;
+  color: var(--wasteal);
+}
+
 /*
   MODAL BOX
 */
@@ -127,7 +136,7 @@ body {
   background-color: white;
   padding: 1rem 1.5rem;
   width: 500px;
-  border-radius: 0.5rem;
+  border-radius: 0rem 2rem 0rem 2rem;
   color: var(--cardcontentcolor);
 }
 .modal-title {
@@ -201,6 +210,7 @@ body {
   background-color: var(--black-olive);
   animation: bounce-in 1s ease;
   transition: color 500ms, opacity 2s;
+  z-index:99;
 }
 .back-top:hover {
   color: var(--persian-red);
@@ -347,7 +357,20 @@ body {
   align-items: center;
   padding: 0.5rem;
   position: fixed;
-  z-index: 2;
+  z-index: 999;
+  transition: all 0.5s ease-in-out;
+}
+/* frosted glass effect on navbar -- note there is supporting JS required*/
+@supports (-webkit-backdrop-filter: blur(8px) saturate(100%) contrast(75%) brightness(100%)) or
+  (backdrop-filter: blur(8px) saturate(100%) contrast(75%) brightness(100%)) {
+  .navbar-main-onscroll {
+    transition: all 0.5s ease-in-out;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px) saturate(100%) contrast(75%) brightness(100%);
+    -webkit-backdrop-filter: blur(8px) saturate(100%) contrast(75%) brightness(100%);
+  }
 }
 
 .navbar-userlinks {
@@ -388,6 +411,7 @@ body {
   border-color: transparent;
   border-radius: 1em;
   background-color: transparent;
+  color: var(--black-olive);
 }
 
 .login_button:hover {
@@ -484,6 +508,8 @@ h1 {
 .hero-subtitle {
   display: flex;
   justify-content: center;
+  font-size: 1.3rem;
+  color: var(--black-olive);
 }
 
 canvas {
@@ -520,7 +546,7 @@ canvas {
     width: 100%; }
 
     .login-form input, .new-property-form textarea, .new-property-form select, .new-property-form input,  .new-property-form label, .new-property-form__field-wrapper  {
-      margin-top: 5px;
+      margin-top: 0px;
       width: 100%;
     }
 
@@ -681,7 +707,7 @@ TOGGLES
   padding-top: 2rem;
   position: relative;
   top: -2rem;
-  z-index: 9;
+  z-index: 8;
   .toggle-block {
     border-bottom: 1px solid var(--cardcontentcolor);
     color: var(--cardcontentcolor);
@@ -702,6 +728,9 @@ TOGGLES
         color: var(--cardcontentcolor);
         padding-top:10px;
       }
+      &:hover::after {
+        color: var(--persian-red);
+      }
     }
     .toggle-able {
       display: none;
@@ -721,7 +750,62 @@ TOGGLES
   }
 }
 
+.mini-block {
+  color: var(--cardcontentcolor);
+  .mini-trigger {
+    cursor: pointer;
+    position: relative;
+    padding: 15px 20px 15px 0;
+    margin: 0;
+    font-size: 14pt;
+    &::after {
+      content: "\f078";
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
+      position: absolute;
+      transform: translateY(-50%);
+      right: 0;
+      top: 50%;
+      color: var(--cardcontentcolor);
+      padding-top:10px;
+    }
+    &:hover::after {
+      color: var(--persian-red);
+    }
+  }
+  .mini-able {
+    display: none;
+    padding: 1rem;
+    padding-bottom: 0;
+    padding-top:0;
+    color: var(--cardcontentcolor);
+  }
+  &.active {
+    color: var(--cardcontentcolor);
+    .mini-trigger {
+      border-bottom: 1px solid black;
+      &::after {
+        content: "\f077";
+      }
+    }
+  }
+}
 
+.admin-wrap {
+  width: 800px;
+  background-color: var(--cardbackgroundcolor);
+  border: solid;
+  border-width: 2px;
+  border-radius: 0rem 0rem 1rem 1rem;
+  border-color: black;
+  padding: 0.1rem;
+  padding-right: 1rem;
+  padding-top: 1rem;
+  position: relative;
+  text-align: right;
+  top: -1rem;
+  z-index: 9;
+}
 /*
 
 */
@@ -765,14 +849,15 @@ TOGGLES
   }
 
   .badge[data-badge]:after {
+    transform: rotate(17deg);
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     content: attr(data-badge);
     position: absolute;
-    top: -20px;
-    right: -20px;
+    top: -16px;
+    right: -18px;
     width: 22px;
     height: 16px;
     text-align: center;
@@ -796,3 +881,77 @@ TOGGLES
     cursor: pointer;
     color: var(--persian-red);
   }
+
+
+
+/*
+  PRIVATE switch toggle (SCSS)
+*/
+#privateToggleContainer {
+  margin: 0 auto 1em auto;
+  padding-top: 10px;
+}
+
+.private-toggle {
+  position: absolute;
+  visibility: hidden; /* Hides the standard checkbox. */
+}
+
+.private-toggle + label {
+  display: inline-block;
+  vertical-align:middle;
+  position: relative;
+  cursor: pointer;
+  padding: 2px;
+  width: 48px;
+  height: 24px;
+  background-color: #dddddd;
+  border-radius: 40px;
+  margin: 0 auto;
+}
+
+.private-toggle + label:before,
+.private-toggle + label:after {
+  display: block;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  bottom: 1px;
+  content: "";
+}
+
+.private-toggle + label:before {
+  right: 1px;
+  background-color: #f1f1f1;
+  border-radius: 24px;
+  -moz-transition: background 0.4s;
+  -o-transition: background 0.4s;
+  -webkit-transition: background 0.4s;
+  transition: background 0.4s;
+}
+
+.private-toggle + label:after {
+  width: 22px;
+  background-color: #fff;
+  border-radius: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  -moz-transition: margin 0.4s;
+  -o-transition: margin 0.4s;
+  -webkit-transition: margin 0.4s;
+  transition: margin 0.4s;
+}
+
+.private-toggle:checked + label:before {
+  background-color: #e08f0c;
+}
+
+.private-toggle:checked + label:after {
+  margin-left: 23px;
+}
+
+
+
+.abouticoncolor {
+  color: var(--black-olive);
+  font-size: 1.3rem;
+}

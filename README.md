@@ -1,12 +1,12 @@
 # MapMyWiki
 
-Map My Wiki is geo-wiki type application created for <a href="www.lighthouselabs.ca">LightHouseLabs.ca</a> mid-term project to exercise our skills to date in the course including front and back end scripting in Javascript, Postgress SQL, HTML and CSS.
+MapMyWiki is geo-wiki type application created for <a href="www.lighthouselabs.ca">LightHouseLabs.ca</a> mid-term project to exercise our skills to date in the course including front and back end scripting in Javascript, Postgress SQL, HTML and CSS (via SASS).
 
-MapMyWiki is a joint effort between
-- Ernie Johnson
-- Atsuyuki
-## Top Page View
-![Screen Shot of Top Page](./screenshots/TopPageImage.png)
+MapMyWiki is a joint development effort between
+- Ernie Johnson (front: layout/css & interfacing to backend)
+- Atsuyuki Yoshimatsu (backend: server & sql development)
+
+![Screen Shot of Top Page](./screenshots/screenshot-main.png)
 
 ---
 ## Contents...
@@ -15,7 +15,7 @@ MapMyWiki is a joint effort between
 3. [Future Plans](#future-plans)
 4. [Detailed Operation](#detailed-operation)
 5. [Known Bugs](#known-bugs)
-6. [ERD](#ERD)
+6. [Database](#Database)
 7. [Attributions](#attributions)
 8. [Updates](#updates)
 ---
@@ -34,38 +34,35 @@ MapMyWiki is a joint effort between
   - Check the db folder to see what gets created and seeded in the SDB
 7. Run the server: `npm run local`
   - Note: nodemon is used, so you should not have to restart your server
-8. Visit `http://localhost:8080/`
+8. Visit `http://localhost:8080/` in your web browser
 ---
 ## Features...
 - Users can create and share maps/private maps
 - Users can create and share pins on maps
-- Users can not edit private maps
+- Users can not edit private maps (owned by someone else)
+  ![Screen Shot of Top Page](./screenshots/screenshot-select.png)
 [( back to top 🔺)](#MapMyWiki)
 ---
 ## Future Plans...
 - allow additional sorting of any displayed results
 - allow map owner to style their app with custom backgrounds and icons
-- dark mode styling on the map
-- style entire project for responsive design: mobile to desktop
-[( back to top 🔺)](#MapMyWiki)
----
-## Detailed Operation...
-- dfdfdf
-![](./screenshots/screenshot-currency.png)
+- allow more map interfacing such as "directions to"
+- improve map point management system for 100's of points
+- style entire project for responsive design: mobile to desktop  
 [( back to top 🔺)](#MapMyWiki)
 ---
 ## Known Bugs...
 - Vertical scroll bar is forced 'always' on' to prevent page shifts when data exceeds bottom of viewable space.
-- This application has been tested on Windows 11 via WSL, Ubuntu Linux 20.04, and MacOS 16 Ventura. All platforms tested with Chrome and Firefox browsers. Please report any bugs found!
+- This application has been tested on Windows 11 via WSL, Ubuntu Linux 21.10, and MacOS 16 Ventura. All platforms tested with Chrome and Firefox browsers. Please report any bugs found!  
 [( back to top 🔺)](#MapMyWiki)
 ---
-# ERD
-!["Screenshot of ERD"](./screenshots/ERD.png)
+## Database ERD...
+!["Screenshot of ERD"](./screenshots/ERD.png)  
 ---
 ## Attributions...
 - [conColors](https://github.com/ej8899/conColors) (misc. functions)
 - [conColors](https://github.com/ej8899/conColors) (misc. CSS for dark mode template)
-- FontAwesome
+- FontAwesome (various icons)
 - Google Fonts, Google Maps API
 - Ajax
 - Node.js

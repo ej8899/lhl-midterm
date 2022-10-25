@@ -7,8 +7,12 @@ function getMyDetails() {
 }
 
 function logOut() {
-  $('#useronlysection').css('visibility','hidden');
-  $('#favoritestatus').css('visibility','hidden');
+  $('#useronlysection').hide();
+  $('#favoritestatus').hide();
+  $('#adminsection').hide();
+  localStorage.clear('map');
+  console.log(localStorage);
+  mapslist = [];
   currentUID = 0;
   return $.ajax({
     method: "POST",
@@ -43,7 +47,7 @@ const fetchFavorites = function() {
     if(favscount > 0) {
       let userfavSection = `<table border="0" width="100%">`;
       for (let x =0; x< favscount; x++) {
-        userfavSection += `<tr><td width=100% valign=top><a class="hoverpointer" onClick="switchMap(${json.favourites[x].map_id});"><b>`;
+        userfavSection += `<tr><td width=100% valign=top><a class="hoverpointercolor" href="#" style="text-decoration:none;" onClick="switchMap(${json.favourites[x].map_id});"><b>`;
         userfavSection += json.favourites[x].map_name;
         userfavSection += `</b></a></td><td><a class="tooltip expand" data-title="remove map from favorites" onclick="deleteFav(${json.favourites[x].map_id})"><i class="fa-solid fa-heart-circle-xmark trash hoverpointer"></i></a><br clear=all>&nbsp;</td></tr>`;
       }
@@ -69,6 +73,7 @@ const fetchAdmin = function() {
   // deal with the maps list section
   getallMapsAPI(currentUID)
   .then(function(json) {
+    let privateIcon = "";
     console.log("ALL MAPS for user:",json)
     let usermapscount = json.maps.length;
     console.log("ALL MAP COUNT:",usermapscount)
@@ -76,9 +81,16 @@ const fetchAdmin = function() {
       let usermaplist = `<table border="0" width="100%">`;
       // TODO sort this output list by alpha - sent to BACKEND DEV 2022-10-18
       for(let x = 0; x < usermapscount; x ++) {
-        usermaplist += `<tr ><td width=100% style="padding-bottom:20px;"><a class="hoverpointer" onClick="switchMap(${json.maps[x].id});"><b>`;
+        console.log(json.maps[x].is_private)
+        if(json.maps[x].is_private === true) {
+          privateIcon = `<span class="tooltip expand" data-title="private map"><i class="fa-solid fa-lock fa-sm"></i></span>`;
+        } else {
+          privateIcon = "";
+        }
+        usermaplist += `<tr><td width=100% style="padding-bottom:20px;"><a class="hoverpointercolor" href="#" style="text-decoration:none;" onClick="switchMap(${json.maps[x].id});"><b>`;
+
         usermaplist += json.maps[x].name;
-        usermaplist += '</b></a><div style="padding-left:10px; font-size:small">' + json.maps[x].description;
+        usermaplist += `</b></a>&nbsp;${privateIcon}<div style="padding-left:10px; font-size:small">` + json.maps[x].description;
         usermaplist += `</div></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" onClick="updateMapModal(${json.maps[x].id});" data-title="edit this map"><i class="fa-solid fa-pen-to-square edit"></i></a></td><td style="padding-left:10px;" valign="top"><a class="tooltip expand" data-title="delete this map" onClick="deleteMap(${json.maps[x].id});"><i class="fa-solid fa-trash trash"></i></a></td></tr>`;
       }
       usermaplist += '</table>';
@@ -89,20 +101,49 @@ const fetchAdmin = function() {
   // deal with the points list section
   getallPointsbyUserIDAPI(currentUID)
   .then(function(json) {
-    console.log("ALL POINTS for user:",json)
+    if (debug) console.log("ALL POINTS for user:",json)
     let usermapscount = json.points.length;
     userPointCache = json.points;
-    console.log("ALL POINTS COUNT:",usermapscount)
+    if (debug) console.log("ALL POINTS COUNT:",usermapscount)
     if (usermapscount > 0) {
-      let usermaplist = `<table border="0" width="100%">`;
       // TODO sort this output list by alpha (sent to backend dev 2022-10-18)
       let mapTitle = '';
+      let usermaplist = '';
       for(let x = 0; x < usermapscount; x ++) {
-        if(json.points[x].map_name !== mapTitle) {
+
+        if(json.points[x].map_name !== mapTitle && x>0) {
+          if(JSON.parse(localStorage.getItem('map')) !== null) {
+            let storagemaplist = JSON.parse(localStorage.getItem('map'));
+            if (debug) console.log(storagemaplist);
+            if(storagemaplist.includes(json.points[x].map_name)){
+              mapTitle = json.points[x].map_name;
+              usermaplist += `</td></tr></tbody></table></div><div class="mini-block active"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able" style="display:block">`;
+            } else {
+              mapTitle = json.points[x].map_name;
+              usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+            }
+          } else {
           mapTitle = json.points[x].map_name;
-          usermaplist += `<tr><td width=100% colspan=3 style="border-bottom: 1px solid black;padding-bottom:5px; padding-top: 5px;"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;<B>${mapTitle}</B></td></tr>`;
+          usermaplist += `</td></tr></tbody></table></div><div class="mini-block"><table border="0" width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          }
+        } else if(json.points[x].map_name !== mapTitle) {
+          if(JSON.parse(localStorage.getItem('map')) !== null) {
+            let storagemaplist = JSON.parse(localStorage.getItem('map'));
+            if (debug) console.log(storagemaplist);
+            if (debug) console.log('working')
+            if(storagemaplist.includes(json.points[x].map_name)){
+              mapTitle = json.points[x].map_name;
+              usermaplist += `<div class="mini-block active"><table  width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able" style="display:block">`;
+            } else {
+              mapTitle = json.points[x].map_name;
+              usermaplist += `<div class="mini-block"><table  width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+            }
+          } else {
+          mapTitle = json.points[x].map_name;
+          usermaplist += `<div class="mini-block"><table  width="100%"><tr><td  colspan=3 class="mini-trigger" style="padding-bottom:5px; padding-top: 5px;"><B><a class="hoverpointercolor" href="#" onClick="switchMapPoint(${json.points[x].map_id});"><i class="fa-solid fa-map fa-xl"></i>&nbsp;&nbsp;</a>${mapTitle}</B></td></tr><tbody class="mini-able">`;
+          }
         }
-        usermaplist += `<tr ><td width=100% style="padding-bottom:10px; padding-top:10px"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
+        usermaplist += `<tr><td width=100% style="padding-bottom:10px; padding-top:10px; padding-left:10px;"><a class="hoverpointercolor" href="#" onClick="mapMoveToPinLocation(${json.points[x].map_id},${json.points[x].latitude},${json.points[x].longitude});"><i class="fa-solid fa-map-pin"></i>&nbsp;<b>`;
         // console.log(json.points[x].title)
         if(!json.points[x].title) {
           pointname = 'no point title';
@@ -113,10 +154,14 @@ const fetchAdmin = function() {
         usermaplist += '</b><div style="padding-left:15px; font-size:small">' + json.points[x].description;
         usermaplist += `</div></td><td style="padding-left:10px; padding-top:10px" valign="top"><a onClick="editPin(${json.points[x].id});" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square edit hoverpointer"></i></a></td><td style="padding-left:10px; padding-top:10px;" valign="top"><a class="tooltip expand" data-title="delete this point" onClick="deletePin(${json.points[x].id})"><i class="fa-solid fa-trash trash hoverpointer"></i></a></td></tr>`;
       }
-      usermaplist += '</table>';
+      usermaplist += '</tbody></table>';
+
       $('#user-pointslist-title').html(`<div>Your Points <i class="fa-solid fa-map-pin badge fa-lg" data-badge=${usermapscount}></i> `);
       $('#user-pointslist').html(usermaplist);
     }
+  })
+  .catch((e) => {
+    console.error("ERROR",e)
   });
 };
 function getallMapsAPI(params) {
@@ -146,7 +191,7 @@ function getPointsByMap(mapID,moveMap) {
   getPointsByMapAPI(mapID)
     .then(function(json) {
       clearMapMarkers();
-      console.log("POINTS LIST:",json.points);
+      if (debug) console.log("POINTS LIST:",json.points);
 
       mapsPointsObject = json.points;
       cacheImages();
@@ -177,22 +222,13 @@ function getPointsByMapAPI(params) {
 //
 // get all our public maps and cache the data
 //
-function getListofMaps() {
+function getListofMaps(forceSwitchName) {
   let mapNames=[];
   getListofMapsAPI().then(function(json) {
-    console.log(json.maps)
-    /*
-    for(element in json.maps) {
-      mapNames.push(json.maps[element].name);
-      //console.log(json.maps[element].name)
-    }
-    */
-    //console.log(mapNames)
+    if (debug) console.log(json.maps)
+
     mapsList = mapNames;
     mapsListObject = json.maps;
-    // refresh the maps list here
-
-    //console.log("MAPSLIST: ",mapsList)
 
     // clear and rebuilt the map list
     $("#selectwrapper").empty();
@@ -201,15 +237,19 @@ function getListofMaps() {
     $("#selectwrapper").append(baselist);
     // add all the maps
     for (const map in mapsListObject) {
-      console.log("MAP:",map)
-      console.log("MAP NAME:",mapsListObject[map].name)
+      if (debug) console.log("MAP:",map)
+      if (debug) console.log("MAP NAME:",mapsListObject[map].name)
       $("#map-sources").append(`<option value="${mapsListObject[map].id}" class="selectmap">${mapsListObject[map].name}</option>`);
     }
     mapSelectHandler();
+    if(forceSwitchName) {
+      switchMap(findMapByTitle(forceSwitchName));
+    }
   });
 }
 function getListofMapsAPI() {
-  let url = "/api/widgets/no-private-maps";
+  //let url = "/api/widgets/no-private-maps";
+  let url = "/api/widgets/all-maps";
   return $.ajax({
     url,
   });
@@ -233,12 +273,13 @@ const submitNewPin = function(data) {
 }
 
 
-const deletePin = function(pinID) {
-  // TODO CONFIRMATION modal
-  modalConfirmation('delete this point','delete','cancel');
+const deletePin = function(pinId) {
+  delPinConfirmation(pinId,'Are you sure you want to permanently delete this point?','delete','cancel');
+};
+const deletePinNext = function(pinID) {
   deletePinAPI(pinID)
   .then(function(json) {
-    console.log(json)
+    if (debug) console.log(json)
     // find where this PIN is -- if on current map, we need to refresh it
     if(findPointinMapsPointCache(pinID) !== undefined) {
       switchMap(currentMap);
@@ -261,7 +302,7 @@ const deleteFav = function(mapid) {
   // TODO CONFIRMATION modal
   deleteFavAPI(mapid)
   .then(function(json) {
-    console.log(json)
+    if (debug) console.log(json)
     fetchFavorites();
   });
 }
@@ -270,7 +311,7 @@ const deleteFavAPI = function(data) {
   if (data) {
     url += "?mapId=" + data;
   }
-  console.log("DELFAVURL:",url)
+  if (debug) console.log("DELFAVURL:",url)
   return $.ajax({
     method: "DELETE",
     url: url,
@@ -280,7 +321,7 @@ const deleteFavAPI = function(data) {
 const setFav = function(mapid) {
   setFavAPI(mapid)
   .then(function(json) {
-    console.log(json);
+    if (debug) console.log(json);
     fetchFavorites();
   });
 }
@@ -290,7 +331,7 @@ const setFavAPI = function(data) {
     url += "?mapId=" + data;
     //url += "&userId=" + currentUID;
   }
-  console.log("SETFAVURL:",url)
+  if (debug) console.log("SETFAVURL:",url)
   return $.ajax({
     method: "POST",
     url: url,
@@ -299,13 +340,18 @@ const setFavAPI = function(data) {
 
 
 
-const deleteMap = function(pinID) {
+const deleteMap = function(pinId) {
+  delMapConfirmation(pinId,'Are you sure you want to permanently delete this map?','delete','cancel');
+};
+
+const deleteMapNext = function(pinID) {
   // TODO CONFIRMATION modal
   deleteMapAPI(pinID)
   .then(function(json) {
-    console.log(json)
+    if (debug) console.log(json);
+    let randomNum = Math.floor(Math.random() * (mapsListObject.length));
     fetchAdmin();
-    getListofMaps();
+    getListofMaps(mapsListObject[randomNum].name);
   });
 }
 const deleteMapAPI = function(data) {

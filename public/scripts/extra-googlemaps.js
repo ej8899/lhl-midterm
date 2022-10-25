@@ -31,11 +31,35 @@ const initMap = function() {
   // general MAPS click event handler
   google.maps.event.addListener(map, 'click', function( event ){
     //alert( "Latitude: "+event.latLng.lat()+" "+", longitude: "+event.latLng.lng() );
-    if (currentUID > 0 && currentMap > 1) {
+    if (currentUID > 0) {
+      // check if private map - if so, owner has to be current user
+      let currentmap = findMapObject(currentMap);
+      if (currentmap.is_private === true) {
+        //is owner the user
+        if(currentUID != currentmap.owner_id) {
+          modalError('This is a private map, you need to be the owner to add pins!');
+          return;
+        }
+      }
+
       console.log("CURRENT MAP:",currentMap)
       newPin(event.latLng.lat(),event.latLng.lng());
     } else if (currentUID === 0) {
-      showLogin();
+      //showLogin();
+      let content = `<div class="subtitle"><b>You need to be a registered user (or signed in) to create a new pin.</b>
+      </div>
+      <br>
+      <div class="login-form__field-wrapper buttongap">
+      <a class="accept button" onClick="toggleModal(); showSignUp();">Sign Up</a>
+      <br clear=all>&nbsp;
+      </center>
+      <a class="accept button" onClick="toggleModal(); showLogin();">Login</a>
+      <br clear=all>&nbsp;
+      </center>
+      </div>
+      `;
+      toggleModal('<i class="fa-regular fa-circle-xmark fa-xl icongap" style="color:#d1342fff;"></i> Not Logged In',content,null,{"background":"white"});
+      return;
     } else {
       modalError('Please select a map before trying to add points!');
     }
@@ -55,9 +79,6 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     scale: 0.05,
   };
 
-  //console.log("MAP LIST OBJECT all:",mapsListObject)
-  //console.log("MAP LIST OBJECT:",mapsListObject[currentMap])
-  //console.log("PIN DATA:",mapsListObject[currentMap].map_pins)
   const newPinPath = findMapPinData(currentMap);
   if(newPinPath) {
     iconDefault.path = newPinPath;
@@ -162,8 +183,7 @@ const placeMarker = function(location,city,prov,itemObjectNumber) {
     if (currentUID === mapsPointsObject[pointNumber].contributor_id) {
       adminEdit = 1;
     }
-    console.log("POINTSNUMBER:",pointNumber)
-    console.log("MAPPOINTOBJECT:",mapsPointsObject);
+
     if (adminEdit === 1) {
       // show trash icon and edit icons
       adminOptions += `<br clear=all><hr><a onclick="deletePin(${mapsPointsObject[pointNumber].id});toggleModal();"; class="tooltip expand" data-title="delete this point"><i class="fa-solid fa-trash fa-xl"></i></a> | <a onclick="editPin(${mapsPointsObject[pointNumber].id});toggleModal();" class="tooltip expand" data-title="edit this point"><i class="fa-solid fa-pen-to-square fa-xl"></i></a>`;
@@ -231,7 +251,30 @@ const mapMoveToLocation = function(lat,lng) {
   map.panTo(center);
 }
 
+const mapMoveToPinLocation = async function(mapId,lat,lng) {
+  console.log('TRIGGERED',mapId);
+  console.log('markersArray',markersArray);
 
+  let selectItem = $(`[data-value="${mapId}"]`);
+  selectItem.trigger("click");
+  await sleep(100);
+  console.log("MOVING MAP: ",lat,lng)
+  const center = new google.maps.LatLng(lat, lng);
+  map.panTo(center);
+
+  let i;
+  for (i = 0; i < markersArray.length; i++) {
+    //console.log("markersTitle:",markersArray[i].itemTitle);
+    let markerLat = markersArray[i].position.lat();
+    let markerLon = markersArray[i].position.lng();
+    if(markerLat === lat) {
+      if(markerLon === lng) {
+        google.maps.event.trigger(markersArray[i], 'click');
+      }
+    }
+  }
+
+}
 
 //
 // resetMapData(mapID)

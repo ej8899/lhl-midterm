@@ -3,6 +3,7 @@
 //  modal window handler, supporting code and various app specific modal windows (& content)
 //
 
+
 // create generic error modal, but with custom message
 const modalError = function(message) {
   let messageOutput = `<center>
@@ -26,15 +27,36 @@ const modalSuccess = function(message) {
 // create confirmation modal - get yes/no type input for buttons
 const modalConfirmation = function (message,yesButtonText,noButtonText) {
   // todo toggle g-variable state to show user has confirmed
+  gConfirmation = 0; // reset state to default "no"
   let messageOutput = `<center>
   <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
   <h3>Are you sure?</h3>
   ${message}<br clear=all><BR>
-  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();">${yesButtonText}</a>
+  <a class="button accept" onClick="toggleModal();gConfirmation=0;">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();gConfirmation=1;">${yesButtonText}</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+  if (debug) console.log("gCONFIRMATION:",gConfirmation)
+};
+
+const delPinConfirmation = function (pid,message,yesButtonText,noButtonText) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  <h3>Are you sure?</h3>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();deletePinNext(${pid});">${yesButtonText}</a>
   </center>`;
   toggleModal(null,messageOutput);
 };
 
+const delMapConfirmation = function (pid,message,yesButtonText,noButtonText) {
+  let messageOutput = `<center>
+  <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:6rem;"></i><br clear=all><BR>
+  <h3>Are you sure?</h3>
+  ${message}<br clear=all><BR>
+  <a class="button accept" onClick="toggleModal();">${noButtonText}</a>&nbsp;<a class="button accept" onClick="toggleModal();deleteMapNext(${pid});">${yesButtonText}</a>
+  </center>`;
+  toggleModal(null,messageOutput);
+};
 
 //
 // show Privacy Policy modal window
@@ -90,7 +112,7 @@ const newPin = function(lat,lng) {
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Location</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -110,7 +132,7 @@ const newPin = function(lat,lng) {
     data += `&contributorId=${currentUID}&latitude=${lat}&longitude=${lng}&mapId=${currentMap}`;
 
     // TODO - add map ID and submitter ID to the data
-    console.log("NEW PIN: ",data)
+    if (debug) console.log("NEW PIN: ",data)
     submitNewPin(data)
     .then(() => {
       toggleModal(); // turn off existing modal
@@ -129,7 +151,7 @@ const newPin = function(lat,lng) {
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
       toggleModal();
-      toggleModal(`Woah!`,`There was an error saving your map pin to this map.<BR>${error}`);
+      toggleModal(`Woah!`,`There was an error saving your map pin to this map.<BR>${JSON.stringify(error)}`);
       console.error(error);
       // refresh to default map
     });
@@ -142,7 +164,7 @@ const newPin = function(lat,lng) {
 //
 const editPinModal = function(existingPinObject) {
   // TODO - need input form for new map point
-  console.log("EDITPINobject:",existingPinObject);
+  if (debug) console.log("EDITPINobject:",existingPinObject);
   let content = `<div class="subtitle"><b>For your pin at ${Number(existingPinObject.latitude).toFixed(4)}, ${Number(existingPinObject.longitude).toFixed(4)}</b></div>
   <form action="/api/newpin" method="post" id="newpinform" class="new-property-form">
   <div class="new-property-form__field-wrapper">
@@ -168,7 +190,7 @@ const editPinModal = function(existingPinObject) {
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Update Point</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -180,7 +202,7 @@ const editPinModal = function(existingPinObject) {
     data += `&contributorId=${currentUID}&latitude=${Number(existingPinObject.latitude)}&longitude=${Number(existingPinObject.longitude)}&mapId=${existingPinObject.map_id}&pointId=${existingPinObject.id}`;
 
     // TODO - add map ID and submitter ID to the data
-    console.log("UPDATE PIN URL: ",data)
+    if (debug) console.log("UPDATE PIN URL: ",data)
     updatePin(data)
     .then(() => {
       toggleModal();
@@ -197,7 +219,7 @@ const editPinModal = function(existingPinObject) {
     .catch((error) => {
       // TODO - need to JSON stringify the error object for readability
       toggleModal();
-      toggleModal(`Woah!`,`There was an error updating your map pin details.<BR>${error}`);
+      toggleModal(`Woah!`,`There was an error updating your map pin details.<BR>${JSON.stringify(error)}`);
       console.error(error);
       // refresh to default map
     });
@@ -206,7 +228,7 @@ const editPinModal = function(existingPinObject) {
 
 
 //
-//  newPin(lat,lng) - get info to save a new pin to this map (pin is via map click)
+//  newMapModal- collect map info and save as a new map
 //
 const newMapModal = function() {
   if (currentUID === 0) {
@@ -249,10 +271,19 @@ const newMapModal = function() {
   <div class="new-property-form__field-wrapper">
     <input type="text" name="mapPins" id="new-property-form__mappin">
   </div>
+
+  <div class="new-property-form__field-wrapper">
+    <div id="privateToggleContainer">
+    <input id="setPrivateToggle" class="private-toggle" type="checkbox" name="isPrivate">
+    <label for="setPrivateToggle"></label>
+    <label for="setPrivateToggle">Private Map?</label>Private Map?
+    </div>
+  </div>
+
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Add Map</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -268,27 +299,36 @@ const newMapModal = function() {
     }
 
     let data = $(this).serialize();
-    data += '&category=general&isPrivate=false&ownerId=';
-    data += currentUID;
-    console.log("SUBMIT FOR MAP:",data)
-    toggleModal();
 
+    if (debug) console.log("CHECKBOX:",$('#setPrivateToggle').prop('checked'));
+
+    if ( $('#setPrivateToggle').prop('checked') === false) {
+      data += '&isPrivate=false'
+    }
+
+
+    data += '&category=general&ownerId=';
+    data += currentUID;
+    if (debug) console.log("SUBMIT FOR MAP:",data)
+    toggleModal();
+    newMapTitle = titleEl.value.trim();
     submitNewMap(data)
       .then(() => {
         let modalText = `<center>
         <i class="fashadow fa-solid fa-map" style="font-size:6rem; color:orange"></i><br clear=all><BR>
-        Your new map has been added!<br clear=all><BR>
+        Your new map<BR><b>${newMapTitle}</b><BR>has been added!<br clear=all><BR>
         <a class="button accept" onClick="toggleModal();">Continue</a>
         </center>
       `;
         toggleModal(``,modalText);
         // refresh maps list and set to this new map
         fetchAdmin();
-        getListofMaps();
+        getListofMaps(newMapTitle); // force a map to go to
+        // findMapByTitle('')
       })
       .catch((error) => {
         // TODO - need to JSON stringify the error object for readability
-        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${error}`);
+        toggleModal(`Woah!`,`There was an error saving your listing in our database.<BR>${JSON.stringify(error)}`);
         console.error(error);
         // refresh to default map
       });
@@ -297,7 +337,11 @@ const newMapModal = function() {
 const updateMapModal = function(existingMapid) {
   // need to fetch the map details from list
   let theMapObject = findMapObject(existingMapid);
-  console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
+  if (debug) console.log("EDIT MAP OBJECT:",findMapObject(existingMapid));
+  let checkornot = '';
+  if(theMapObject.is_private) {
+    checkornot = 'checked';
+  }
   let content = `<div class="subtitle"><b>Update a map</b></div>
   <form action="/api/newpin" method="post" id="new-map-form" class="new-property-form">
   <div class="new-property-form__field-wrapper">
@@ -322,10 +366,19 @@ const updateMapModal = function(existingMapid) {
   <div class="new-property-form__field-wrapper">
     <input type="text" name="mapPins" id="new-property-form__mappin" value="${theMapObject.map_pins}">
   </div>
+
+  <div class="new-property-form__field-wrapper">
+  <div id="privateToggleContainer">
+  <input id="setPrivateToggle" class="private-toggle" type="checkbox" name="isPrivate" ${checkornot}>
+  <label for="setPrivateToggle"></label>
+  <label for="setPrivateToggle">Private Map?</label>Private Map?
+  </div>
+  </div>
+
   <br>
   <div class="login-form__field-wrapper buttongap">
     <button class="button">Update Map</button>&nbsp;
-    <a id="login-form__cancel" class="button" href="#" onClick="toggleModal();">Cancel</a>
+    <a id="login-form__cancel" class="button" onClick="toggleModal();">Cancel</a>
   </div>
   </form>
   `;
@@ -339,11 +392,17 @@ const updateMapModal = function(existingMapid) {
     if (!isTitleValid) {
       return;
     }
-
     let data = $(this).serialize();
-    data += '&category=general&isPrivate=false&ownerId=';
+
+
+    if ( $('#setPrivateToggle').prop('checked') === false) {
+      data += '&isPrivate=false'
+    }
+
+
+    data += `&category=general&mapId=${existingMapid}&ownerId=`;
     data += currentUID;
-    console.log("SUBMIT FOR EDIT MAP:",data)
+    if (debug) console.log("SUBMIT FOR EDIT MAP:",data)
     toggleModal();
 
     submitEditMap(data)
@@ -360,8 +419,8 @@ const updateMapModal = function(existingMapid) {
         getListofMaps();
       })
       .catch((error) => {
-        // TODO - need to JSON stringify the error object for readability
-        toggleModal(`Woah!`,`There was an error updating your map in our database.<BR>${error}`);
+        //toggleModal(`Woah!`,`There was an error updating your map in our database.<BR>${JSON.stringify(error)}`);
+        modalError("<h3>Critical Error!</h3>"+JSON.stringify(error));
         console.error(error);
         // refresh to default map
       });
@@ -395,11 +454,11 @@ const showLogin = () => {
     $('#login-form').on('submit', function (event) {
       event.preventDefault();
       let data = $(this).serialize();
-      console.log(data)
+      if (debug) console.log(data)
       toggleModal();
       logIn(data)
       .then(json => {
-        console.log(json);
+        if (debug) console.log(json);
         if (!json.user) {
           toggleModal('',`<center>
           <i class="fa-regular fa-circle-xmark" style="color:#d1342fff; font-size:4rem;"></i><br clear=all><BR>
@@ -408,17 +467,46 @@ const showLogin = () => {
           </center>`);
           return;
         }
-        console.log(json.user);
+        if (debug) console.log(json.user);
         currentUID = json.user.id;
         updateNav(json.user);
         // show admin section
         $('#favoritestatus').css('visibility','visible');
         fetchFavorites();
         fetchAdmin();
-        $('#useronlysection').css('visibility','visible');
+        $('#adminsection').slideDown('slow');
       });
     });
 }
+
+const showAdminSection =() => {
+  $('#adminsection').hide();
+  $('#useronlysection').slideDown('slow');
+};
+
+const hideAdminSection =() => {
+  let intervalTime = 425;
+  if($('.mini-block').hasClass('active')) {
+    $('#adminsection').delay(intervalTime * 5).slideDown('slow');
+    $('#useronlysection').delay(intervalTime * 4).slideUp('slow');
+    $('.mini-able').slideUp('slow');
+    $('.mini-block').removeClass('active');
+    $('.toggle-able').delay(intervalTime * 2).slideUp('slow');
+    $('.toggle-block').removeClass('active');
+    return;
+  } else if ($('.toggle-block').hasClass('active')) {
+    $('#adminsection').delay(intervalTime * 3).slideDown('slow');
+    $('#useronlysection').delay(intervalTime * 2).slideUp('slow');
+    $('.toggle-able').slideUp('slow');
+    $('.toggle-block').removeClass('active');
+    return;
+  } else {
+    $('#adminsection').delay(intervalTime).slideDown('slow');
+    $('#useronlysection').slideUp('slow');
+    return;
+  }
+};
+
 
 const showSignUp = () => {
   let data = `<div class="subtitle-left"><b>Create an account for Map My Wiki to access and customize your maps</b></div>
@@ -451,17 +539,20 @@ const showSignUp = () => {
 // show "about" modal window
 //
 const showAbout = () => {
-  let privacyPolicy = `
-  Map My Wiki is a mid-term project for <a href="http://www.lighthouselabs.ca" title="https://www.lighthouselabs.ca" target=_new>Light House Labs</a>.<BR><BR>
-  Produced by Full-Stack Developers:<br>
-  <span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github"></a></i> Ernie Johnson (Frontend)  <i class="fa-brands fa-sass" ></i> <i class="fa-brands fa-node-js"></i> <i class="fa-brands fa-html5" ></i>  <i class="fa-brands fa-css3-alt "></i></span><BR>
-  <span class="modal-info"><a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github"></a></i> Atsuyuki Yoshimatsu (Backend) <i class="fa-brands fa-node-js"></i> <i class="fa-solid fa-database" ></i></span>
-  <div class="modal-info">
+  let privacyPolicy = `<center>
+  <i class="fashadow fa-solid fa-circle-question" style="font-size:6rem;color:orange"></i><br clear=all>
+  <h3 style="font-size:1.3rem">Map My Wiki<BR>v0.9</h3>
+  <div style="font-size:1.1rem">Map My Wiki is a mid-term project for <a href="http://www.lighthouselabs.ca" title="https://www.lighthouselabs.ca" target=_new>LightHouse Labs</a>.</div><BR>
+  <div style="font-size:1.1rem">Produced by Full-Stack Developers:<br>
+  <div style="text-align:left; padding-left:5.8rem;"><span class="modal-info"><a href="http://www.github.com/ej8899" title="https://www.github.com/ej8899" target=_new><i class="fa-brands fa-github abouticoncolor"></a></i> Ernie Johnson (Frontend)&nbsp;<i class="fa-brands fa-sass abouticoncolor" ></i> <i class="fa-brands fa-square-js abouticoncolor"></i>&nbsp;<i class="fa-brands fa-html5 abouticoncolor"></i>&nbsp;  <i class="fa-brands fa-css3-alt abouticoncolor"></i></span><BR>
+  <span class="modal-info"><a href="http://www.github.com/atyoshimatsu" title="https://www.github.com/atyoshimatsu" target=_new><i class="fa-brands fa-github abouticoncolor"></a></i> Atsuyuki Yoshimatsu (Backend)&nbsp; <i class="fa-brands fa-node-js abouticoncolor"></i>&nbsp; <i class="fa-solid fa-database abouticoncolor" ></i></span></div></div>
+  <div class="modal-info"><BR>
   <p>&copy; Copyright 2022, All Rights Reserved | <a href="https://github.com/ej8899/lhl-midterm" title="https://github.com/ej8899/lhl-midterm">Get the latest version on <i class="fa-brands fa-github"></i></a></p>
   </div>
+  <center><br clear=all><a class="button accept" onClick="toggleModal();">Close</a></center>
   `;
 
-  toggleModal('<i class="fa-solid fa-circle-question fa-xl icongap"></i> About', privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
+  toggleModal('', privacyPolicy, null, {"background":"rgb(156,115,58)","background":"linear-gradient(22deg, rgba(156,115,58,1) 0%, rgba(231,209,189,1) 100%, rgba(0,212,255,1) 100%)"});
 };
 
 
@@ -503,7 +594,7 @@ const reqLocationModal = () => {
   </div>
 
 
-  <a class="button accept" onClick="toggleModal();">Continue</a>
+  <a class="button accept" onClick="toggleModal();tisTheSeason();">Continue</a>
   <br clear=all>&nbsp;
   </center>
   `;

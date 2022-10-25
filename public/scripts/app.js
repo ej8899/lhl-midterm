@@ -10,10 +10,14 @@
 let currentMap = 1;     // what is the current map ID being viewed?
 let currentUID = 0;     // what is the current USER ID (0 not logged in, else db user id)
 let gConfirmation = 0;  // global confirmation variable 0 = no, 1 = yes
+let debug = false;
 
 // global vars for GOOGLE MAP API and other cached database info
 let map,mapBounds,mapMarkers,markersArray;
 const mapsKey = 'AIzaSyCfRtVUE5xGwJE6CABUHU7P_IZsWdgoK_k';
+
+// set the users geo coords so we only have to fetch once per session
+let uLon, uLat;
 
 // GLOBAL cached DB query data
 let mapsList, mapsListObject, mapsPointsObject, favoritesObject, gCurrentMapId, userPointCache;
@@ -31,20 +35,19 @@ const main = function() {
     maximumAge: 0
   };
   function success(gotPosition) {
-    let uLat = gotPosition.coords.latitude;
-    let uLon = gotPosition.coords.longitude;
-    console.log(`${uLat}`, `${uLon}`);
+    uLat = gotPosition.coords.latitude;
+    uLon = gotPosition.coords.longitude;
+    if (debug) console.log(`${uLat}`, `${uLon}`);
     mapMoveToLocation(uLat,uLon);
   };
   function error(err) {
     console.warn(`ERROR(${err.code}): ${err.message}`);
   };
   navigator.geolocation.getCurrentPosition(success, error, getPosition);
-
-
-
 };
 main();
+
+
 
 
 //
@@ -56,13 +59,24 @@ $(document).ready(function() {
   getListofMaps();
   sliderToggle();
   favoriteHandler();
+  geoHomeHandler();
+  miniToggle();
+  localStorage.clear('map');
 
   // setup "back to top" scroll button & deal with the scrolling
   $('.back-top').hide();
+  $('#useronlysection').hide();
+  $('#adminsection').hide();
   $('#back-top').click(function() {
     window.scrollTo({top: 0, behavior: 'smooth'});
   });
   $(window).on("scroll", function() {
+    let scrollPos = $(window).scrollTop();
+    if (scrollPos > 50) {
+      $('#page-navbar').addClass("navbar-main-onscroll");
+    } else if (scrollPos < 50) {
+      $('#page-navbar').removeClass("navbar-main-onscroll");
+    }
     // Show & Hide Back To Top Button
     if ($(window).scrollTop() > 300) {
       $('.back-top').removeClass("fadeout");
@@ -90,6 +104,15 @@ $(document).ready(function() {
 
 }); // END DOCUMENT READY
 
+
+//
+// add click handler to geo home icon on map
+//
+const geoHomeHandler = function() {
+  $("#locationhome").on("click", function() {
+    mapMoveToLocation(uLat,uLon);
+  });
+};
 
 //
 // add click handler to favorite/heart icon on map
@@ -148,6 +171,37 @@ const sliderToggle = function() {
   })
 }
 
+let mapslist = [];
+
+const miniToggle = function() {
+  // $('.mini-block:first-child').addClass('active');
+  // $('.mini-block:first-child').find('.mini-able').slideToggle();
+  $('body').on('click', '.mini-trigger', function(json) {
+    let mapname = json.target.innerText.trim();
+
+    if(JSON.parse(localStorage.getItem('map')) !== null) {
+      mapslist = JSON.parse(localStorage.getItem('map'));
+      if (debug) console.log(mapslist);
+      if(mapslist.includes(mapname)){
+        if (debug) console.log(`found it`);
+        for(let x = 0; x < mapslist.length; x++) {
+          if (mapname === mapslist[x]) {
+            mapslist.splice(x, 1);
+          }
+        }
+      } else {
+        mapslist.push(mapname);
+      }
+    } else {
+      mapslist.push(mapname);
+    }
+    if (debug) console.log(mapslist);
+    localStorage.setItem('map', JSON.stringify(mapslist))
+    if (debug) console.log(localStorage.getItem('map'));
+    $(this).closest('.mini-block').toggleClass('active');
+    $(this).closest('.mini-block').find('.mini-able').stop().slideToggle();
+  })
+}
 //
 //  toggleDarkMode(option);
 //  toggle to switch classes between .light and .dark
@@ -262,7 +316,7 @@ const mapSelectHandler = function() {
     $(this).parents(".custom-select").removeClass("opened");
     $(this).parents(".custom-select").find(".custom-select-trigger").text($(this).text());
     let mapChangeID = $("#map-sources").val();
-    console.log("MAP CHANGE - the map ID:",mapChangeID);
+    if (debug) console.log("MAP CHANGE - the map ID:",mapChangeID);
     if(mapChangeID === "newmap") {
       newMapModal();
       return;
@@ -283,7 +337,7 @@ const cacheImages = function(mapId) {
     return;
   }
   for (const key of mapsPointsObject) {
-    console.log("PREFETCH:",key.image_url)
+    if (debug) console.log("PREFETCH:",key.image_url)
     img[x] = new Image();
     img[x].src = key.image_url;
   };
@@ -294,6 +348,14 @@ const switchMap = function(mapId) {
   // map select handler has process for switching maps, so lets simulate a click on the map
   let selectItem = $(`[data-value="${mapId}"]`);
   selectItem.trigger("click");
+  //event.stopPropagation();
+};
+
+const switchMapPoint = function(mapId) {
+  // map select handler has process for switching maps, so lets simulate a click on the map
+  let selectItem = $(`[data-value="${mapId}"]`);
+  selectItem.trigger("click");
+  event.stopPropagation();
 };
 
 // find map descriptions in our map list object
@@ -317,6 +379,19 @@ const findMapTitle = function(mapID) {
     }
   }
   return mapDescription;
+};
+
+// find map ID by title and return the id
+const findMapByTitle = function(mapTitle) {
+  let mapId = null;
+  for (const key of mapsListObject) {
+    if (debug) console.log("KEY.name",key.name);
+    if (debug) console.log("mapTitle:",mapTitle)
+    if(key.name == mapTitle) {
+      return key.id;
+    }
+  }
+  return mapId;
 };
 
 // find (& return) entire map object in our map list object
@@ -373,7 +448,7 @@ const updateNav = function(user) {
 
   let fixedItems = `<span style="padding-right:6px" class="tooltip expand" data-title="latest version on github"><a href="https://github.com/ej8899/lhl-midterm" target="new"><i class="fa-brands fa-github fa-lg"></i></a></span>
 
-  <div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked style="min-height: 22px; height:22px !important;" onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon" id="nighticon" style="padding-left:6px"></i></div>`;
+  <div class="switchcontainer tooltip expand" data-title="toggle light & dark mode"><i class="fa-solid fa-sun darkicon darkmodeIconInvisible" id="dayicon"></i>&nbsp;<input type="checkbox" class="toggle" unchecked style="min-height: 22px; height:22px !important;" onclick="toggleDarkMode();" id="darkmodeswitch"><i class="fa-solid fa-moon darkicon darkmodeIconVisible" id="nighticon" style="padding-left:6px"></i></div>`;
   if (!user) {
     userLinks = `
     <nav id="navbar-userlinksend" class="navbar-userlinksend">
@@ -398,35 +473,69 @@ const editPinFromMap = function(pinId) {
 };
 
 const editPin = function(pin) {
-  console.log("FINDPOINTINCACHE:",findPointinCache(pin))
+  if (debug) console.log("FINDPOINTINCACHE:",findPointinCache(pin))
   // find the pin - is it current user owned:
   if(findPointinCache(pin)) {
     editPinModal(findPointinCache(pin));
   } else {
-    alert("map owned")
     // check the map point cache instead of owner cache
     editPinModal(findPointinMapsPointCache(pin));
   }
-  // find the pin - is it map owner 'owned':
-
-
-  //editPinModal(findPointinCache(pin));
 };
 const findPointinMapsPointCache = function(pin) {
   for (const key of mapsPointsObject) {
     if(key.id === +pin) {
-      console.log ("POINT OBJECT:",key)
+      if (debug) console.log ("POINT OBJECT:",key)
+      return key;
+    }
+  }
+};
+const findPointinCache = function(pin) {
+  // points cache for this user is at userPointCache
+  for (const key of userPointCache) {
+    if(key.id === +pin) {
+      if (debug) console.log ("POINT OBJECT:",key)
       return key;
     }
   }
 };
 
-const findPointinCache = function(pin) {
-  // points cache for this user is at userPointCache
-  for (const key of userPointCache) {
-    if(key.id === +pin) {
-      console.log ("POINT OBJECT:",key)
-      return key;
-    }
+
+
+const tisTheSeason = async function() {
+  return; // UNCOMMENT for halloween - also see index.js for CSS to uncomment
+  $('.spider').css('visibility',"visible");
+  let yvalue;
+  let restingY = randomIntFromInterval(10,100);
+  let droppedY = randomIntFromInterval(100,320);
+  for (let y = 0; y <= droppedY; y ++) {
+    yvalue = y + 'px';
+    $('.spiderweb').css('height',yvalue);
+    await sleep(6);
   }
+  await sleep(randomIntFromInterval(1,2000));
+  for (let y = droppedY; y >= restingY; y --) {
+    yvalue = y + 'px';
+    $('.spiderweb').css('height',yvalue);
+    await sleep(10);
+  }
+  $('.spiderweb').css('z-index',-1);
+  // sleep x amount of time
+  await sleep(randomIntFromInterval(10000,99999));
+  // wind up to top
+  for (let y = restingY; y >= 0; y --) {
+    yvalue = y + 'px';
+    $('.spiderweb').css('height',yvalue);
+    await sleep(10);
+  }
+  // sleep x amoutn of time
+  await sleep(randomIntFromInterval(10000,99999));
+  // restart function
+  tisTheSeason();
 };
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function randomIntFromInterval(min, max) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
